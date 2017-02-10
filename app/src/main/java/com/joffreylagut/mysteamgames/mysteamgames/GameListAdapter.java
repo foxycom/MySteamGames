@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.joffreylagut.mysteamgames.mysteamgames.customclass.GameListItem;
+
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -78,4 +80,5 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
         }
     }
 }
+
 

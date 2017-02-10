@@ -4,16 +4,48 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="8dp"
     tools:context="com.joffreylagut.mysteamgames.mysteamgames.MainActivity">
+<RelativeLayout
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="91dp"
+    android:paddingBottom="8dp"
+    android:background="@color/profile"
+    android:id="@+id/rl_profile">
+    <ImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:src="@drawable/profile_default"
+        android:scaleType="centerCrop"/>
+    <TextView
+        android:id="@+id/tv_account_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/account_name"
+        android:layout_marginLeft="8dp"
+        android:textSize="30sp"
+        android:layout_toRightOf="@id/iv_profile"/>
+</RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
+        android:layout_below="@id/rl_profile"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:id="@+id/rv_games"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
     </android.support.v7.widget.RecyclerView>
+
+    <ProgressBar
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/pb_loading"
+        android:visibility="invisible"/>
 </RelativeLayout>
