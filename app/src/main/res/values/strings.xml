@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">My Steam games</string>
     <string name="account_name">Account name</string>
+    <string name="games">games</string>
+    <string name="hoursplayed">hours played</string>
 </resources>

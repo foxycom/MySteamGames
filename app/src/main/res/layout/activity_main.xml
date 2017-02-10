@@ -6,46 +6,68 @@
     android:layout_height="match_parent"
     android:paddingBottom="8dp"
     tools:context="com.joffreylagut.mysteamgames.mysteamgames.MainActivity">
-<RelativeLayout
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
-    android:paddingTop="8dp"
-    android:layout_width="match_parent"
-    android:layout_height="91dp"
-    android:paddingBottom="8dp"
-    android:background="@color/profile"
-    android:id="@+id/rl_profile">
-    <ImageView
-        android:id="@+id/iv_profile"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:src="@drawable/profile_default"
-        android:scaleType="centerCrop"/>
-    <TextView
-        android:id="@+id/tv_account_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/account_name"
-        android:layout_marginLeft="8dp"
-        android:textSize="30sp"
-        android:layout_toRightOf="@id/iv_profile"/>
-</RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_below="@id/rl_profile"
+    <RelativeLayout
+        android:id="@+id/rl_profile"
+        android:layout_width="match_parent"
+        android:layout_height="91dp"
+        android:background="@color/profile"
+        android:paddingBottom="8dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
+        android:paddingTop="8dp">
+
+        <ImageView
+            android:id="@+id/iv_profile"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginRight="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/profile_default" />
+
+        <TextView
+            android:id="@+id/tv_account_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_profile"
+            android:text="@string/account_name"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/tv_nb_games"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/iv_profile"
+            android:text="25 games"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_total_time_played"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="8dp"
+            android:text="5877h played"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_games"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_profile"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
 
     </android.support.v7.widget.RecyclerView>
 
     <ProgressBar
+        android:id="@+id/pb_loading"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/pb_loading"
-        android:visibility="invisible"/>
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />
 </RelativeLayout>

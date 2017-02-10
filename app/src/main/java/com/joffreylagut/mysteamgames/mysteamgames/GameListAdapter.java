@@ -9,8 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.joffreylagut.mysteamgames.mysteamgames.customclass.GameListItem;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static android.content.ContentValues.TAG;
 
@@ -68,9 +70,11 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
         }
 
         public void bind(GameListItem gameItem) {
-            image.setImageResource(gameItem.getGameImage());
+            Picasso.with(image.getContext()).load(gameItem.getGameImage().toString()).into(image);
             name.setText(gameItem.getGameName());
-            timePlayed.setText(gameItem.getGameTimePlayed());
+            //name.setText(gameItem.getGameName());
+            String convertedTime = Long.toString(TimeUnit.HOURS.convert(gameItem.getGameTimePlayed(), TimeUnit.MINUTES));
+            timePlayed.setText(convertedTime + " h");
         }
 
         @Override

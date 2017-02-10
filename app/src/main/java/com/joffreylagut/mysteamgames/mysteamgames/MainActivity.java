@@ -18,6 +18,7 @@ import com.joffreylagut.mysteamgames.mysteamgames.data.AppPreferences;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements GameListAdapter.ListItemClickListener {
 
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
     private ImageView ivProfile;
     private ProgressBar pbLoading;
     private TextView tvAccountName;
+    private TextView tvNumberOfGames;
+    private TextView tvTotalTimePlayed;
     private RecyclerView recyclerView;
 
     @Override
@@ -51,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         tvAccountName = (TextView)findViewById(R.id.tv_account_name);
         recyclerView = (RecyclerView) findViewById(R.id.rv_games);
         ivProfile = (ImageView)findViewById(R.id.iv_profile);
+        tvNumberOfGames = (TextView)findViewById(R.id.tv_nb_games);
+        tvTotalTimePlayed = (TextView)findViewById(R.id.tv_total_time_played);
 
         // Then, we are putting values inside our current user
         currentUser.setSteamID(AppPreferences.getUserSteamID());
@@ -59,7 +65,10 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         // We are generating the URL and then ask the Steam API
         SteamAPICalls.getURLPlayerProfileInformation(AppPreferences.getUserSteamID());
         RetrieveProfileInformation myProfileInformation = new RetrieveProfileInformation();
-        myProfileInformation.execute(SteamAPICalls.getURLPlayerProfileInformation(currentUser.getSteamID()));
+        URL[] listURLAPIToCall = {
+                SteamAPICalls.getURLPlayerProfileInformation(currentUser.getSteamID()),
+                SteamAPICalls.getURLPlayerOwnedGames(currentUser.getSteamID())};
+        myProfileInformation.execute(listURLAPIToCall);
 
     }
 
@@ -68,20 +77,20 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
      */
     private List<GameListItem> insertGameData() {
         List<GameListItem> gameList = new ArrayList<>();
-        gameList.add(new GameListItem(R.drawable.clash, "Clash of clans", "16,5h"));
-        gameList.add(new GameListItem(R.drawable.clash, "Clash royale", "22h"));
-        gameList.add(new GameListItem(R.drawable.clash, "Doom", "9,8h"));
-        gameList.add(new GameListItem(R.drawable.clash, "Age of Empire", "25h"));
-        gameList.add(new GameListItem(R.drawable.clash, "Civilization VI", "52,6h"));
-        gameList.add(new GameListItem(R.drawable.clash, "Crash Bandicoot", "2h"));
-        gameList.add(new GameListItem(R.drawable.clash, "Warhammer", "1h"));
-        gameList.add(new GameListItem(R.drawable.clash, "Terraria", "132h"));
-        gameList.add(new GameListItem(R.drawable.clash, "Minecraft", "1235h"));
-        gameList.add(new GameListItem(R.drawable.clash, "Ark", "63h"));
-        gameList.add(new GameListItem(R.drawable.clash, "Red Faction", "5h"));
-        gameList.add(new GameListItem(R.drawable.clash, "Spore", "0,5h"));
-        gameList.add(new GameListItem(R.drawable.clash, "Dofus", "0h"));
-        gameList.add(new GameListItem(R.drawable.clash, "Conan", "16,5h"));
+        /**gameList.add(new GameListItem(R.drawable.clash, "Clash of clans", 165));
+        gameList.add(new GameListItem(R.drawable.clash, "Clash royale", 2254));
+        gameList.add(new GameListItem(R.drawable.clash, "Doom",845454));
+        gameList.add(new GameListItem(R.drawable.clash, "Age of Empire", 8545));
+        gameList.add(new GameListItem(R.drawable.clash, "Civilization VI", 9871));
+        gameList.add(new GameListItem(R.drawable.clash, "Crash Bandicoot", 65214));
+        gameList.add(new GameListItem(R.drawable.clash, "Warhammer", 987445));
+        gameList.add(new GameListItem(R.drawable.clash, "Terraria", 61147));
+        gameList.add(new GameListItem(R.drawable.clash, "Minecraft", 3321));
+        gameList.add(new GameListItem(R.drawable.clash, "Ark", 987));
+        gameList.add(new GameListItem(R.drawable.clash, "Red Faction", 551));
+        gameList.add(new GameListItem(R.drawable.clash, "Spore", 9495));
+        gameList.add(new GameListItem(R.drawable.clash, "Dofus", 0));
+        gameList.add(new GameListItem(R.drawable.clash, "Conan", 0));**/
         return gameList;
     }
 
@@ -94,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         message.show();
     }
 
-    public void ParseJSONProfile(String JSONProfil){
+    public void ParseJSONProfile(String JSONProfil) {
         try {
             // We are directly going to the object containing our player information.
             JSONObject player = new JSONObject(JSONProfil).getJSONObject("response").getJSONArray("players").getJSONObject(0);
@@ -111,16 +120,52 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void ParseJSONGames(String JSONGames){
+        try {
+
+            JSONArray jsonArrayGames = new JSONObject(JSONGames).getJSONObject("response").getJSONArray("games");
+            int totalPlayedTime = 0;
+            List<GameListItem> gamesList = new ArrayList<>();
+            GameListItem gameToAdd = new GameListItem();
+
+            for (int i=0; i < jsonArrayGames.length(); i++){
+
+                JSONObject jsonGame = jsonArrayGames.getJSONObject(i);
+                gameToAdd = new GameListItem();
+                gameToAdd.setGameSteamID(Integer.parseInt(jsonGame.getString("appid")));
+                gameToAdd.setGameName(jsonGame.getString("name"));
+                gameToAdd.setGameTimePlayed(Integer.parseInt(jsonGame.getString("playtime_forever")));
+                URL urlImage = new URL("http://media.steampowered.com/steamcommunity/public/images/apps/" + gameToAdd.getGameSteamID() + "/" + jsonGame.getString("img_logo_url") + ".jpg");
+                gameToAdd.setGameImage(urlImage);
+                gamesList.add(gameToAdd);
+
+                totalPlayedTime = totalPlayedTime + gameToAdd.getGameTimePlayed();
+            }
+            currentUser.setGameList(gamesList);
+            currentUser.setNbMinutesPlayed(totalPlayedTime);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
     }
 
     private void displayInformation(){
         // Now we can display the user's information.
         tvAccountName.setText(currentUser.getAccountName());
-        //Picasso.with(this).load(String.valueOf(currentUser.getAccountPicture())).into(ivProfile);
+        tvTotalTimePlayed.setText(String.valueOf(currentUser.getNbMinutesPlayed()));
+        tvNumberOfGames.setText(String.valueOf(currentUser.getGameList().size()) + " " + getResources().getString(R.string.games));
+
+        String convertedTime = Long.toString(TimeUnit.HOURS.convert(currentUser.getNbMinutesPlayed(), TimeUnit.MINUTES));
+        tvTotalTimePlayed.setText(convertedTime + " " + getResources().getString(R.string.hoursplayed));
+
         String urlImageToLoad = currentUser.getAccountPicture().toString();
         Picasso.with(this).load(urlImageToLoad).into(ivProfile);
 
+        //currentUser.setGameList(insertGameData());
 
         // We insert the data in our RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -128,44 +173,48 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         recyclerView.setAdapter(gameListAdapter);
 
     }
-    class RetrieveProfileInformation extends AsyncTask<URL, Void, String> {
+    class RetrieveProfileInformation extends AsyncTask<URL, Void, String[]> {
 
         protected void onPreExecute() {
             pbLoading.setVisibility(View.VISIBLE);
         }
 
-        protected String doInBackground(URL... urls) {
+        protected String[] doInBackground(URL... urls) {
             // Do some validation here
-            URL urlToCall = urls[0];
-            try {
-                HttpURLConnection urlConnection = (HttpURLConnection) urlToCall.openConnection();
+            String[] responses = new String[urls.length];
+            int i = 0;
+            for(URL currentURL : urls) {
                 try {
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    StringBuilder stringBuilder = new StringBuilder();
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line).append("\n");
+                    HttpURLConnection urlConnection = (HttpURLConnection) currentURL.openConnection();
+                    try {
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                        StringBuilder stringBuilder = new StringBuilder();
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            stringBuilder.append(line).append("\n");
+                        }
+                        bufferedReader.close();
+                        responses[i] = stringBuilder.toString();
+                        i++;
+                    } finally {
+                        urlConnection.disconnect();
                     }
-                    bufferedReader.close();
-                    return stringBuilder.toString();
-                }
-                finally{
-                    urlConnection.disconnect();
+                } catch (Exception e) {
+                    Log.e("ERROR", e.getMessage(), e);
+                    responses[i] = "Error";
                 }
             }
-            catch(Exception e) {
-                Log.e("ERROR", e.getMessage(), e);
-                return null;
-            }
+            return responses;
         }
 
-        protected void onPostExecute(String response) {
-            if(response == null) {
-                response = "THERE WAS AN ERROR";
-            }
+        protected void onPostExecute(String[] responses) {
+
+            // TODO : Generate errors to be sure that the application can run even without a JSON
             pbLoading.setVisibility(View.GONE);
-            Log.i("INFO", response);
-            ParseJSONProfile(response);
+            Log.i("INFO", responses[0]);
+            Log.i("INFO", responses[1]);
+            if(!responses[0].equals("Error")) ParseJSONProfile(responses[0]);
+            if(!responses[1].equals("Error")) ParseJSONGames(responses[1]);
             displayInformation();
         }
     }
