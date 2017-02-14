@@ -1,5 +1,7 @@
 package com.joffreylagut.mysteamgames.mysteamgames;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,9 +14,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.stetho.Stetho;
 import com.joffreylagut.mysteamgames.mysteamgames.customclass.GameListItem;
 import com.joffreylagut.mysteamgames.mysteamgames.customclass.User;
 import com.joffreylagut.mysteamgames.mysteamgames.data.AppPreferences;
+import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
+import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
 
@@ -37,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
     private User currentUser = new User();
     private Toast message = null;
 
+    private SQLiteDatabase mDb;
+
     // Declaration of all the view that we will interact with.
     private ImageView ivProfile;
     private ProgressBar pbLoading;
@@ -50,6 +57,10 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Stepho is providing us an access to the mobile database with Chrome.
+        // We initialize it here.
+        Stetho.initializeWithDefaults(this);
+
         // First, we are linking our views with the layout
         pbLoading = (ProgressBar)findViewById(R.id.pb_loading);
         tvAccountName = (TextView)findViewById(R.id.tv_account_name);
@@ -57,6 +68,13 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         ivProfile = (ImageView)findViewById(R.id.iv_profile);
         tvNumberOfGames = (TextView)findViewById(R.id.tv_nb_games);
         tvTotalTimePlayed = (TextView)findViewById(R.id.tv_total_time_played);
+
+        // We are declaring a new UserDbHelper to access to the db.
+        UserDbHelper userDbHelper = new UserDbHelper(this);
+        mDb = userDbHelper.getWritableDatabase();
+
+        // If the user have already used the app, the saved informations will be displayed.
+        refreshUserProfileInformationFromDb(AppPreferences.getUserSteamID());
 
         // Then, we are putting values inside our current user
         currentUser.setSteamID(AppPreferences.getUserSteamID());
@@ -72,25 +90,28 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
 
     }
 
+    private void refreshUserProfileInformationFromDb(String steamID){
+
+        UserDbHelper userDbHelper = new UserDbHelper(this);
+
+        Cursor result = userDbHelper.getUserBySteamID(mDb, steamID);
+        if(result.getCount() != 0){
+            currentUser.setAccountName(result.getString(
+                    result.getColumnIndex(UserContract.UserEntry.COLUMN_ACCOUNT_NAME)));
+            try {
+                currentUser.setAccountPicture(new URL(result.getString(
+                        result.getColumnIndex(UserContract.UserEntry.COLUMN_ACCOUNT_PICTURE))));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
     /**
      * Insert data sample in the gamelist.
      */
     private List<GameListItem> insertGameData() {
         List<GameListItem> gameList = new ArrayList<>();
-        /**gameList.add(new GameListItem(R.drawable.clash, "Clash of clans", 165));
-        gameList.add(new GameListItem(R.drawable.clash, "Clash royale", 2254));
-        gameList.add(new GameListItem(R.drawable.clash, "Doom",845454));
-        gameList.add(new GameListItem(R.drawable.clash, "Age of Empire", 8545));
-        gameList.add(new GameListItem(R.drawable.clash, "Civilization VI", 9871));
-        gameList.add(new GameListItem(R.drawable.clash, "Crash Bandicoot", 65214));
-        gameList.add(new GameListItem(R.drawable.clash, "Warhammer", 987445));
-        gameList.add(new GameListItem(R.drawable.clash, "Terraria", 61147));
-        gameList.add(new GameListItem(R.drawable.clash, "Minecraft", 3321));
-        gameList.add(new GameListItem(R.drawable.clash, "Ark", 987));
-        gameList.add(new GameListItem(R.drawable.clash, "Red Faction", 551));
-        gameList.add(new GameListItem(R.drawable.clash, "Spore", 9495));
-        gameList.add(new GameListItem(R.drawable.clash, "Dofus", 0));
-        gameList.add(new GameListItem(R.drawable.clash, "Conan", 0));**/
         return gameList;
     }
 
@@ -104,17 +125,28 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
     }
 
     public void ParseJSONProfile(String JSONProfil) {
+
         try {
             // We are directly going to the object containing our player information.
-            JSONObject player = new JSONObject(JSONProfil).getJSONObject("response").getJSONArray("players").getJSONObject(0);
+            JSONObject player = new JSONObject(JSONProfil)
+                    .getJSONObject("response")
+                    .getJSONArray("players").getJSONObject(0);
 
-            // We can now insert the information on our currentUser.
-            currentUser.setAccountName(player.getString("personaname"));
+            // We insert the information in our container.
+            String steamID = player.getString("steamid");
+            String accountName = player.getString("personaname");
+            String accountPicture = player.getString("avatarfull");
 
-            try {
-                currentUser.setAccountPicture(new URL(player.getString("avatarfull")));
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+            // We first check if the user already exist in db
+            UserDbHelper userDbHelper = new UserDbHelper(this);
+            Cursor userInDB = userDbHelper.getUserBySteamID(mDb, steamID);
+            int nbRow = userInDB.getCount();
+            if(userInDB.getCount() != 0){
+                // The user already exist, we have to update his informations.
+                userDbHelper.updateUserBySteamID(mDb, steamID,accountName, accountPicture);
+            }else{
+                // The user doesn't exist, we have to insert him in DB.
+                userDbHelper.addNewUser(mDb, steamID, accountName, accountPicture);
             }
 
         } catch (JSONException e) {
@@ -154,6 +186,8 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
     }
 
     private void displayInformation(){
+        refreshUserProfileInformationFromDb(currentUser.getSteamID());
+
         // Now we can display the user's information.
         tvAccountName.setText(currentUser.getAccountName());
         tvTotalTimePlayed.setText(String.valueOf(currentUser.getNbMinutesPlayed()));
@@ -202,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
                 } catch (Exception e) {
                     Log.e("ERROR", e.getMessage(), e);
                     responses[i] = "Error";
+                    i++;
                 }
             }
             return responses;
