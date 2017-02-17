@@ -1,6 +1,10 @@
 <resources>
-    <string name="app_name">My Steam games</string>
-    <string name="account_name">Account name</string>
+    <string name="app_name">Game time price</string>
+    <string name="default_account_name">Account name</string>
     <string name="games">games</string>
-    <string name="hoursplayed">hours played</string>
+    <string name="played">played</string>
+    <string name="default_number_of_games">123 games</string>
+    <string name="default_time_played">5298h played</string>
+    <string name="game_details_statistics_title">Statistics</string>
+    <string name="game_details_time_played">- Time played:</string>
 </resources>

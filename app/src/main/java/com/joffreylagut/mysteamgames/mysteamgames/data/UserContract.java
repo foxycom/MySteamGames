@@ -25,7 +25,31 @@ public final class UserContract {
 
     }
 
+    /**
+     * Class that specify the layout of Game table.
+     */
+    public static abstract class GameEntry implements BaseColumns{
+        // Table name
+        public static final String TABLE_NAME = "GAME";
+        // Columns
+        public static final String COLUMN_STEAM_ID = "steamID";
+        public static final String COLUMN_GAME_NAME = "gameName";
+        public static final String COLUMN_GAME_LOGO = "gameLogo";
+        public static final String COLUMN_GAME_ICON = "gameIcon";
+        public static final String COLUMN_MARKETPLACE = "marketplace";
+    }
 
-
-
+    /**
+     * Class that specify the layout of Owned table.
+     */
+    public static abstract class OwnedGamesEntry{
+        // Table name
+        public static final String TABLE_NAME = "OWNEDGAMES";
+        // Columns
+        public static final String COLUMN_USER_ID = "userID";
+        public static final String COLUMN_GAME_ID = "gameID";
+        public static final String COLUMN_TIME_PLAYED_FOREVER = "timePlayedForever";
+        public static final String COLUMN_TIME_PLAYED_2_WEEKS = "timePlayed2Weeks";
+        public static final String COLUMN_GAME_PRICE = "gamePrice";
+    }
 }

@@ -48,9 +48,29 @@ public class SteamAPICalls {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
         return finalUrl;
     }
 
+    public static String showMinutesInHoursOrMinutes(int totalMinutes){
+        int hours = totalMinutes / 60;
+        int minutes = totalMinutes % 60;
+        if(hours == 0){
+            return String.valueOf(minutes) +"mn";
+        }else{
+            return String.valueOf(hours) + "h";
+        }
+    }
+
+    public static URL createGameImageURL(String imageID, String appID){
+        String composedURL = "http://media.steampowered.com/steamcommunity/public/images/apps/" +
+                appID + "/" + imageID + ".jpg";
+        URL finalURL = null;
+        try {
+            finalURL = new URL(composedURL);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return finalURL;
+    }
 
 }

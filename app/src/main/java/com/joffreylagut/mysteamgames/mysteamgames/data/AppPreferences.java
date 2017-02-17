@@ -17,6 +17,16 @@ public class AppPreferences {
     private static String userSteamID = "76561198052789807";
     //private static String userSteamID = "76561198090115246";
 
+    private static String currency="€";
+
+    public static String getCurrency() {
+        return currency;
+    }
+
+    public static void setCurrency(String currency) {
+        AppPreferences.currency = currency;
+    }
+
     static public String getApiKey() {
         return apiKey;
     }

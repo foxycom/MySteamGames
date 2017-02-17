@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/iv_profile"
-            android:text="@string/account_name"
+            android:text="@string/default_account_name"
             android:textSize="30sp" />
 
         <TextView
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@id/iv_profile"
-            android:text="25 games"
+            android:text="@string/default_number_of_games"
             android:textSize="20sp" />
 
         <TextView
@@ -49,7 +49,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:paddingRight="8dp"
-            android:text="5877h played"
+            android:text="@string/default_time_played"
             android:textSize="20sp" />
     </RelativeLayout>
 
@@ -65,9 +65,10 @@
 
     <ProgressBar
         android:id="@+id/pb_loading"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="invisible" />
+        android:layout_marginLeft="8dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:visibility="visible" />
 </RelativeLayout>

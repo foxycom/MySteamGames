@@ -9,20 +9,32 @@ import java.util.List;
 
 public class User {
 
+    private int userID;
     private String steamID;
     private String accountName;
     private URL accountPicture;
-    private List<GameListItem> gameList;
+    private List<OwnedGame> ownedGames;
     private int nbMinutesPlayed;
 
-    public User(String steamID, String accountName, URL accountPicture, List<GameListItem> gameList, int nbMinutesPlayed) {
+    public User(int userID, String steamID, String accountName, URL accountPicture,
+                List<OwnedGame> ownedGames, int nbMinutesPlayed) {
+        this.userID = userID;
+        this.steamID = steamID;
         this.accountName = accountName;
         this.accountPicture = accountPicture;
-        this.gameList = gameList;
+        this.ownedGames = ownedGames;
         this.nbMinutesPlayed = nbMinutesPlayed;
     }
 
     public User() {
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 
     public String getSteamID() {
@@ -49,12 +61,12 @@ public class User {
         this.accountPicture = accountPicture;
     }
 
-    public List<GameListItem> getGameList() {
-        return gameList;
+    public List<OwnedGame> getOwnedGames() {
+        return ownedGames;
     }
 
-    public void setGameList(List<GameListItem> gameList) {
-        this.gameList = gameList;
+    public void setOwnedGames(List<OwnedGame> ownedGames) {
+        this.ownedGames = ownedGames;
     }
 
     public int getNbMinutesPlayed() {

@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
+import com.joffreylagut.mysteamgames.mysteamgames.customclass.Game;
 import com.joffreylagut.mysteamgames.mysteamgames.customclass.GameListItem;
+import com.joffreylagut.mysteamgames.mysteamgames.customclass.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.customclass.User;
 import com.joffreylagut.mysteamgames.mysteamgames.data.AppPreferences;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
@@ -34,7 +36,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+
+import static com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls.createGameImageURL;
 
 public class MainActivity extends AppCompatActivity implements GameListAdapter.ListItemClickListener {
 
@@ -76,9 +79,6 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         // If the user have already used the app, the saved informations will be displayed.
         refreshUserProfileInformationFromDb(AppPreferences.getUserSteamID());
 
-        // Then, we are putting values inside our current user
-        currentUser.setSteamID(AppPreferences.getUserSteamID());
-        currentUser.setGameList(insertGameData());
 
         // We are generating the URL and then ask the Steam API
         SteamAPICalls.getURLPlayerProfileInformation(AppPreferences.getUserSteamID());
@@ -92,10 +92,16 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
 
     private void refreshUserProfileInformationFromDb(String steamID){
 
+        currentUser.setSteamID(steamID);
+
         UserDbHelper userDbHelper = new UserDbHelper(this);
 
+        // We start by getting the user information in user Table.
         Cursor result = userDbHelper.getUserBySteamID(mDb, steamID);
         if(result.getCount() != 0){
+            currentUser.setUserID(Integer.parseInt(result.getString(
+                    result.getColumnIndex(UserContract.UserEntry._ID))
+            ));
             currentUser.setAccountName(result.getString(
                     result.getColumnIndex(UserContract.UserEntry.COLUMN_ACCOUNT_NAME)));
             try {
@@ -104,15 +110,85 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
+        }else{
+            currentUser.setUserID(0);
+            currentUser.setAccountName(null);
+            currentUser.setAccountPicture(null);
         }
 
-    }
-    /**
-     * Insert data sample in the gamelist.
-     */
-    private List<GameListItem> insertGameData() {
-        List<GameListItem> gameList = new ArrayList<>();
-        return gameList;
+        // Then, we get the list of owned games from OwnedGames table.
+        List<OwnedGame> userOwnedGames = new ArrayList<>();
+        OwnedGame currentOwnedGame;
+        Game currentGame;
+        Cursor gameRow;
+        currentUser.setNbMinutesPlayed(0);
+
+
+        result = userDbHelper.getOwnedGamesByUserID(mDb, String.valueOf(currentUser.getUserID()));
+        if(result.getCount() !=0){
+            result.moveToFirst();
+            while(result.isAfterLast() == false){
+                currentOwnedGame = new OwnedGame();
+                currentGame = new Game();
+                currentGame.setGameID(result.getInt(result.getColumnIndex(
+                        UserContract.OwnedGamesEntry.COLUMN_GAME_ID)));
+                // We have to retriev all the game information in DB.
+                gameRow = userDbHelper.getGameBy_ID(mDb, String.valueOf(currentGame.getGameID()));
+                if(gameRow.getCount() != 0){
+                    gameRow.moveToFirst();
+                    currentGame.setGameName(gameRow.getString(gameRow.getColumnIndex(
+                            UserContract.GameEntry.COLUMN_GAME_NAME)));
+                    currentGame.setSteamID(Long.valueOf(gameRow.getString(gameRow.getColumnIndex(
+                            UserContract.GameEntry.COLUMN_STEAM_ID))));
+                    currentGame.setMarketplace(gameRow.getString(gameRow.getColumnIndex(
+                            UserContract.GameEntry.COLUMN_MARKETPLACE)));
+
+                    try {
+                        currentGame.setGameLogo(new URL(
+                                gameRow.getString(gameRow.getColumnIndex(
+                                        UserContract.GameEntry.COLUMN_GAME_LOGO))));
+                        currentGame.setGameIcon(new URL(
+                                gameRow.getString(gameRow.getColumnIndex(
+                                        UserContract.GameEntry.COLUMN_GAME_ICON))));
+
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                currentOwnedGame.setGame(currentGame);
+                currentOwnedGame.setGamePrice(result.getDouble(result.getColumnIndex(
+                        UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE)));
+                currentOwnedGame.setTimePlayedForever(result.getInt(result.getColumnIndex(
+                        UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_FOREVER)));
+                currentOwnedGame.setTimePlayed2Weeks(result.getInt(result.getColumnIndex(
+                        UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_2_WEEKS)));
+                userOwnedGames.add(currentOwnedGame);
+
+                currentUser.setNbMinutesPlayed(currentUser.getNbMinutesPlayed() + currentOwnedGame.getTimePlayedForever());
+                result.moveToNext();
+            }
+        }
+        currentUser.setOwnedGames(userOwnedGames);
+        // Now we can display the user's information.
+        if(currentUser.getAccountName() != null){
+            tvAccountName.setText(currentUser.getAccountName());
+        }
+        tvTotalTimePlayed.setText(String.valueOf(currentUser.getNbMinutesPlayed()));
+        tvNumberOfGames.setText(String.valueOf(currentUser.getOwnedGames().size()) + " " + getResources().getString(R.string.games));
+
+        tvTotalTimePlayed.setText(SteamAPICalls.showMinutesInHoursOrMinutes(currentUser.getNbMinutesPlayed()) + " " + getResources().getString(R.string.played));
+
+        if(currentUser.getAccountPicture() != null){
+            String urlImageToLoad = currentUser.getAccountPicture().toString();
+            Picasso.with(this).load(urlImageToLoad).into(ivProfile);
+        }
+        // We insert the data in our RecyclerView
+        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        GameListAdapter gameListAdapter = new GameListAdapter(
+                createGameListItemList(currentUser.getOwnedGames()), this);
+        recyclerView.setAdapter(gameListAdapter);
     }
 
     @Override
@@ -156,57 +232,92 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
 
     public void ParseJSONGames(String JSONGames){
         try {
-
             JSONArray jsonArrayGames = new JSONObject(JSONGames).getJSONObject("response").getJSONArray("games");
-            int totalPlayedTime = 0;
-            List<GameListItem> gamesList = new ArrayList<>();
-            GameListItem gameToAdd = new GameListItem();
-
+            Cursor user;
+            int jsonArrayLenght = jsonArrayGames.length();
             for (int i=0; i < jsonArrayGames.length(); i++){
 
+                // We retrieve and store all of the information in variables.
                 JSONObject jsonGame = jsonArrayGames.getJSONObject(i);
-                gameToAdd = new GameListItem();
-                gameToAdd.setGameSteamID(Integer.parseInt(jsonGame.getString("appid")));
-                gameToAdd.setGameName(jsonGame.getString("name"));
-                gameToAdd.setGameTimePlayed(Integer.parseInt(jsonGame.getString("playtime_forever")));
-                URL urlImage = new URL("http://media.steampowered.com/steamcommunity/public/images/apps/" + gameToAdd.getGameSteamID() + "/" + jsonGame.getString("img_logo_url") + ".jpg");
-                gameToAdd.setGameImage(urlImage);
-                gamesList.add(gameToAdd);
 
-                totalPlayedTime = totalPlayedTime + gameToAdd.getGameTimePlayed();
+                String appID = jsonGame.getString("appid");
+                String name = jsonGame.getString("name");
+                String playtime_2weeks = "";
+                if(jsonGame.has("playtime_2weeks")) playtime_2weeks = jsonGame.getString("playtime_2weeks");
+                String playtime_forever = jsonGame.getString("playtime_forever");
+                String img_icon_url = jsonGame.getString("img_icon_url");
+                img_icon_url = createGameImageURL(img_icon_url, appID).toString();
+                String img_logo_url = jsonGame.getString("img_logo_url");
+                img_logo_url = SteamAPICalls.createGameImageURL(img_logo_url, appID).toString();
+
+
+
+                UserDbHelper userDbHelper = new UserDbHelper(this);
+
+                // We retrieve the UserID in DB.
+                user = userDbHelper.getUserBySteamID(mDb, currentUser.getSteamID());
+                int idUser = 0;
+                if(user.getCount() != 0){
+                    idUser = user.getInt(user.getColumnIndex(UserContract.UserEntry._ID));
+                }
+
+                // First, we check if the game already exist in db.
+                Cursor cursor = userDbHelper.getGameBySteamID(mDb, appID);
+                if(cursor.getCount() != 0){
+                    // The game already exist, we have to update it in db.
+                    userDbHelper.updateGameBySteamID(mDb, appID, name, img_logo_url,
+                            img_icon_url, "Steam");
+                }else{
+                    // The game doesn't exist, we have to add it in db.
+                    userDbHelper.addNewGame(mDb, appID, name, img_logo_url,
+                            img_icon_url, "Steam");
+                }
+
+                // Now that the game is in DB, we have to check if the game is already owned by
+                // the user in DB.
+                // We retrieve the gameUD in DB.
+                cursor = userDbHelper.getGameBySteamID(mDb, appID);
+                String gameID = "0";
+                if(cursor.getCount() != 0){
+                    gameID = cursor.getString(cursor.getColumnIndex(UserContract.GameEntry._ID));
+                }
+
+                cursor = userDbHelper.getOwnedGame(mDb, String.valueOf(idUser), gameID);
+                if(cursor.getCount() != 0){
+                    // The game is already owned by the user, we have to update it.
+                    userDbHelper.updateOwnedGame(mDb, String.valueOf(idUser), gameID,
+                            playtime_forever, playtime_2weeks,"");
+                }else{
+                    // The game isn't already owned in db, we add it.
+                    userDbHelper.addNewOwnedGame(mDb, String.valueOf(idUser), gameID,
+                            playtime_forever, playtime_2weeks,"");
+                }
             }
-            currentUser.setGameList(gamesList);
-            currentUser.setNbMinutesPlayed(totalPlayedTime);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    private void displayInformation(){
-        refreshUserProfileInformationFromDb(currentUser.getSteamID());
+    public List<GameListItem> createGameListItemList(List<OwnedGame> ownedGames){
+        List<GameListItem> gameListItems = new ArrayList<>();
+        GameListItem item;
 
-        // Now we can display the user's information.
-        tvAccountName.setText(currentUser.getAccountName());
-        tvTotalTimePlayed.setText(String.valueOf(currentUser.getNbMinutesPlayed()));
-        tvNumberOfGames.setText(String.valueOf(currentUser.getGameList().size()) + " " + getResources().getString(R.string.games));
+        for (OwnedGame ownedGame : ownedGames){
+            item = new GameListItem();
+            item.setGameTimePlayed(ownedGame.getTimePlayedForever());
+            item.setGameImage(ownedGame.getGame().getGameLogo());
+            item.setGameName(ownedGame.getGame().getGameName());
+            item.setGamePrice(ownedGame.getGamePrice());
+            item.setGameID(ownedGame.getGame().getGameID());
+            item.setUserID(currentUser.getUserID());
+            gameListItems.add(item);
+        }
 
-        String convertedTime = Long.toString(TimeUnit.HOURS.convert(currentUser.getNbMinutesPlayed(), TimeUnit.MINUTES));
-        tvTotalTimePlayed.setText(convertedTime + " " + getResources().getString(R.string.hoursplayed));
-
-        String urlImageToLoad = currentUser.getAccountPicture().toString();
-        Picasso.with(this).load(urlImageToLoad).into(ivProfile);
-
-        //currentUser.setGameList(insertGameData());
-
-        // We insert the data in our RecyclerView
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        GameListAdapter gameListAdapter = new GameListAdapter(currentUser.getGameList(), this);
-        recyclerView.setAdapter(gameListAdapter);
-
+        return gameListItems;
     }
+
+    // TODO Change the AsyncTask into a Loader
     class RetrieveProfileInformation extends AsyncTask<URL, Void, String[]> {
 
         protected void onPreExecute() {
@@ -248,9 +359,9 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
             pbLoading.setVisibility(View.GONE);
             Log.i("INFO", responses[0]);
             Log.i("INFO", responses[1]);
-            if(!responses[0].equals("Error")) ParseJSONProfile(responses[0]);
-            if(!responses[1].equals("Error")) ParseJSONGames(responses[1]);
-            displayInformation();
+            if(!responses[0].equals("Error with userJSON")) ParseJSONProfile(responses[0]);
+            if(!responses[1].equals("Error with gamesJSON")) ParseJSONGames(responses[1]);
+            refreshUserProfileInformationFromDb(currentUser.getSteamID());
         }
     }
 }
