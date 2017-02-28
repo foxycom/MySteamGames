@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by Joffrey on 14/02/2017.
  */
@@ -17,15 +19,25 @@ public class UserDbHelper extends SQLiteOpenHelper {
      * This var must be incremented everytime you change the database schema.
      */
     public static final int DATABASE_VERSION = 5;
-
     /**
      * Name of the database.
      */
     public static final String DATABASE_NAME = "myGameTimePrice.db";
-
+    private static UserDbHelper sInstance;
 
     public UserDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static synchronized UserDbHelper getInstance(Context context) {
+
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        // See this article for more information: http://bit.ly/6LRzfx
+        if (sInstance == null) {
+            sInstance = new UserDbHelper(context.getApplicationContext());
+        }
+        return sInstance;
     }
 
     /**
@@ -39,6 +51,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
         // We create all of the tables
         createUserTable(db);
         createGameTable(db);
+        createBundleTable(db);
         createOwnedGamesTable(db);
     }
 
@@ -65,14 +78,12 @@ public class UserDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // We alter all of the table
+
         alterUserTable(db);
         alterGameTable(db);
+        alterBundleTable(db);
         alterOwnedGamesTable(db);
 
-        dropOwnedGamesTable(db);
-        dropUserTable(db);
-        dropGameTable(db);
-        onCreate(db);
     }
 
     /********************************************************************************************
@@ -226,15 +237,15 @@ public class UserDbHelper extends SQLiteOpenHelper {
 
         Cursor oldUser = getUserBySteamID(db, steamID);
         if(oldUser != null){
-        int _ID = oldUser.getInt(oldUser.getColumnIndex(UserContract.UserEntry._ID));
+            int _ID = oldUser.getInt(oldUser.getColumnIndex(UserContract.UserEntry._ID));
 
-        ContentValues userUpdated = new ContentValues();
-        userUpdated.put(UserContract.UserEntry.COLUMN_STEAM_ID, steamID);
-        userUpdated.put(UserContract.UserEntry.COLUMN_ACCOUNT_NAME, accountName);
-        userUpdated.put(UserContract.UserEntry.COLUMN_ACCOUNT_PICTURE, accountPicture);
+            ContentValues userUpdated = new ContentValues();
+            userUpdated.put(UserContract.UserEntry.COLUMN_STEAM_ID, steamID);
+            userUpdated.put(UserContract.UserEntry.COLUMN_ACCOUNT_NAME, accountName);
+            userUpdated.put(UserContract.UserEntry.COLUMN_ACCOUNT_PICTURE, accountPicture);
 
-        return db.update(UserContract.UserEntry.TABLE_NAME, userUpdated,
-                UserContract.UserEntry._ID + "=" + _ID, null);
+            return db.update(UserContract.UserEntry.TABLE_NAME, userUpdated,
+                    UserContract.UserEntry._ID + "=" + _ID, null);
         }else{
             return 0;
         }
@@ -398,6 +409,31 @@ public class UserDbHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Update the game in the database based on his ID.
+     * If a value doesn't have to be update, put null in parameter.
+     * @param db Database that we are working on.
+     * @param steamID Column of the Game table.
+     * @param gameName Column of the Game table.
+     * @param gameLogo URL, column of the Game table.
+     * @param gameIcon URL, column of the Game table.
+     * @param marketplace Column of the Game table.
+     * @return The number of rows updated.
+     */
+    public long updateGameByID(SQLiteDatabase db, String _ID, String steamID, String gameName, String gameLogo,
+                               String gameIcon, String marketplace) {
+
+        ContentValues game = new ContentValues();
+        if (steamID != null) game.put(UserContract.GameEntry.COLUMN_STEAM_ID, steamID);
+        if (gameName != null) game.put(UserContract.GameEntry.COLUMN_GAME_NAME, gameName);
+        if (gameLogo != null) game.put(UserContract.GameEntry.COLUMN_GAME_LOGO, gameLogo);
+        if (gameIcon != null) game.put(UserContract.GameEntry.COLUMN_GAME_ICON, gameIcon);
+        if (marketplace != null) game.put(UserContract.GameEntry.COLUMN_MARKETPLACE, marketplace);
+
+        return db.update(UserContract.GameEntry.TABLE_NAME, game,
+                UserContract.GameEntry._ID + "=" + _ID, null);
+    }
+
+    /**
      * Update the game in the database based on his SteamID
      * @param db Database that we are working on.
      * @param steamID Column of the Game table.
@@ -455,14 +491,17 @@ public class UserDbHelper extends SQLiteOpenHelper {
                         UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_FOREVER + " INTEGER, " +
                         UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_2_WEEKS + " INTEGER, " +
                         UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE + " DOUBLE, " +
-                        UserContract.GameEntry.COLUMN_MARKETPLACE + " VARCHAR(50), " +
+                        UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID + " INTEGER, " +
                         "PRIMARY KEY(" + UserContract.OwnedGamesEntry.COLUMN_USER_ID + ", " +
                         UserContract.OwnedGamesEntry.COLUMN_GAME_ID + "), FOREIGN KEY (" +
                         UserContract.OwnedGamesEntry.COLUMN_USER_ID +") REFERENCES " +
                         UserContract.UserEntry.TABLE_NAME + "(" + UserContract.UserEntry._ID +
                         "), FOREIGN KEY (" + UserContract.OwnedGamesEntry.COLUMN_GAME_ID +
                         ") REFERENCES " +
-                        UserContract.GameEntry.TABLE_NAME +"(" + UserContract.GameEntry._ID +
+                        UserContract.GameEntry.TABLE_NAME + "(" + UserContract.GameEntry._ID + ")," +
+                        "FOREIGN KEY (" +
+                        UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID + ") REFERENCES " +
+                        UserContract.BundleEntry.TABLE_NAME + "(" + UserContract.BundleEntry._ID +
                         "));";
         db.execSQL(SQL_CREATE_OWNEDGAMES_TABLE);
     }
@@ -472,10 +511,19 @@ public class UserDbHelper extends SQLiteOpenHelper {
      * @param db Database that we want to alter OwnedGames table inside.
      */
     public void alterOwnedGamesTable(SQLiteDatabase db){
-        final String SQL_ALTER_OWNEDGAMES_TABLE = "";
-        if(SQL_ALTER_OWNEDGAMES_TABLE.length()>0){
-            db.execSQL(SQL_ALTER_OWNEDGAMES_TABLE);
-        }
+        /**final String SQL_ALTER_OWNEDGAMES_TABLE = "";
+         if(SQL_ALTER_OWNEDGAMES_TABLE.length()>0){
+         db.execSQL(SQL_ALTER_OWNEDGAMES_TABLE);
+         }**/
+        /**String SQL_ALTER_OWNEDGAMES_TABLE = "UPDATE OWNEDGAMES SET gamePrice = '-1' WHERE gamePrice = '';";
+         db.execSQL(SQL_ALTER_OWNEDGAMES_TABLE);
+         SQL_ALTER_OWNEDGAMES_TABLE = "ALTER TABLE OWNEDGAMES RENAME TO OWNEDGAMES_Temp";
+         db.execSQL(SQL_ALTER_OWNEDGAMES_TABLE);
+         createOwnedGamesTable(db);
+         SQL_ALTER_OWNEDGAMES_TABLE = "INSERT INTO OWNEDGAMES SELECT userID, gameID, timePlayedForever, timePlayed2Weeks, gamePrice FROM OWNEDGAMES_Temp;";
+         db.execSQL(SQL_ALTER_OWNEDGAMES_TABLE);
+         SQL_ALTER_OWNEDGAMES_TABLE = "DROP Table OWNEDGAMES_Temp";
+         db.execSQL(SQL_ALTER_OWNEDGAMES_TABLE);**/
     }
 
     /**
@@ -544,6 +592,34 @@ public class UserDbHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Function returning rows with the bundleID in parameter.
+     * @param db Database to query.
+     * @param bundleID user that we want to find.
+     * @return Cursor containing the rows matching the request.
+     */
+    public Cursor getOwnedGamesByBundleID(SQLiteDatabase db, String bundleID) {
+        String where = UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID + " = " + bundleID;
+        String whereArgs[] = null;
+        String groupBy = null;
+        String having = null;
+        String order = null;
+        String limit = null;
+
+        Cursor cursor = db.query(UserContract.OwnedGamesEntry.TABLE_NAME,
+                null,
+                where,
+                whereArgs,
+                groupBy,
+                having,
+                order,
+                limit);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
+    /**
      * Function returning row with the Game steamID in parameter.
      * @param db Database to query.
      * @param gameID That we want to find.
@@ -589,8 +665,12 @@ public class UserDbHelper extends SQLiteOpenHelper {
         ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_USER_ID, userID);
         ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_GAME_ID, gameID);
         ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_FOREVER, timePlayedForever);
+        if (gamePrice != null) {
+            ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE, gamePrice);
+        } else {
+            ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE, "-1.00");
+        }
         ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_2_WEEKS, timePlayed2Weeks);
-        ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE, gamePrice);
         return db.insert(UserContract.OwnedGamesEntry.TABLE_NAME, null, ownedGame);
     }
 
@@ -605,21 +685,28 @@ public class UserDbHelper extends SQLiteOpenHelper {
      * @return The number of rows updated.
      */
     public long updateOwnedGame(SQLiteDatabase db, String userID, String gameID,
-                                    String timePlayedForever, String timePlayed2Weeks,
-                                    String gamePrice){
+                                String timePlayedForever, String timePlayed2Weeks,
+                                String gamePrice, String bundleID) {
 
         ContentValues ownedGame = new ContentValues();
-        ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_USER_ID, userID);
-        ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_GAME_ID, gameID);
-        ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_FOREVER, timePlayedForever);
-        ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_2_WEEKS, timePlayed2Weeks);
-        if(!gamePrice.equals("")){
-        ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE, gamePrice);
+        if (userID != null) ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_USER_ID, userID);
+        if (gameID != null) ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_GAME_ID, gameID);
+        if (timePlayedForever != null)
+            ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_FOREVER, timePlayedForever);
+        if (timePlayed2Weeks != null)
+            ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_2_WEEKS, timePlayed2Weeks);
+        if (gamePrice != null)
+            ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE, gamePrice);
+        if (bundleID != null) {
+            if (bundleID.equals("-1")) {
+                bundleID = null;
+                ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID, bundleID);
+            }
+            ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID, bundleID);
         }
-
-            return db.update(UserContract.OwnedGamesEntry.TABLE_NAME, ownedGame,
-                    UserContract.OwnedGamesEntry.COLUMN_USER_ID + "=" + userID
-                    + " AND "+ UserContract.OwnedGamesEntry.COLUMN_GAME_ID + "=" + gameID, null);
+        return db.update(UserContract.OwnedGamesEntry.TABLE_NAME, ownedGame,
+                UserContract.OwnedGamesEntry.COLUMN_USER_ID + "=" + userID
+                        + " AND " + UserContract.OwnedGamesEntry.COLUMN_GAME_ID + "=" + gameID, null);
     }
 
     /**
@@ -631,16 +718,56 @@ public class UserDbHelper extends SQLiteOpenHelper {
      * @return The number of rows updated.
      */
     public long updateOwnedGamePrice(SQLiteDatabase db, String userID, String gameID,
-                                String gamePrice){
+                                     String gamePrice) {
 
         ContentValues ownedGame = new ContentValues();
         ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_USER_ID, userID);
         ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_GAME_ID, gameID);
-        ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE, gamePrice);
-
+        if (gamePrice != null) {
+            ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE, gamePrice);
+        }
         return db.update(UserContract.OwnedGamesEntry.TABLE_NAME, ownedGame,
                 UserContract.OwnedGamesEntry.COLUMN_USER_ID + "=" + userID
                         + " AND "+ UserContract.OwnedGamesEntry.COLUMN_GAME_ID + "=" + gameID, null);
+    }
+
+    /**
+     * Function used to update the price of the games included in a Bundle.
+     * @param db database to work on
+     * @param bundleName Name of the bundle.
+     * @return Number of game prices updated.
+     */
+    public long updateOnwedGamePriceFromBundle(SQLiteDatabase db, String bundleID) {
+        // First, we need to get the bundle price
+        double bundlePrice = 0;
+        Cursor cursor = this.getBundleByID(db, bundleID);
+        if (cursor.getCount() != 0) {
+            cursor.moveToFirst();
+            bundlePrice = cursor.getDouble(
+                    cursor.getColumnIndex(UserContract.BundleEntry.COLUMN_BUNDLE_PRICE));
+        }
+
+        // Now that we have all the information, we have to find the number of game that are currently
+        // in the bundle
+        cursor = this.getOwnedGamesByBundleID(db, String.valueOf(bundleID));
+
+        if (cursor.getCount() != 0) {
+            // We divide the bundle price by the number of games inside
+            double nbGames = Double.valueOf(cursor.getCount());
+            double pricePerGame = bundlePrice / nbGames;
+            DecimalFormat df = new DecimalFormat("#.##");
+            pricePerGame = Double.valueOf(df.format(pricePerGame));
+            while (cursor.isAfterLast() == false) {
+
+                // We update each ownedgame with the price calculated
+                this.updateOwnedGamePrice(db,
+                        cursor.getString(cursor.getColumnIndex(UserContract.OwnedGamesEntry.COLUMN_USER_ID)),
+                        cursor.getString(cursor.getColumnIndex(UserContract.OwnedGamesEntry.COLUMN_GAME_ID)),
+                        String.valueOf(pricePerGame));
+                cursor.moveToNext();
+            }
+        }
+        return cursor.getCount();
     }
 
     /**
@@ -655,5 +782,224 @@ public class UserDbHelper extends SQLiteOpenHelper {
                 UserContract.OwnedGamesEntry.COLUMN_USER_ID + "=" + userID
                         + " AND "+ UserContract.OwnedGamesEntry.COLUMN_GAME_ID + "=" + gameID
                 , null) > 0;
+    }
+
+    /********************************************************************************************
+     * BUNDLE TABLE
+     ********************************************************************************************/
+
+    /**
+     * Function that create the Bundle table in the db in parameter.
+     *
+     * @param db Database that we want to create OwnedGames table inside.
+     */
+    public void createBundleTable(SQLiteDatabase db) {
+        final String SQL_CREATE_BUNDLE_TABLE =
+                "CREATE TABLE " + UserContract.BundleEntry.TABLE_NAME + " (" +
+                        UserContract.UserEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        UserContract.BundleEntry.COLUMN_BUNDLE_NAME + " VARCHAR(64)," +
+                        UserContract.BundleEntry.COLUMN_BUNDLE_PRICE + " DOUBLE " +
+                        ");";
+        db.execSQL(SQL_CREATE_BUNDLE_TABLE);
+    }
+
+    /**
+     * Function that alter the Bundle table in the db in parameter.
+     *
+     * @param db Database that we want to alter OwnedGames table inside.
+     */
+    public void alterBundleTable(SQLiteDatabase db) {
+        final String SQL_ALTER_BUNDLE_TABLE = "";
+        if (SQL_ALTER_BUNDLE_TABLE.length() > 0) {
+            db.execSQL(SQL_ALTER_BUNDLE_TABLE);
+        }
+    }
+
+    /**
+     * Function that drop the Bundle table in the database in parameter.
+     *
+     * @param db Database that we want to drop OwnedGames table inside.
+     */
+    public void dropBundleTable(SQLiteDatabase db) {
+        final String SQL_DELETE_BUNDLE_TABLE =
+                "DROP TABLE IF EXISTS " + UserContract.BundleEntry.TABLE_NAME;
+        db.execSQL(SQL_DELETE_BUNDLE_TABLE);
+    }
+
+    /**
+     * Function returning all of the rows in Bundle table.
+     *
+     * @param db Database to look into.
+     * @return cursor Cursor containing all of the rows.
+     */
+    public Cursor getAllBundles(SQLiteDatabase db) {
+        String where = null;
+        String whereArgs[] = null;
+        String groupBy = null;
+        String having = null;
+        String order = null;
+        String limit = null;
+
+        Cursor cursor = db.query(UserContract.BundleEntry.TABLE_NAME,
+                null,
+                where,
+                whereArgs,
+                groupBy,
+                having,
+                order,
+                limit);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
+    /**
+     * Function returning row with the bundle ID in parameter.
+     *
+     * @param db       Database to query.
+     * @param bundleID That we want to find.
+     * @return Cursor containing the rows matching the request.
+     */
+    public Cursor getBundleByID(SQLiteDatabase db, String bundleID) {
+        String where = UserContract.BundleEntry._ID + " = " + bundleID;
+        String whereArgs[] = null;
+        String groupBy = null;
+        String having = null;
+        String order = null;
+        String limit = null;
+
+        Cursor cursor = db.query(UserContract.BundleEntry.TABLE_NAME,
+                null,
+                where,
+                whereArgs,
+                groupBy,
+                having,
+                order,
+                limit);
+        if (!(cursor.moveToFirst()) || cursor.getCount() == 0) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
+    /**
+     * Function returning row with the bundle name and the userID in parameter.
+     *
+     * @param db         Database to query.
+     * @param bundleName That we want to find.
+     * @param userID     ID of the user who own the bundle
+     * @return Cursor containing the rows matching the request.
+     */
+    public Cursor getBundleByName(SQLiteDatabase db, String bundleName, String userID) {
+        String where = UserContract.BundleEntry.COLUMN_BUNDLE_NAME + " = '" + bundleName
+                + "' AND " + UserContract.OwnedGamesEntry.COLUMN_USER_ID + " = " + userID +
+                " AND " + UserContract.OwnedGamesEntry.TABLE_NAME + "." + UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID + " = " +
+                UserContract.BundleEntry.TABLE_NAME + "." + UserContract.BundleEntry._ID;
+        String whereArgs[] = null;
+        String groupBy = null;
+        String having = null;
+        String order = null;
+        String limit = null;
+
+        Cursor cursor = db.query(UserContract.BundleEntry.TABLE_NAME + "," + UserContract.OwnedGamesEntry.TABLE_NAME,
+                null,
+                where,
+                whereArgs,
+                groupBy,
+                having,
+                order,
+                limit);
+        if (!(cursor.moveToFirst()) || cursor.getCount() == 0) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
+    /**
+     * Function returning the list of bundles owned by the user.
+     *
+     * @param db     Database to query.
+     * @param userID ID of the user who own the bundle
+     * @return Cursor containing the rows matching the request.
+     */
+    public Cursor getUserBundles(SQLiteDatabase db, String userID) {
+        String where = UserContract.OwnedGamesEntry.COLUMN_USER_ID + " = " + userID +
+                " AND " + UserContract.OwnedGamesEntry.TABLE_NAME + "." + UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID + " = " +
+                UserContract.BundleEntry.TABLE_NAME + "." + UserContract.BundleEntry._ID;
+        String columns[] = {
+                UserContract.BundleEntry._ID,
+                UserContract.BundleEntry.COLUMN_BUNDLE_NAME,
+                UserContract.BundleEntry.COLUMN_BUNDLE_PRICE,
+        };
+        String whereArgs[] = null;
+        String groupBy = null;
+        String having = null;
+        String order = null;
+        String limit = null;
+
+        Cursor cursor = db.query(true,
+                UserContract.BundleEntry.TABLE_NAME + "," + UserContract.OwnedGamesEntry.TABLE_NAME,
+                columns,
+                where,
+                whereArgs,
+                groupBy,
+                having,
+                order,
+                limit);
+        /**String rawQuery = "SELECT * FROM " + UserContract.BundleEntry.TABLE_NAME +", "+ UserContract.OwnedGamesEntry.TABLE_NAME +
+         " WHERE " + UserContract.OwnedGamesEntry.COLUMN_USER_ID + " = " + userID +
+         " AND " + UserContract.OwnedGamesEntry.TABLE_NAME +"." + UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID + " = " +
+         UserContract.BundleEntry.TABLE_NAME +"."+ UserContract.BundleEntry._ID;
+         Cursor cursor = db.rawQuery(rawQuery, null);**/
+
+        if (!(cursor.moveToFirst()) || cursor.getCount() == 0) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
+    /**
+     * Add a new bundle in Bundle table.
+     *
+     * @param db          Database that we are working on.
+     * @param bundleName  Column of the Bundle table.
+     * @param bundlePrice Column of the Bundle table.
+     * @return Number of line inserted in database.
+     */
+    public long addNewBundle(SQLiteDatabase db, String bundleName, String bundlePrice) {
+        ContentValues bundle = new ContentValues();
+        bundle.put(UserContract.BundleEntry.COLUMN_BUNDLE_NAME, bundleName);
+        bundle.put(UserContract.BundleEntry.COLUMN_BUNDLE_PRICE, bundlePrice);
+        return db.insert(UserContract.BundleEntry.TABLE_NAME, null, bundle);
+    }
+
+    /**
+     * Update the bundle based on his Bundle ID.
+     *
+     * @param db          Database that we are working on.
+     * @param bundleName  Column of the Bundle table.
+     * @param bundlePrice Column of the Bundle table.
+     * @return Number of line inserted in database.
+     */
+    public long updateBundle(SQLiteDatabase db, String bundleID, String bundleName, String bundlePrice) {
+        ContentValues bundle = new ContentValues();
+        if (bundleName != null) bundle.put(UserContract.BundleEntry.COLUMN_BUNDLE_NAME, bundleName);
+        if (bundlePrice != null)
+            bundle.put(UserContract.BundleEntry.COLUMN_BUNDLE_PRICE, bundlePrice);
+        return db.update(UserContract.BundleEntry.TABLE_NAME, bundle,
+                UserContract.BundleEntry._ID + "=" + bundleID, null);
+    }
+
+    /**
+     * Remove a bundle from Bundle Table.
+     *
+     * @param db       Database that we are working on.
+     * @param bundleID Column of the bundle table.
+     * @return True if the user is correctly removed.
+     */
+    public boolean removeBundle(SQLiteDatabase db, String bundleID) {
+        return db.delete(UserContract.BundleEntry.TABLE_NAME,
+                UserContract.BundleEntry._ID + "=" + bundleID, null) > 0;
     }
 }
