@@ -10,13 +10,13 @@ import java.util.List;
 public class User {
 
     private int userID;
-    private String steamID;
+    private long steamID;
     private String accountName;
     private URL accountPicture;
     private List<OwnedGame> ownedGames;
     private int nbMinutesPlayed;
 
-    public User(int userID, String steamID, String accountName, URL accountPicture,
+    public User(int userID, long steamID, String accountName, URL accountPicture,
                 List<OwnedGame> ownedGames, int nbMinutesPlayed) {
         this.userID = userID;
         this.steamID = steamID;
@@ -37,11 +37,11 @@ public class User {
         this.userID = userID;
     }
 
-    public String getSteamID() {
+    public long getSteamID() {
         return steamID;
     }
 
-    public void setSteamID(String steamID) {
+    public void setSteamID(long steamID) {
         this.steamID = steamID;
     }
 
