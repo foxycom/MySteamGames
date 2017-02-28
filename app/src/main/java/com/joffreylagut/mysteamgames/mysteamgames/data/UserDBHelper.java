@@ -5,8 +5,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import com.joffreylagut.mysteamgames.mysteamgames.customclass.User;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DecimalFormat;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by Joffrey on 14/02/2017.
@@ -89,7 +96,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
     /********************************************************************************************
      * USER TABLE
      ********************************************************************************************/
-
+    // TODO 4 Refactor this code to send user objects
     /**
      * Function that create the User table in the db in parameter.
      * @param db Database that we want to create User table inside.
@@ -131,13 +138,13 @@ public class UserDbHelper extends SQLiteOpenHelper {
      * @param db Database to look into.
      * @return cursor Cursor containing all of the rows.
      */
-    public Cursor getAllUsers(SQLiteDatabase db){
-        String where = null;
-        String whereArgs[] = null;
-        String groupBy = null;
-        String having = null;
-        String order = null;
-        String limit = null;
+    private Cursor getUsers(SQLiteDatabase db,
+                            String where,
+                            String whereArgs[],
+                            String groupBy,
+                            String having,
+                            String order,
+                            String limit) {
 
         Cursor cursor = db.query(UserContract.UserEntry.TABLE_NAME,
                 null,
@@ -151,6 +158,15 @@ public class UserDbHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
         }
         return cursor;
+    }
+
+    /**
+     * Function returning all of the rows in User table.
+     * @param db Database to look into.
+     * @return cursor Cursor containing all of the rows.
+     */
+    public Cursor getAllUsers(SQLiteDatabase db) {
+        return getUsers(db, null, null, null, null, null, null);
     }
 
     /**
@@ -187,26 +203,58 @@ public class UserDbHelper extends SQLiteOpenHelper {
      * @param steamID That we want to find.
      * @return Cursor containing the rows matching the request.
      */
-    public Cursor getUserBySteamID(SQLiteDatabase db, String steamID) {
+    public User getUserBySteamID(SQLiteDatabase db, long steamID) {
+        // We have to do the request.
         String where = UserContract.UserEntry.COLUMN_STEAM_ID + " = " + steamID;
-        String whereArgs[] = null;
-        String groupBy = null;
-        String having = null;
-        String order = null;
-        String limit = null;
+        Cursor cursorUser = getUsers(db, where, null, null, null, null, null);
 
-        Cursor cursor = db.query(UserContract.UserEntry.TABLE_NAME,
-                null,
-                where,
-                whereArgs,
-                groupBy,
-                having,
-                order,
-                limit);
-        if (cursor != null){
-            cursor.moveToFirst();
+        // We create a new user to return completed
+        User userToReturn;
+
+        // Now that we have the result, we have to check if there is a result.
+        if (cursorUser.getCount() > 0) {
+            // There is a result. We have to check if there is one or more rows.
+            if (cursorUser.getCount() > 1) {
+                // There is more than one, we log an error and then continue the operation
+                // by using the first row.
+                Log.e(TAG, "getUserBySteamID: There is more than one user in DB with the steamID "
+                        + steamID + ". The first one will be returned!");
+            }
+            cursorUser.moveToFirst();
+            // We can initiate the new user
+            userToReturn = new User();
+            // We create a new user and insert all the information needed inside
+            userToReturn.setUserID(cursorUser.getInt(cursorUser.getColumnIndex(
+                    UserContract.UserEntry._ID)));
+            userToReturn.setSteamID(cursorUser.getLong(cursorUser.getColumnIndex(
+                    UserContract.UserEntry.COLUMN_STEAM_ID)));
+            userToReturn.setAccountName(cursorUser.getString(cursorUser.getColumnIndex(
+                    UserContract.UserEntry.COLUMN_ACCOUNT_NAME)));
+            URL accountPicture = null;
+            try {
+                accountPicture = new URL(cursorUser.getString(cursorUser.getColumnIndex(
+                        UserContract.UserEntry.COLUMN_ACCOUNT_PICTURE)));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            userToReturn.setAccountPicture(accountPicture);
+
+            // TODO : Retrieve all of the user OwnedGame and add them in the user
+
+
+            // TODO : Calculate the number of minutes played and add them in the user
+
+
+        } else {
+            // No result, we log an error and return a null user.
+            Log.e(TAG, "getUserBySteamID: There is no user in DB with the steamID " + steamID);
+            return null;
         }
-        return cursor;
+        // We close the cursor
+        cursorUser.close();
+
+        // We return the user
+        return userToReturn;
     }
 
     /**
@@ -235,7 +283,9 @@ public class UserDbHelper extends SQLiteOpenHelper {
      */
     public long updateUserBySteamID(SQLiteDatabase db, String steamID, String accountName, String accountPicture){
 
-        Cursor oldUser = getUserBySteamID(db, steamID);
+        // We have to do the request.
+        String where = UserContract.UserEntry.COLUMN_STEAM_ID + " = " + steamID;
+        Cursor oldUser = getUsers(db, where, null, null, null, null, null);
         if(oldUser != null){
             int _ID = oldUser.getInt(oldUser.getColumnIndex(UserContract.UserEntry._ID));
 
@@ -265,7 +315,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
     /********************************************************************************************
      * GAME TABLE
      ********************************************************************************************/
-
+    // TODO 2 Refactor this code to send bacl Game object
     /**
      * Function that create the Game table in the db in parameter.
      * @param db Database that we want to create Game table inside.
@@ -478,7 +528,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
     /********************************************************************************************
      * OWNEDGAMES TABLE
      ********************************************************************************************/
-
+    // TODO 3 Refactor this code to send OwnedGame objects
     /**
      * Function that create the OwnedGames table in the db in parameter.
      * @param db Database that we want to create OwnedGames table inside.
@@ -787,7 +837,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
     /********************************************************************************************
      * BUNDLE TABLE
      ********************************************************************************************/
-
+    // TODO 1 Refactor this code to send object with bundle type
     /**
      * Function that create the Bundle table in the db in parameter.
      *
@@ -826,6 +876,9 @@ public class UserDbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_BUNDLE_TABLE);
     }
 
+    // TODO 1.1 Create Bundle class
+    // TODO 1.2 Create a method getBundles which will be used to request the DB
+    // TODO 1.3 Refactor this method to send back an ArrayList of Bundles
     /**
      * Function returning all of the rows in Bundle table.
      *
@@ -854,6 +907,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    // TODO 1.4 Refactor this method to send back a bundles
     /**
      * Function returning row with the bundle ID in parameter.
      *
@@ -883,6 +937,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    // TODO 1.5
     /**
      * Function returning row with the bundle name and the userID in parameter.
      *
@@ -916,6 +971,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    // TODO 1.6
     /**
      * Function returning the list of bundles owned by the user.
      *
@@ -959,6 +1015,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    // TODO 1.7 Put a Bundle in parameter and send back a bundle
     /**
      * Add a new bundle in Bundle table.
      *
@@ -974,6 +1031,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
         return db.insert(UserContract.BundleEntry.TABLE_NAME, null, bundle);
     }
 
+    // TODO 1.8 Put a Bundle in parameter and send back a bundle
     /**
      * Update the bundle based on his Bundle ID.
      *
@@ -991,6 +1049,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
                 UserContract.BundleEntry._ID + "=" + bundleID, null);
     }
 
+    // TODO 1.9 Put a Bundle in parameter and send back a boolean
     /**
      * Remove a bundle from Bundle Table.
      *
