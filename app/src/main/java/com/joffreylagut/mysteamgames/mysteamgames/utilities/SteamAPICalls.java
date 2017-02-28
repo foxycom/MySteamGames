@@ -51,14 +51,23 @@ public class SteamAPICalls {
         return finalUrl;
     }
 
-    public static String showMinutesInHoursOrMinutes(int totalMinutes){
+    public static String convertTimePlayed(int totalMinutes, boolean showBoth) {
         int hours = totalMinutes / 60;
         int minutes = totalMinutes % 60;
-        if(hours == 0){
-            return String.valueOf(minutes) +"mn";
+        if (!showBoth) {
+            if (hours == 0) {
+                return String.valueOf(minutes) + "mn";
+            } else {
+                return String.valueOf(hours) + "h";
+            }
         }else{
-            return String.valueOf(hours) + "h";
+            return String.valueOf(hours) + "h" + String.valueOf(minutes) + "mn";
         }
+
+    }
+
+    public static String convertTimePlayed(int totalMinutes) {
+        return convertTimePlayed(totalMinutes, false);
     }
 
     public static URL createGameImageURL(String imageID, String appID){

@@ -1,6 +1,10 @@
 package com.joffreylagut.mysteamgames.mysteamgames;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.joffreylagut.mysteamgames.mysteamgames.customclass.GameListItem;
-import com.joffreylagut.mysteamgames.mysteamgames.data.AppPreferences;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
 
@@ -24,16 +27,26 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
 
     final private ListItemClickListener mClickListener;
     private List<GameListItem> gameList;
+    private Context context;
 
-    public GameListAdapter(List<GameListItem> gameList, ListItemClickListener clickListener) {
+    public GameListAdapter(List<GameListItem> gameList, ListItemClickListener clickListener, Context context) {
         this.gameList = gameList;
         this.mClickListener = clickListener;
+        this.context = context;
     }
 
     @Override
     public GamesListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.game_row, parent, false);
         return new GamesListViewHolder(view);
+    }
+
+    public List<GameListItem> getGameList() {
+        return gameList;
+    }
+
+    public void setGameList(List<GameListItem> gameList) {
+        this.gameList = gameList;
     }
 
     @Override
@@ -75,16 +88,27 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
             Picasso.with(image.getContext()).load(gameItem.getGameImage().toString()).into(image);
             }
             name.setText(gameItem.getGameName());
-            timePlayed.setText(SteamAPICalls.showMinutesInHoursOrMinutes(gameItem.getGameTimePlayed()));
-            if(gameItem.getGamePrice() != 0){
+            timePlayed.setText(SteamAPICalls.convertTimePlayed(gameItem.getGameTimePlayed()));
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
                 double nbHours = Double.valueOf(gameItem.getGameTimePlayed())/60;
-                double pricePerHour = gameItem.getGamePrice()/nbHours;
-                DecimalFormat df = new DecimalFormat("#.##");
-                gamePrice.setText(String.valueOf(df.format(pricePerHour))+ " " + AppPreferences.getCurrency() +"/h");
-                gamePrice.setVisibility(View.VISIBLE);
-            }else{
-                gamePrice.setVisibility(View.INVISIBLE);
+            String gamePriceFinal = String.valueOf(gameItem.getGamePrice());
+            switch (gamePriceFinal) {
+                case "-1.0":
+                    gamePrice.setText("");
+                    gamePrice.setVisibility(View.INVISIBLE);
+                    break;
+                case "0.0":
+                    gamePrice.setText(context.getResources().getString(R.string.free));
+                    gamePrice.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    double pricePerHour = gameItem.getGamePrice() / nbHours;
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    gamePrice.setText(String.valueOf(df.format(pricePerHour)) + " " + sharedPreferences.getString("lp_currency", "$") + "/h");
+                    gamePrice.setVisibility(View.VISIBLE);
+                    break;
             }
+
         }
 
         @Override
@@ -93,7 +117,8 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
             Intent intent = new Intent(v.getContext(), GameDetailsActivity.class);
             intent.putExtra("gameID", gameList.get(clickedPosition).getGameID());
             intent.putExtra("userID", gameList.get(clickedPosition).getUserID());
-            v.getContext().startActivity(intent);
+            intent.putExtra("adapterPosition", clickedPosition);
+            ((Activity) context).startActivityForResult(intent, 1);
         }
     }
 }

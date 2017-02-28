@@ -6,6 +6,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
+
+    <style name="AppTheme.NoTitleActionBar" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -17,6 +22,15 @@
         <item name="colorControlHighlight">@color/colorPrimary</item>
         <item name="colorButtonNormal">@color/colorAccent</item>
         <item name="android:textColor">@color/colorTextAccent</item>
+    </style>
+
+    <style name="MaterialRadioButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+    </style>
+
+    <style name="TextLabel" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

@@ -4,7 +4,26 @@
     <string name="games">games</string>
     <string name="played">played</string>
     <string name="default_number_of_games">123 games</string>
-    <string name="default_time_played">5298h played</string>
+    <string name="default_time_played">5298h</string>
     <string name="game_details_statistics_title">Statistics</string>
     <string name="game_details_time_played">- Time played:</string>
+    <string name="input_price_hint">I have bought this game for</string>
+    <string name="activity_edit_game_title">Edit game</string>
+    <string name="input_game_name">Name</string>
+    <string name="input_game_time">Time played</string>
+    <string name="game_bought">I have bought this game</string>
+    <string name="input_game_price">Game price</string>
+    <string name="rb_alone">alone</string>
+    <string name="rb_bundle">in a bundle</string>
+    <string name="bundle_name">Bundle name</string>
+    <string name="input_bundle_price">Bundle price</string>
+    <string name="free">Free</string>
+    <string name="alert_new_bundle_title">Name of the new bundle</string>
+    <string name="spinner_new_bundle_item">+ New bundle</string>
+    <string name="spinner_choose_bundle_item">Choose a bundle</string>
+    <string-array name="time_unit">
+        <item>h</item>
+        <item>mn</item>
+    </string-array>
+    <string name="activity_settings_title">Settings</string>
 </resources>

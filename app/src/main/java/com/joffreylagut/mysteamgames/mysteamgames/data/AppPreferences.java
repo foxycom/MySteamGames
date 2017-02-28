@@ -17,29 +17,12 @@ public class AppPreferences {
     private static String userSteamID = "76561198052789807";
     //private static String userSteamID = "76561198090115246";
 
-    private static String currency="€";
 
-    public static String getCurrency() {
-        return currency;
-    }
-
-    public static void setCurrency(String currency) {
-        AppPreferences.currency = currency;
-    }
-
-    static public String getApiKey() {
+    public static String getApiKey() {
         return apiKey;
     }
 
-    static public void setApiKey(String apiKey) {
+    public static void setApiKey(String apiKey) {
         AppPreferences.apiKey = apiKey;
-    }
-
-    public static String getUserSteamID() {
-        return userSteamID;
-    }
-
-    public static void setUserSteamID(String userSteamID) {
-        AppPreferences.userSteamID = userSteamID;
     }
 }

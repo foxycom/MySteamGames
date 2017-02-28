@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:defaultValue="Default value"
+        android:key="etp_steamID"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:summary="Please provide your steam ID to load your library."
+        android:title="Steam ID" />
+    <ListPreference
+        android:defaultValue="€"
+        android:entries="@array/list_currency"
+        android:entryValues="@array/list_currency"
+        android:key="lp_currency"
+        android:summary="Select the currency to display in the app."
+        android:title="Currency" />
+</PreferenceScreen>

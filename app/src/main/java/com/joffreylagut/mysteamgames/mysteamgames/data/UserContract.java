@@ -10,7 +10,8 @@ public final class UserContract {
     /**
      * Empty constructor to prevent someone from accidentally instantiating the contract class
      */
-    public UserContract(){};
+    public UserContract() {
+    }
 
     /**
      * Class that specify the layout of User table.
@@ -51,5 +52,17 @@ public final class UserContract {
         public static final String COLUMN_TIME_PLAYED_FOREVER = "timePlayedForever";
         public static final String COLUMN_TIME_PLAYED_2_WEEKS = "timePlayed2Weeks";
         public static final String COLUMN_GAME_PRICE = "gamePrice";
+        public static final String COLUMN_BUNDLE_ID = "bundleID";
+    }
+
+    /**
+     * Class that specify the layout of Bundle table.
+     */
+    public static abstract class BundleEntry implements BaseColumns {
+        // Table name
+        public static final String TABLE_NAME = "BUNDLE";
+        // Columns
+        public static final String COLUMN_BUNDLE_NAME = "bundleName";
+        public static final String COLUMN_BUNDLE_PRICE = "bundlePrice";
     }
 }

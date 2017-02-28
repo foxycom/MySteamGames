@@ -40,17 +40,27 @@
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@id/iv_profile"
             android:text="@string/default_number_of_games"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
+
+
+        <TextView
+            android:id="@+id/tv_total_price_per_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:text="52.21€/h"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tv_total_time_played"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_above="@id/tv_total_price_per_hour"
             android:layout_alignParentRight="true"
             android:paddingRight="8dp"
             android:text="@string/default_time_played"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
@@ -65,10 +75,10 @@
 
     <ProgressBar
         android:id="@+id/pb_loading"
-        android:layout_marginLeft="8dp"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:visibility="visible" />
+        android:layout_marginLeft="8dp"
+        android:visibility="invisible" />
 </RelativeLayout>

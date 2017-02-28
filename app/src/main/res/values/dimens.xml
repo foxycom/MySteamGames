@@ -5,4 +5,19 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+
+
+    <dimen name="padding_between_input">8dp</dimen>
+
+
+    <!-- Card Margins, https://material.io/guidelines/components/cards.html#cards-content-blocks -->
+    <dimen name="card_title_text_size">24sp</dimen>
+    <dimen name="card_primary_title_top_padding">24sp</dimen>
+    <dimen name="card_primary_title_bottom_padding">16dp</dimen>
+    <dimen name="card_action_button_row_padding">8dp</dimen>
+    <dimen name="card_supporting_text_size">14sp</dimen>
+    <dimen name="card_supporting_text_top_padding">16dp</dimen>
+    <dimen name="card_supporting_text_bottom_padding">24dp</dimen>
+    <dimen name="card_padding_left_and_right">16dp</dimen>
+
 </resources>
