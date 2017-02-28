@@ -56,7 +56,7 @@ public final class UserContract {
     }
 
     /**
-     * Class that specify the layout of Bundle table.
+     * Class that specify the layout of GameBundle table.
      */
     public static abstract class BundleEntry implements BaseColumns {
         // Table name

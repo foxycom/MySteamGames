@@ -172,15 +172,15 @@ public class EditGameActivity extends AppCompatActivity {
                             null, String.valueOf(bundlePrice));
                 } else {
                     // We create a new bundle
-                    userDbHelper.addNewBundle(db, bundleName, String.valueOf(bundlePrice));
+                    bundleID = Integer.parseInt(String.valueOf(userDbHelper.addNewBundle(db, bundleName, String.valueOf(bundlePrice))));
                     // Now, we need to get the ID of this bundle.
                     // The bundle is the last one inserted in db so we have to find it.
-                    request = userDbHelper.getAllBundles(db);
+                    /**request = userDbHelper.getAllBundles(db);
                     if (request.getCount() != 0) {
                         request.moveToLast();
                         bundleID = request.getInt(
                                 request.getColumnIndex(UserContract.BundleEntry._ID));
-                    }
+                    }**/
                 }
                 // To finish, we update the ownedgame table
                 userDbHelper.updateOwnedGame(db, String.valueOf(userID),
@@ -230,7 +230,7 @@ public class EditGameActivity extends AppCompatActivity {
                     request.getColumnIndex(UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID));
         }
 
-        // If the game in in a Bundle, we get the information about the bundle
+        // If the game in in a GameBundle, we get the information about the bundle
         if (bundleID != 0) {
             request = userDbHelper.getBundleByID(db, String.valueOf(bundleID));
             if (request.getCount() != 0) {
@@ -322,7 +322,7 @@ public class EditGameActivity extends AppCompatActivity {
 
                     builder.show();
                 } else {
-                    // We have to check if the Bundle already exist in db to show its price
+                    // We have to check if the GameBundle already exist in db to show its price
                     for (String[] currentBundle : listUserBundleWithPrice) {
                         String string1 = currentBundle[0];
                         String string2 = parentView.getAdapter().getItem(position).toString();
