@@ -104,10 +104,9 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         SteamAPICalls.getURLPlayerProfileInformation(sharedPreferences.getString("etp_steamID", ""));
         RetrieveProfileInformation myProfileInformation = new RetrieveProfileInformation();
         URL[] listURLAPIToCall = {
-                SteamAPICalls.getURLPlayerProfileInformation(String.valueOf(
-                        currentUser.getSteamID())),
-                SteamAPICalls.getURLPlayerOwnedGames(String.valueOf(currentUser.getSteamID()
-                ))};
+                SteamAPICalls.getURLPlayerProfileInformation(sharedPreferences.getString("etp_steamID", "")),
+                SteamAPICalls.getURLPlayerOwnedGames(sharedPreferences.getString("etp_steamID", ""))
+        };
         myProfileInformation.execute(listURLAPIToCall);
     }
 
@@ -134,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
 
         currentUser = userDbHelper.getUserBySteamID(mDb, steamID);
 
-
+        if (currentUser == null) return;
         // Then, we get the list of owned games from OwnedGames table.
         List<OwnedGame> userOwnedGames = new ArrayList<>();
         OwnedGame currentOwnedGame;
@@ -260,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
                     .getJSONArray("players").getJSONObject(0);
 
             // We insert the information in our container.
-            int steamID = player.getInt("steamid");
+            long steamID = Long.valueOf(player.getString("steamid"));
             String accountName = player.getString("personaname");
             String accountPicture = player.getString("avatarfull");
 
@@ -306,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
                 UserDbHelper userDbHelper = new UserDbHelper(this);
 
                 // We retrieve the User in DB.
-                user = userDbHelper.getUserBySteamID(mDb, currentUser.getSteamID());
+                user = userDbHelper.getUserBySteamID(mDb, Long.valueOf(sharedPreferences.getString("etp_steamID", "")));
 
                 // First, we check if the game already exist in db.
                 Cursor cursor = userDbHelper.getGameBySteamID(mDb, appID);
@@ -407,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
 
         protected void onPostExecute(String[] responses) {
             pbLoading.setVisibility(View.INVISIBLE);
-            refreshUserProfileInformationFromDb(currentUser.getSteamID());
+            refreshUserProfileInformationFromDb(Long.valueOf(sharedPreferences.getString("etp_steamID", "")));
 
         }
     }
