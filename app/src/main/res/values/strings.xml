@@ -1,10 +1,36 @@
 <resources>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
     <string name="app_name">Game time price</string>
+
+    <!-- LoginActivity -->
+    <string name="activity_login_title">Login</string>
+    <string name="welcome">Welcome aboard!</string>
+    <string name="login_message">Login to your Steam account to see your library.</string>
+    <string name="disclaimer">Note: This app can only access to your public information.</string>
+
+    <!-- MainActivity -->
+    <string name="activity_main_title">My library</string>
+    <string name="new_steam_data_loaded">New Steam data loaded!</string>
+    <string name="snackbar_action_refresh">Refresh</string>
+
+    <!-- Drawer -->
     <string name="default_account_name">Account name</string>
+    <string name="default_money_spent">1000$</string>
+    <string name="default_number_of_games">123</string>
+    <string name="default_time_played">5298h</string>
+    <string name="default_price_per_hour">0.18$/h</string>
+    <string name="nav_btn_logout">Logout</string>
+    <string name="nav_btn_settings">Settings</string>
+
+    <!-- Default units -->
     <string name="games">games</string>
     <string name="played">played</string>
-    <string name="default_number_of_games">123 games</string>
-    <string name="default_time_played">5298h</string>
+    <string name="money_spent">spent</string>
+
     <string name="game_details_statistics_title">Statistics</string>
     <string name="game_details_time_played">- Time played:</string>
     <string name="input_price_hint">I have bought this game for</string>

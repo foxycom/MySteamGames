@@ -7,10 +7,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,14 +52,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static android.support.design.widget.Snackbar.make;
 import static com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls.createGameImageURL;
 
-public class MainActivity extends AppCompatActivity implements GameListAdapter.ListItemClickListener {
+public class MainActivity extends AppCompatActivity implements GameListAdapter.ListItemClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
     Double totalMoneySpent = 0.00;
     UserDbHelper userDbHelper;
     SharedPreferences sharedPreferences;
+    CoordinatorLayout coordinatorLayout;
     // Declaration of the global values of this activity.
     private User currentUser = new User();
     private Toast message = null;
@@ -63,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
     private TextView tvAccountName;
     private TextView tvNumberOfGames;
     private TextView tvTotalTimePlayed;
+    private TextView tvMoneySpent;
     private RecyclerView recyclerView;
     private TextView tvTotalPricePerHour;
 
@@ -70,22 +80,14 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("Games list");
-
-        Log.d(TAG, "onCreate");
+        setTitle(R.string.activity_main_title);
 
         // Stepho is providing us an access to the mobile database with Chrome.
         // We initialize it here.
         Stetho.initializeWithDefaults(this);
 
-        // First, we are linking our views with the layout
-        pbLoading = (ProgressBar)findViewById(R.id.pb_loading);
-        tvAccountName = (TextView)findViewById(R.id.tv_account_name);
-        recyclerView = (RecyclerView) findViewById(R.id.rv_games);
-        ivProfile = (ImageView)findViewById(R.id.iv_profile);
-        tvNumberOfGames = (TextView)findViewById(R.id.tv_nb_games);
-        tvTotalTimePlayed = (TextView)findViewById(R.id.tv_total_time_played);
-        tvTotalPricePerHour = (TextView) findViewById(R.id.tv_total_price_per_hour);
+        // We set the view by calling this private method
+        setViews();
 
         // We are declaring a new UserDbHelper to access to the db.
         userDbHelper = UserDbHelper.getInstance(this);
@@ -97,10 +99,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         Long steamID = Long.valueOf(sharedPreferences.getString("etp_steamID", "0"));
         refreshUserProfileInformationFromDb(steamID);
 
-        //refreshUserProfileInformationFromDb(AppPreferences.getUserSteamID());
-
         // We are generating the URL and then ask the Steam API
-
         SteamAPICalls.getURLPlayerProfileInformation(sharedPreferences.getString("etp_steamID", ""));
         RetrieveProfileInformation myProfileInformation = new RetrieveProfileInformation();
         URL[] listURLAPIToCall = {
@@ -110,22 +109,96 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         myProfileInformation.execute(listURLAPIToCall);
     }
 
+    private void setViews() {
+
+        // First, we have to set the DrawerLayout
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Someday
+        /**FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+         fab.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View view) {
+        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+        .setAction("Action", null).show();
+        }
+        });**/
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        // Then, we are linking our views with the layout
+        pbLoading = (ProgressBar) findViewById(R.id.pb_loading);
+        recyclerView = (RecyclerView) findViewById(R.id.rv_games);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
+
+        View hView = navigationView.getHeaderView(0);
+        ivProfile = (ImageView) hView.findViewById(R.id.nav_iv_profile);
+        tvAccountName = (TextView) hView.findViewById(R.id.nav_tv_account_name);
+        tvNumberOfGames = (TextView) hView.findViewById(R.id.nav_tv_nb_games);
+        tvTotalTimePlayed = (TextView) hView.findViewById(R.id.nav_tv_nb_hours_played);
+        tvTotalPricePerHour = (TextView) hView.findViewById(R.id.nav_tv_price_per_hour);
+        tvMoneySpent = (TextView) hView.findViewById(R.id.nav_tv_money_spent);
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
+        //super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.game_list_menu, menu);
         return true;
     }
 
-
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_button_settings) {
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;
+
+        } else if (id == R.id.nav_logout) {
+            PreferenceManager.getDefaultSharedPreferences(this).edit().remove("etp_steamID").commit();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_send) {
+            make(coordinatorLayout, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
         }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+/*        if (item.getItemId() == R.id.menu_button_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }*/
         return super.onOptionsItemSelected(item);
     }
 
@@ -201,9 +274,9 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
             tvAccountName.setText(currentUser.getAccountName());
         }
         tvTotalTimePlayed.setText(String.valueOf(currentUser.getNbMinutesPlayed()));
-        tvNumberOfGames.setText(String.valueOf(currentUser.getOwnedGames().size()) + " " + getResources().getString(R.string.games));
+        tvNumberOfGames.setText(String.valueOf(currentUser.getOwnedGames().size()));
 
-        tvTotalTimePlayed.setText(SteamAPICalls.convertTimePlayed(currentUser.getNbMinutesPlayed()) + " " + getResources().getString(R.string.played));
+        tvTotalTimePlayed.setText(SteamAPICalls.convertTimePlayed(currentUser.getNbMinutesPlayed()));
 
         if(currentUser.getAccountPicture() != null){
             String urlImageToLoad = currentUser.getAccountPicture().toString();
@@ -212,11 +285,13 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         Double nbHoursTotal = Double.valueOf(currentUser.getNbMinutesPlayed()) / 60;
         Double totalPricePerHour = totalMoneySpent / nbHoursTotal;
         DecimalFormat df = new DecimalFormat("#.##");
-        tvTotalPricePerHour.setText(String.valueOf(df.format(totalPricePerHour)) + " " + sharedPreferences.getString("lp_currency", "€") + "/h");
+        tvTotalPricePerHour.setText(String.valueOf(df.format(totalPricePerHour)) + sharedPreferences.getString("lp_currency", "$") + "/h");
+        tvMoneySpent.setText(String.valueOf(df.format(totalMoneySpent)) + sharedPreferences.getString("lp_currency", "$"));
 
         // We insert the data in our RecyclerView
         //recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+
         List<GameListItem> sortedList = createGameListItemList(currentUser.getOwnedGames());
 
         Collections.sort(sortedList);
@@ -224,7 +299,6 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         GameListAdapter gameListAdapter = new GameListAdapter(sortedList, this, this);
         recyclerView.setAdapter(gameListAdapter);
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -406,7 +480,15 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
 
         protected void onPostExecute(String[] responses) {
             pbLoading.setVisibility(View.INVISIBLE);
-            refreshUserProfileInformationFromDb(Long.valueOf(sharedPreferences.getString("etp_steamID", "")));
+
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, R.string.new_steam_data_loaded, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.snackbar_action_refresh, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            refreshUserProfileInformationFromDb(Long.valueOf(sharedPreferences.getString("etp_steamID", "")));
+                        }
+                    });
+            snackbar.show();
 
         }
     }

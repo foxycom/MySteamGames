@@ -11,6 +11,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        setTitle(R.string.activity_login_title);
 
         LoginFragment fragment = new LoginFragment();
         android.support.v4.app.FragmentTransaction fragmentTransaction =

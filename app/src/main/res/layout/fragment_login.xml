@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Welcome on the app !"
+        android:text="@string/welcome"
         android:textSize="22sp" />
 
     <TextView
@@ -26,11 +26,11 @@
         android:layout_gravity="center"
         android:paddingBottom="20dp"
         android:paddingTop="10dp"
-        android:text="Login on your Steam account to see your library." />
+        android:text="@string/login_message" />
 
     <Button
-        android:layout_width="125dp"
-        android:layout_height="75dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/steam_connect"
         android:onClick="onClickLogin" />
@@ -41,7 +41,8 @@
         android:layout_gravity="center"
         android:paddingBottom="20dp"
         android:paddingTop="10dp"
-        android:text="Note: This app can only access to your public information."
+        android:text="@string/disclaimer"
+        android:textAlignment="center"
         android:textStyle="normal|italic" />
 
 </LinearLayout>

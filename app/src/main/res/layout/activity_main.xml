@@ -1,84 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="8dp"
-    tools:context="com.joffreylagut.mysteamgames.mysteamgames.MainActivity">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
-    <RelativeLayout
-        android:id="@+id/rl_profile"
+    <include
+        layout="@layout/app_bar_main"
         android:layout_width="match_parent"
-        android:layout_height="91dp"
-        android:background="@color/profile"
-        android:paddingBottom="8dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="8dp">
+        android:layout_height="match_parent" />
 
-        <ImageView
-            android:id="@+id/iv_profile"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginRight="8dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/profile_default" />
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_drawer" />
 
-        <TextView
-            android:id="@+id/tv_account_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_profile"
-            android:text="@string/default_account_name"
-            android:textSize="30sp" />
-
-        <TextView
-            android:id="@+id/tv_nb_games"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/iv_profile"
-            android:text="@string/default_number_of_games"
-            android:textSize="16sp" />
-
-
-        <TextView
-            android:id="@+id/tv_total_price_per_hour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:text="52.21€/h"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/tv_total_time_played"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/tv_total_price_per_hour"
-            android:layout_alignParentRight="true"
-            android:paddingRight="8dp"
-            android:text="@string/default_time_played"
-            android:textSize="16sp" />
-    </RelativeLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_games"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rl_profile"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp">
-
-    </android.support.v7.widget.RecyclerView>
-
-    <ProgressBar
-        android:id="@+id/pb_loading"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="8dp"
-        android:visibility="invisible" />
-</RelativeLayout>
+</android.support.v4.widget.DrawerLayout>
