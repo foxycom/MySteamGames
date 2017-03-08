@@ -821,7 +821,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
      * Function used to update the price of the games included in a GameBundle.
      *
      * @param db         database to work on
-     * @param bundleName Name of the bundle.
+     * @param bundleID ID of the bundle.
      * @return Number of game prices updated.
      */
     public long updateOnwedGamePriceFromBundle(SQLiteDatabase db, String bundleID) {
@@ -1078,7 +1078,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
         String whereArgs[] = null;
         String groupBy = null;
         String having = null;
-        String order = null;
+        String order = UserContract.BundleEntry.COLUMN_BUNDLE_NAME + " ASC";
         String limit = null;
 
         Cursor cursor = db.query(true,

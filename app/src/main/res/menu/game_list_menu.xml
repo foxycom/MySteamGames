@@ -1,4 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_ascendant"
+        android:icon="@drawable/ic_arrow_upward_white"
+        android:title="@string/menu_ascendant"
+        android:visible="true"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_descendant"
+        android:icon="@drawable/ic_arrow_downward_white"
+        android:title="@string/menu_descendant"
+        android:visible="false"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_sort"
+        android:icon="@drawable/ic_sort_white"
+        android:title="@string/menu_sort"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/menu_sort_alphabetical"
+                android:title="@string/menu_sort_alphabetical"></item>
+            <item
+                android:id="@+id/menu_sort_time_played"
+                android:title="@string/menu_sort_time_played"></item>
+            <item
+                android:id="@+id/menu_sort_total_price"
+                android:title="@string/menu_sort_total_price"></item>
+            <item
+                android:id="@+id/menu_sort_price_per_hour"
+                android:title="@string/menu_sort_price_per_hour"></item>
+        </menu>
+
+    </item>
 
 </menu>

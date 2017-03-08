@@ -23,15 +23,13 @@ import java.util.List;
  * Created by Joffrey on 08/02/2017.
  */
 
-public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesListViewHolder> {
+class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesListViewHolder> {
 
-    final private ListItemClickListener mClickListener;
     private List<GameListItem> gameList;
     private Context context;
 
-    public GameListAdapter(List<GameListItem> gameList, ListItemClickListener clickListener, Context context) {
+    GameListAdapter(List<GameListItem> gameList, Context context) {
         this.gameList = gameList;
-        this.mClickListener = clickListener;
         this.context = context;
     }
 
@@ -41,11 +39,11 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
         return new GamesListViewHolder(view);
     }
 
-    public List<GameListItem> getGameList() {
-        return gameList;
+    List<GameListItem> getGameList() {
+        return this.gameList;
     }
 
-    public void setGameList(List<GameListItem> gameList) {
+    void setGameList(List<GameListItem> gameList) {
         this.gameList = gameList;
     }
 
@@ -60,7 +58,7 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
         return gameList.size();
     }
 
-    public interface ListItemClickListener {
+    interface ListItemClickListener {
         void ListItemClicked(String clickedItemName);
     }
 
@@ -72,7 +70,7 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
         TextView gamePrice;
 
 
-        public GamesListViewHolder(View itemView) {
+        GamesListViewHolder(View itemView) {
             super(itemView);
 
             image = (ImageView) itemView.findViewById(R.id.iv_game_picture);
@@ -83,14 +81,22 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
             itemView.setOnClickListener(this);
         }
 
-        public void bind(GameListItem gameItem) {
+        void bind(GameListItem gameItem) {
+            // We display the game image
             if(gameItem.getGameImage() != null){
             Picasso.with(image.getContext()).load(gameItem.getGameImage().toString()).into(image);
             }
+            // We display the game name
             name.setText(gameItem.getGameName());
-            timePlayed.setText(SteamAPICalls.convertTimePlayed(gameItem.getGameTimePlayed()));
+            // We display the time played
+            String stringTimePlayed = SteamAPICalls.convertTimePlayed(gameItem.getGameTimePlayed());
+            if (stringTimePlayed.compareTo("0mn") == 0) {
+                timePlayed.setText(context.getResources().getString(R.string.never_played));
+            } else {
+                timePlayed.setText(stringTimePlayed);
+            }
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                double nbHours = Double.valueOf(gameItem.getGameTimePlayed())/60;
+            double nbHours = gameItem.getGameTimePlayed() / 60;
             String gamePriceFinal = String.valueOf(gameItem.getGamePrice());
             switch (gamePriceFinal) {
                 case "-1.0":
@@ -104,7 +110,12 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
                 default:
                     double pricePerHour = gameItem.getGamePrice() / nbHours;
                     DecimalFormat df = new DecimalFormat("#.##");
-                    gamePrice.setText(String.valueOf(df.format(pricePerHour)) + " " + sharedPreferences.getString("lp_currency", "$") + "/h");
+                    String pricePerHourFormated = String.valueOf(df.format(pricePerHour));
+                    if (pricePerHourFormated.compareTo("∞") == 0) {
+                        gamePrice.setText("— " + sharedPreferences.getString("lp_currency", "$") + "/h");
+                    } else {
+                        gamePrice.setText(String.valueOf(df.format(pricePerHour)) + " " + sharedPreferences.getString("lp_currency", "$") + "/h");
+                    }
                     gamePrice.setVisibility(View.VISIBLE);
                     break;
             }

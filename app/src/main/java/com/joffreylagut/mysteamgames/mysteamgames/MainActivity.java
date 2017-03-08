@@ -35,6 +35,7 @@ import com.joffreylagut.mysteamgames.mysteamgames.customclass.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.customclass.User;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.GameListSorter;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
 
@@ -76,6 +77,10 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
     private RecyclerView recyclerView;
     private TextView tvTotalPricePerHour;
 
+    // Variable used to determine if we want to display ASC or DESC menu item
+    private boolean currentSortAsc;
+    private String currentSort;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +97,10 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         // We are declaring a new UserDbHelper to access to the db.
         userDbHelper = UserDbHelper.getInstance(this);
         mDb = userDbHelper.getWritableDatabase();
+
+        // We display the Asc menu item
+        currentSortAsc = false;
+        currentSort = "time_played";
 
         // We load the SharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -163,6 +172,20 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         //super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.game_list_menu, menu);
+
+        if (currentSortAsc) {
+            MenuItem menuAsc = menu.findItem(R.id.menu_ascendant);
+            menuAsc.setVisible(true);
+
+            MenuItem menuDsc = menu.findItem(R.id.menu_descendant);
+            menuDsc.setVisible(false);
+        } else {
+            MenuItem menuAsc = menu.findItem(R.id.menu_ascendant);
+            menuAsc.setVisible(false);
+
+            MenuItem menuDsc = menu.findItem(R.id.menu_descendant);
+            menuDsc.setVisible(true);
+        }
         return true;
     }
 
@@ -194,12 +217,87 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-/*        if (item.getItemId() == R.id.menu_button_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-            return true;
-        }*/
-        return super.onOptionsItemSelected(item);
+
+        // We are looking which item is clicked to do the corresponding action
+        switch (item.getItemId()) {
+            case R.id.menu_sort_alphabetical:
+                // We change the current sort of the list
+                currentSort = "alphabetical";
+                // We call the method that will sort and display the new list
+                sortAndShowGameItemList();
+                break;
+            case R.id.menu_sort_time_played:
+                // We change the current sort of the list
+                currentSort = "time_played";
+                // We call the method that will sort and display the new list
+                sortAndShowGameItemList();
+                break;
+
+            case R.id.menu_sort_total_price:
+                // We change the current sort of the list
+                currentSort = "price";
+                // We call the method that will sort and display the new list
+                sortAndShowGameItemList();
+                break;
+            case R.id.menu_sort_price_per_hour:
+                // We change the current sort of the list
+                currentSort = "price_per_hour";
+                // We call the method that will sort and display the new list
+                sortAndShowGameItemList();
+                break;
+
+            case R.id.menu_ascendant:
+                currentSortAsc = false;
+                invalidateOptionsMenu();
+                // We call the method that will sort and display the new list
+                sortAndShowGameItemList();
+                break;
+
+            case R.id.menu_descendant:
+                currentSortAsc = true;
+                invalidateOptionsMenu();
+                // We call the method that will sort and display the new list
+                sortAndShowGameItemList();
+                break;
+        }
+        return true;
+    }
+
+    private void sortAndShowGameItemList() {
+
+        // We have to get the adapter
+        GameListAdapter gameListAdapter = (GameListAdapter) recyclerView.getAdapter();
+        // To then get the list
+        List<GameListItem> sortedList = gameListAdapter.getGameList();
+
+        // Now we have to sort the list
+        switch (currentSort) {
+            case "alphabetical":
+                sortedList = GameListSorter.sortByName(sortedList, currentSortAsc);
+                break;
+            case "time_played":
+                sortedList = GameListSorter.sortByTimePlayed(sortedList, currentSortAsc);
+                break;
+            case "price_per_hour":
+                /*// Here, we have to remove all the free to play
+                Iterator<GameListItem> it = sortedList.iterator();
+                while(it.hasNext()){
+                    GameListItem game = it.next();
+                    if(game.getGamePrice() == 0){
+                        it.remove();
+                    }
+                }*/
+                sortedList = GameListSorter.sortByPricePerHour(sortedList, currentSortAsc);
+                break;
+            case "price":
+                sortedList = GameListSorter.sortByPrice(sortedList, currentSortAsc);
+                break;
+        }
+
+        // Now that we have the sortedlist, we put the new adapter in the recyclerview
+        gameListAdapter.setGameList(sortedList);
+        recyclerView.setAdapter(gameListAdapter);
+
     }
 
     private void refreshUserProfileInformationFromDb(long steamID) {
@@ -296,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
 
         Collections.sort(sortedList);
 
-        GameListAdapter gameListAdapter = new GameListAdapter(sortedList, this, this);
+        GameListAdapter gameListAdapter = new GameListAdapter(sortedList, this);
         recyclerView.setAdapter(gameListAdapter);
     }
     @Override

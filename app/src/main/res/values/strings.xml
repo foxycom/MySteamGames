@@ -16,6 +16,14 @@
     <string name="activity_main_title">My library</string>
     <string name="new_steam_data_loaded">New Steam data loaded!</string>
     <string name="snackbar_action_refresh">Refresh</string>
+    <string name="menu_sort">Sort</string>
+    <string name="menu_ascendant">Ascendant</string>
+    <string name="menu_descendant">Descendant</string>
+    <string name="menu_sort_alphabetical">A-Z</string>
+    <string name="menu_sort_time_played">Time played</string>
+    <string name="menu_sort_total_price">Total price</string>
+    <string name="menu_sort_price_per_hour">Price per hour</string>
+    <string name="never_played">Never played yet</string>
 
     <!-- Drawer -->
     <string name="default_account_name">Account name</string>
@@ -30,6 +38,13 @@
     <string name="games">games</string>
     <string name="played">played</string>
     <string name="money_spent">spent</string>
+
+
+    <!-- Game details activity -->
+    <string name="edit">Edit</string>
+
+    <!-- Edit game activity -->
+    <string name="save">Save</string>
 
     <string name="game_details_statistics_title">Statistics</string>
     <string name="game_details_time_played">- Time played:</string>

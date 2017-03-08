@@ -10,9 +10,14 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -23,8 +28,8 @@ import android.widget.Toast;
 
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
-import com.joffreylagut.mysteamgames.mysteamgames.utilities.MoneyTextWatcher;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,14 +111,36 @@ public class EditGameActivity extends AppCompatActivity {
 
     private void showViewsFromRadioButtonState(boolean viewsBundle) {
         if (!viewsBundle) {
-            findViewById(R.id.layout_bundle_name).setVisibility(View.INVISIBLE);
-            findViewById(R.id.ti_layout_bundle_price).setVisibility(View.INVISIBLE);
-            findViewById(R.id.ti_layout_game_price).setVisibility(View.VISIBLE);
+            hideView(findViewById(R.id.layout_bundle_name));
+            hideView(findViewById(R.id.ti_layout_bundle_price));
+            showView(findViewById(R.id.ti_layout_game_price));
+
+
         } else {
-            findViewById(R.id.layout_bundle_name).setVisibility(View.VISIBLE);
-            findViewById(R.id.ti_layout_bundle_price).setVisibility(View.VISIBLE);
-            findViewById(R.id.ti_layout_game_price).setVisibility(View.INVISIBLE);
+            showView(findViewById(R.id.layout_bundle_name));
+            showView(findViewById(R.id.ti_layout_bundle_price));
+            hideView(findViewById(R.id.ti_layout_game_price));
         }
+    }
+
+    /**
+     * This methode change the height of a view to 0 dp to hide the view on the screen.
+     *
+     * @param viewToHide View that we want to hide.
+     */
+    private void hideView(View viewToHide) {
+        viewToHide.getLayoutParams().height = 0;
+        viewToHide.requestLayout();
+    }
+
+    /**
+     * This methode change the height of a view to WARP_CONTENT to display the view on the screen.
+     *
+     * @param viewToShow View that we want to show.
+     */
+    private void showView(View viewToShow) {
+        viewToShow.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        viewToShow.requestLayout();
     }
 
     public void saveGame(View v) {
@@ -125,20 +152,11 @@ public class EditGameActivity extends AppCompatActivity {
         // If the user have set the time in hour, we need to convert it in minutes
         if (timeUnit == "h") timePlayed = timePlayed * 60;
         if (rdBoughtAlone.isChecked()) {
-            // The game isn't in a bundle
-            String cleanString;
-            // TODO : Make a method with this code and always call it.
-            switch (sharedPreferences.getString("lp_currency", "$")) {
-                case "€":
-                    cleanString = etGamePrice.getText().toString().replaceAll("[€]", "");
-                    break;
-                case "£":
-                    cleanString = etGamePrice.getText().toString().replaceAll("[£]", "");
-                    break;
-                default:
-                    cleanString = etGamePrice.getText().toString().replaceAll("[$]", "");
-                    break;
-            }
+            // The game have been bought alone
+            // We have to clean the currency
+            String cleanString = removeCurrency(etGamePrice.getText().toString());
+            if (cleanString.length() == 0) cleanString = "0";
+            // We get the price
             Double gamePrice = Double.valueOf(cleanString);
             // We have all of the information needed to update the game in DB
             userDbHelper.updateGameByID(db, String.valueOf(gameID), null, gameName, null, null, null);
@@ -146,18 +164,10 @@ public class EditGameActivity extends AppCompatActivity {
                     String.valueOf(timePlayed), null, String.valueOf(gamePrice), "-1");
         } else {
             // The game is in a bundle
-            String cleanString;
-            switch (sharedPreferences.getString("lp_currency", "$")) {
-                case "€":
-                    cleanString = etGamePrice.getText().toString().replaceAll("[€]", "");
-                    break;
-                case "£":
-                    cleanString = etGamePrice.getText().toString().replaceAll("[£]", "");
-                    break;
-                default:
-                    cleanString = etGamePrice.getText().toString().replaceAll("[$]", "");
-                    break;
-            }
+            // We have to clean the currency
+            String cleanString = removeCurrency(etBundlePrice.getText().toString());
+            if (cleanString.length() == 0) cleanString = "0";
+            // We get the price
             Double bundlePrice = Double.valueOf(cleanString);
             String bundleName = spBundleName.getSelectedItem().toString();
             if (bundleName != getResources().getString(R.string.spinner_choose_bundle_item) &&
@@ -176,11 +186,11 @@ public class EditGameActivity extends AppCompatActivity {
                     // Now, we need to get the ID of this bundle.
                     // The bundle is the last one inserted in db so we have to find it.
                     /**request = userDbHelper.getAllBundles(db);
-                    if (request.getCount() != 0) {
-                        request.moveToLast();
-                        bundleID = request.getInt(
-                                request.getColumnIndex(UserContract.BundleEntry._ID));
-                    }**/
+                     if (request.getCount() != 0) {
+                     request.moveToLast();
+                     bundleID = request.getInt(
+                     request.getColumnIndex(UserContract.BundleEntry._ID));
+                     }**/
                 }
                 // To finish, we update the ownedgame table
                 userDbHelper.updateOwnedGame(db, String.valueOf(userID),
@@ -192,11 +202,28 @@ public class EditGameActivity extends AppCompatActivity {
                 // TODO : Show an error to the user under bundleName
             }
         }
-
         Toast.makeText(v.getContext(), "Game saved", Toast.LENGTH_LONG).show();
         Intent returnIntent = new Intent();
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
+    }
+
+    /**
+     * The function remove the currrency from the String in parameter.
+     * For example, "€25.2" will be returned "25.2"
+     *
+     * @param stringToClean String with the currency and the amount.
+     * @return String without currency
+     */
+    private String removeCurrency(String stringToClean) {
+        switch (sharedPreferences.getString("lp_currency", "$")) {
+            case "€":
+                return stringToClean.replaceAll("[€]", "");
+            case "£":
+                return stringToClean.replaceAll("[£]", "");
+            default:
+                return stringToClean.replaceAll("[$]", "");
+        }
     }
 
     /**
@@ -339,7 +366,7 @@ public class EditGameActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                // Nothing appened
             }
         });
 
@@ -372,8 +399,20 @@ public class EditGameActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit_game_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        this.onBackPressed();
+        if (item.getItemId() == R.id.menu_edit_game_save) {
+            saveGame(findViewById(R.id.btn_save_game_edit));
+        } else {
+            this.onBackPressed();
+        }
         return true;
     }
 
@@ -385,5 +424,45 @@ public class EditGameActivity extends AppCompatActivity {
             }
         }
         return -1;
+    }
+
+    class MoneyTextWatcher implements TextWatcher {
+        private final WeakReference<EditText> editTextWeakReference;
+
+        public MoneyTextWatcher(EditText editText) {
+            editTextWeakReference = new WeakReference<EditText>(editText);
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            EditText editText = editTextWeakReference.get();
+            if (editText == null) return;
+            String s = editable.toString();
+            editText.removeTextChangedListener(this);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(editText.getContext());
+            String cleanString;
+            switch (sharedPreferences.getString("lp_currency", "$")) {
+                case "€":
+                    cleanString = s.toString().replaceAll("[€]", "");
+                    break;
+                case "£":
+                    cleanString = s.toString().replaceAll("[£]", "");
+                    break;
+                default:
+                    cleanString = s.toString().replaceAll("[$]", "");
+                    break;
+            }
+            editText.setText(sharedPreferences.getString("lp_currency", "$") + cleanString);
+            editText.setSelection(cleanString.length() + 1);
+            editText.addTextChangedListener(this);
+        }
     }
 }
