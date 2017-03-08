@@ -1,6 +1,7 @@
 package com.joffreylagut.mysteamgames.mysteamgames;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -20,7 +21,6 @@ import android.widget.TextView;
 
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
-import com.joffreylagut.mysteamgames.mysteamgames.utilities.FontManager;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
 
@@ -62,13 +62,13 @@ public class GameDetailsActivity extends AppCompatActivity {
 
         // Setup the fonticon on the textviews
         TextView icoTime = (TextView) findViewById(R.id.tv_game_details_time_played_ico);
-        icoTime.setTypeface(FontManager.getTypeface(this, FontManager.CUSTOMFONTICON));
+        //icoTime.setTypeface(FontManager.getTypeface(this, FontManager.CUSTOMFONTICON));
 
         TextView icoPrice = (TextView) findViewById(R.id.tv_game_details_game_price_ico);
-        icoPrice.setTypeface(FontManager.getTypeface(this, FontManager.CUSTOMFONTICON));
+        //icoPrice.setTypeface(FontManager.getTypeface(this, FontManager.CUSTOMFONTICON));
 
         TextView icoPricePerHour = (TextView) findViewById(R.id.tv_game_details_game_price_per_hour_ico);
-        icoPricePerHour.setTypeface(FontManager.getTypeface(this, FontManager.CUSTOMFONTICON));
+        //*icoPricePerHour.setTypeface(FontManager.getTypeface(this, FontManager.CUSTOMFONTICON));
 
         // Preparing the database.
         userDbHelper = UserDbHelper.getInstance(this);
@@ -190,7 +190,16 @@ public class GameDetailsActivity extends AppCompatActivity {
                 Intent intentEdit = new Intent(this, EditGameActivity.class);
                 intentEdit.putExtra("gameID", gameID);
                 intentEdit.putExtra("userID", userID);
-                startActivityForResult(intentEdit, 1);
+
+                // If the user is runing on SDK 16 or newer, display a transition.
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    Bundle bndlAnimation = ActivityOptions.makeCustomAnimation(this,
+                            R.transition.right_to_left_incoming, R.transition.right_to_left_outgoing)
+                            .toBundle();
+                    this.startActivityForResult(intentEdit, 1, bndlAnimation);
+                } else {
+                    this.startActivityForResult(intentEdit, 1);
+                }
                 return true;
             default:
                 this.onBackPressed();
@@ -235,6 +244,9 @@ public class GameDetailsActivity extends AppCompatActivity {
                 break;
         }
         finish();
+        // We want to display an animation to go back on the previous activity
+        overridePendingTransition(R.transition.left_to_right_incoming,
+                R.transition.left_to_right_outgoing);
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.joffreylagut.mysteamgames.mysteamgames;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -129,7 +131,16 @@ class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesListView
             intent.putExtra("gameID", gameList.get(clickedPosition).getGameID());
             intent.putExtra("userID", gameList.get(clickedPosition).getUserID());
             intent.putExtra("adapterPosition", clickedPosition);
-            ((Activity) context).startActivityForResult(intent, 1);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                Bundle bndlAnimation = ActivityOptions.makeCustomAnimation(v.getContext(),
+                        R.transition.right_to_left_incoming, R.transition.right_to_left_outgoing)
+                        .toBundle();
+                ((Activity) context).startActivityForResult(intent, 1, bndlAnimation);
+            } else {
+                ((Activity) context).startActivityForResult(intent, 1);
+            }
+
         }
     }
 }

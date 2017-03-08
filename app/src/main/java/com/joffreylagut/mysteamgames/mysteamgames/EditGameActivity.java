@@ -206,6 +206,10 @@ public class EditGameActivity extends AppCompatActivity {
         Intent returnIntent = new Intent();
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
+        // We want to display an animation to go back on the previous activity
+        overridePendingTransition(R.transition.left_to_right_incoming,
+                R.transition.left_to_right_outgoing);
+
     }
 
     /**
@@ -414,6 +418,14 @@ public class EditGameActivity extends AppCompatActivity {
             this.onBackPressed();
         }
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        // We want to display an animation to go back on the previous activity
+        overridePendingTransition(R.transition.left_to_right_incoming,
+                R.transition.left_to_right_outgoing);
     }
 
     private int getIndex(Spinner spinner, String myString) {
