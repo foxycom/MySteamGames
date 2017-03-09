@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_game_details"
     android:layout_width="match_parent"
@@ -56,15 +57,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="8dp">
+                android:paddingBottom="8dp"
+                android:paddingLeft="@dimen/card_padding_left_and_right">
 
-                <TextView
+                <ImageView
                     android:id="@+id/tv_game_details_time_played_ico"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/card_padding_left_and_right"
-                    android:text="@string/ico_time_black"
-                    android:textSize="24dp" />
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:alpha="0.54"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/ic_access_time_black" />
 
                 <TextView
                     android:id="@+id/tv_game_details_time_played"
@@ -85,15 +87,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="8dp">
+                android:paddingBottom="8dp"
+                android:paddingLeft="@dimen/card_padding_left_and_right">
 
-                <TextView
+                <ImageView
                     android:id="@+id/tv_game_details_game_price_ico"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/card_padding_left_and_right"
-                    android:text="@string/ico_money_black"
-                    android:textSize="24dp" />
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:alpha="0.54"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/ic_attach_money_black" />
 
                 <TextView
                     android:id="@+id/tv_game_details_game_price"
@@ -115,16 +118,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="8dp">
+                android:paddingBottom="8dp"
+                android:paddingLeft="@dimen/card_padding_left_and_right">
 
-                <TextView
+                <ImageView
                     android:id="@+id/tv_game_details_game_price_per_hour_ico"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:paddingLeft="@dimen/card_padding_left_and_right"
-                    android:text="@string/ico_game_black"
-                    android:textSize="24dp" />
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:alpha="0.54"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/ic_videogame_asset_black" />
 
                 <TextView
                     android:id="@+id/tv_game_details_game_price_per_hour"

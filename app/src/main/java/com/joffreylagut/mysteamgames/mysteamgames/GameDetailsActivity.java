@@ -60,15 +60,6 @@ public class GameDetailsActivity extends AppCompatActivity {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Setup the fonticon on the textviews
-        TextView icoTime = (TextView) findViewById(R.id.tv_game_details_time_played_ico);
-        //icoTime.setTypeface(FontManager.getTypeface(this, FontManager.CUSTOMFONTICON));
-
-        TextView icoPrice = (TextView) findViewById(R.id.tv_game_details_game_price_ico);
-        //icoPrice.setTypeface(FontManager.getTypeface(this, FontManager.CUSTOMFONTICON));
-
-        TextView icoPricePerHour = (TextView) findViewById(R.id.tv_game_details_game_price_per_hour_ico);
-        //*icoPricePerHour.setTypeface(FontManager.getTypeface(this, FontManager.CUSTOMFONTICON));
 
         // Preparing the database.
         userDbHelper = UserDbHelper.getInstance(this);
