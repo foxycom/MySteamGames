@@ -44,6 +44,7 @@ public class GameDetailsActivity extends AppCompatActivity {
     private TextView tvBundleName;
     private SQLiteDatabase db;
     private String newPrice = "null";
+    private String recyclerName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class GameDetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         gameID = intent.getIntExtra("gameID",0);
         userID = intent.getIntExtra("userID", 0);
+        recyclerName = intent.getStringExtra("recyclerName");
         adapterPosition = intent.getIntExtra("adapterPosition", 0);
         displayGameInformation();
     }
@@ -87,7 +89,9 @@ public class GameDetailsActivity extends AppCompatActivity {
         Cursor result = userDbHelper.getGameBy_ID(db, String.valueOf(gameID));
         if(result.getCount() != 0){
             result.moveToFirst();
-            getSupportActionBar().setTitle(result.getString(result.getColumnIndex(UserContract.GameEntry.COLUMN_GAME_NAME)));
+            String gameName = result.getString(
+                    result.getColumnIndex(UserContract.GameEntry.COLUMN_GAME_NAME));
+            getSupportActionBar().setTitle(gameName);
             String urlGame = result.getString(result.getColumnIndex(UserContract.GameEntry.COLUMN_GAME_LOGO));
             if(urlGame.length() != 0) {
                 Picasso.with(this).load(urlGame).into(ivGame);
@@ -230,10 +234,12 @@ public class GameDetailsActivity extends AppCompatActivity {
                 break;
             case "Fre":
                 returnIntent.putExtra("newPrice", "0");
+                returnIntent.putExtra("recyclerName", recyclerName);
                 setResult(Activity.RESULT_OK, returnIntent);
                 break;
             default:
                 returnIntent.putExtra("newPrice", newPrice);
+                returnIntent.putExtra("recyclerName", recyclerName);
                 setResult(Activity.RESULT_OK, returnIntent);
                 break;
         }

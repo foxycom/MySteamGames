@@ -29,10 +29,12 @@ class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesListView
 
     private List<GameListItem> gameList;
     private Context context;
+    private String recyclerName;
 
-    GameListAdapter(List<GameListItem> gameList, Context context) {
+    GameListAdapter(List<GameListItem> gameList, Context context, String recyclerName) {
         this.gameList = gameList;
         this.context = context;
+        this.recyclerName = recyclerName;
     }
 
     @Override
@@ -129,6 +131,7 @@ class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesListView
             Intent intent = new Intent(v.getContext(), GameDetailsActivity.class);
             intent.putExtra("gameID", gameList.get(clickedPosition).getGameID());
             intent.putExtra("userID", gameList.get(clickedPosition).getUserID());
+            intent.putExtra("recyclerName", recyclerName);
             intent.putExtra("adapterPosition", clickedPosition);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
