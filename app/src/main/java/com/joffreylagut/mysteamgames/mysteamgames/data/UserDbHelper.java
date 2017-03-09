@@ -1033,11 +1033,12 @@ public class UserDbHelper extends SQLiteOpenHelper {
      * @return Cursor containing the rows matching the request.
      */
     public Cursor getBundleByName(SQLiteDatabase db, String bundleName, String userID) {
-        String where = UserContract.BundleEntry.COLUMN_BUNDLE_NAME + " = '" + bundleName
-                + "' AND " + UserContract.OwnedGamesEntry.COLUMN_USER_ID + " = " + userID +
-                " AND " + UserContract.OwnedGamesEntry.TABLE_NAME + "." + UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID + " = " +
-                UserContract.BundleEntry.TABLE_NAME + "." + UserContract.BundleEntry._ID;
-        String whereArgs[] = null;
+        String where = UserContract.BundleEntry.COLUMN_BUNDLE_NAME + " = ? AND "
+                + UserContract.OwnedGamesEntry.COLUMN_USER_ID + " = ? AND "
+                + UserContract.OwnedGamesEntry.TABLE_NAME + "."
+                + UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID + " = "
+                + UserContract.BundleEntry.TABLE_NAME + "." + UserContract.BundleEntry._ID;
+        String whereArgs[] = new String[]{bundleName, userID};
         String groupBy = null;
         String having = null;
         String order = null;

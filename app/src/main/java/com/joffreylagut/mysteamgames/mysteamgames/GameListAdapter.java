@@ -112,8 +112,7 @@ class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesListView
                 default:
                     double pricePerHour = gameItem.getGamePrice() / nbHours;
                     DecimalFormat df = new DecimalFormat("#.##");
-                    String pricePerHourFormated = String.valueOf(df.format(pricePerHour));
-                    if (pricePerHourFormated.compareTo("∞") == 0) {
+                    if (gameItem.getGameTimePlayed() == 0) {
                         gamePrice.setText("— " + sharedPreferences.getString("lp_currency", "$") + "/h");
                     } else {
                         gamePrice.setText(String.valueOf(df.format(pricePerHour)) + " " + sharedPreferences.getString("lp_currency", "$") + "/h");
