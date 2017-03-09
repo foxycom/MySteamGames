@@ -48,6 +48,7 @@
 
     <!-- Edit game activity -->
     <string name="save">Save</string>
+    <string name="error_bundle_name">Choose a bundle or add a new one.</string>
 
     <string name="game_details_statistics_title">Statistics</string>
     <string name="game_details_time_played">- Time played:</string>

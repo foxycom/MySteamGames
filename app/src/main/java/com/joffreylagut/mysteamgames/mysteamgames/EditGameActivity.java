@@ -51,10 +51,8 @@ public class EditGameActivity extends AppCompatActivity {
     private EditText etGamePrice;
     private Spinner spBundleName;
     private EditText etBundlePrice;
-    private RadioGroup rgBoughtType;
     private List<String> arraySpinnerBundle;
     private ArrayAdapter<String> adapterBundle;
-    private String marketPlace;
     private List<String[]> listUserBundleWithPrice;
 
     @Override
@@ -83,7 +81,7 @@ public class EditGameActivity extends AppCompatActivity {
         etGamePrice = (EditText) findViewById(R.id.et_game_price);
         spBundleName = (Spinner) findViewById(R.id.sp_bundle_name);
         etBundlePrice = (EditText) findViewById(R.id.et_bundle_price);
-        rgBoughtType = (RadioGroup) findViewById(R.id.rg_bought_type);
+        RadioGroup rgBoughtType = (RadioGroup) findViewById(R.id.rg_bought_type);
 
         // We declare on event onCheckedChangeListener on the RadioGroup to add/remove some views
         rgBoughtType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -150,7 +148,7 @@ public class EditGameActivity extends AppCompatActivity {
         double timePlayed = Double.parseDouble(etTimePlayed.getText().toString());
         String timeUnit = spTimeUnit.getSelectedItem().toString();
         // If the user have set the time in hour, we need to convert it in minutes
-        if (timeUnit == "h") timePlayed = timePlayed * 60;
+        if (timeUnit.equals("h")) timePlayed = timePlayed * 60;
         if (rdBoughtAlone.isChecked()) {
             // The game have been bought alone
             // We have to clean the currency
@@ -170,11 +168,11 @@ public class EditGameActivity extends AppCompatActivity {
             // We get the price
             Double bundlePrice = Double.valueOf(cleanString);
             String bundleName = spBundleName.getSelectedItem().toString();
-            if (bundleName != getResources().getString(R.string.spinner_choose_bundle_item) &&
-                    bundleName != getResources().getString(R.string.spinner_new_bundle_item)) {
+            if (!bundleName.equals(getResources().getString(R.string.spinner_choose_bundle_item)) &&
+                    !bundleName.equals(getResources().getString(R.string.spinner_new_bundle_item))) {
                 // First, we check if there is already a bundle with this name
                 request = userDbHelper.getBundleByName(db, bundleName, String.valueOf(userID));
-                int bundleID = 0;
+                int bundleID;
                 if (request.getCount() != 0) {
                     // The user already own a bundle with this name so we update the bundle.
                     bundleID = request.getInt(request.getColumnIndex(UserContract.BundleEntry._ID));
@@ -183,14 +181,6 @@ public class EditGameActivity extends AppCompatActivity {
                 } else {
                     // We create a new bundle
                     bundleID = Integer.parseInt(String.valueOf(userDbHelper.addNewBundle(db, bundleName, String.valueOf(bundlePrice))));
-                    // Now, we need to get the ID of this bundle.
-                    // The bundle is the last one inserted in db so we have to find it.
-                    /**request = userDbHelper.getAllBundles(db);
-                     if (request.getCount() != 0) {
-                     request.moveToLast();
-                     bundleID = request.getInt(
-                     request.getColumnIndex(UserContract.BundleEntry._ID));
-                     }**/
                 }
                 // To finish, we update the ownedgame table
                 userDbHelper.updateOwnedGame(db, String.valueOf(userID),
@@ -199,7 +189,8 @@ public class EditGameActivity extends AppCompatActivity {
                 userDbHelper.updateOnwedGamePriceFromBundle(db, String.valueOf(bundleID));
 
             } else {
-                // TODO : Show an error to the user under bundleName
+                showView(findViewById(R.id.tv_error_bundle_name));
+                return;
             }
         }
         Toast.makeText(v.getContext(), "Game saved", Toast.LENGTH_LONG).show();
@@ -245,7 +236,7 @@ public class EditGameActivity extends AppCompatActivity {
         String gamePrice = null;
         int bundleID = 0;
         String gameName = null;
-        marketPlace = null;
+        String marketPlace = null;
         String bundleName = null;
         String bundlePrice = null;
 
@@ -282,8 +273,8 @@ public class EditGameActivity extends AppCompatActivity {
                     request.getColumnIndex(UserContract.GameEntry.COLUMN_MARKETPLACE));
         }
         // We are putting the values inside the bundle spinner
-        arraySpinnerBundle = new ArrayList<String>();
-        listUserBundleWithPrice = new ArrayList<String[]>();
+        arraySpinnerBundle = new ArrayList<>();
+        listUserBundleWithPrice = new ArrayList<>();
         // Basic values
         arraySpinnerBundle.add(getResources().getString(R.string.spinner_choose_bundle_item));
         arraySpinnerBundle.add(getResources().getString(R.string.spinner_new_bundle_item));
@@ -305,7 +296,7 @@ public class EditGameActivity extends AppCompatActivity {
         }
 
         // Setup the adapter
-        adapterBundle = new ArrayAdapter<String>(this,
+        adapterBundle = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, arraySpinnerBundle);
         adapterBundle.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spBundleName.setAdapter(adapterBundle);
@@ -335,7 +326,7 @@ public class EditGameActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             arraySpinnerBundle.add(input.getText().toString());
-                            adapterBundle = new ArrayAdapter<String>(spBundleName.getContext(),
+                            adapterBundle = new ArrayAdapter<>(spBundleName.getContext(),
                                     android.R.layout.simple_spinner_item, arraySpinnerBundle);
                             adapterBundle.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             spBundleName.setAdapter(adapterBundle);
@@ -355,8 +346,6 @@ public class EditGameActivity extends AppCompatActivity {
                 } else {
                     // We have to check if the GameBundle already exist in db to show its price
                     for (String[] currentBundle : listUserBundleWithPrice) {
-                        String string1 = currentBundle[0];
-                        String string2 = parentView.getAdapter().getItem(position).toString();
                         if (currentBundle[0].equals(parentView.getAdapter().getItem(position).toString())) {
                             // We add the price in the view
                             etBundlePrice.setText(currentBundle[1]);
@@ -375,7 +364,7 @@ public class EditGameActivity extends AppCompatActivity {
         });
 
         // Steam games information are auto-updated so we deactivate the fields
-        if (marketPlace.equals("Steam")) {
+        if (marketPlace != null && marketPlace.equals("Steam")) {
             etTimePlayed.setEnabled(false);
             etGameName.setEnabled(false);
             // Since we are storing time in minutes in DB, we choose automaticaly mn in the spinner
@@ -388,7 +377,7 @@ public class EditGameActivity extends AppCompatActivity {
         // We can now insert the values in views
         etGameName.setText(gameName);
         etTimePlayed.setText(timePlayed);
-        if (!gamePrice.equals("-1")) etGamePrice.setText(gamePrice);
+        if (!(gamePrice != null && gamePrice.equals("-1"))) etGamePrice.setText(gamePrice);
         if (bundleID == 0) {
             rdBoughtAlone.setChecked(true);
             rdBoughtBundle.setChecked(false);
@@ -438,11 +427,11 @@ public class EditGameActivity extends AppCompatActivity {
         return -1;
     }
 
-    class MoneyTextWatcher implements TextWatcher {
+    private class MoneyTextWatcher implements TextWatcher {
         private final WeakReference<EditText> editTextWeakReference;
 
-        public MoneyTextWatcher(EditText editText) {
-            editTextWeakReference = new WeakReference<EditText>(editText);
+        MoneyTextWatcher(EditText editText) {
+            editTextWeakReference = new WeakReference<>(editText);
         }
 
         @Override
@@ -463,16 +452,17 @@ public class EditGameActivity extends AppCompatActivity {
             String cleanString;
             switch (sharedPreferences.getString("lp_currency", "$")) {
                 case "€":
-                    cleanString = s.toString().replaceAll("[€]", "");
+                    cleanString = s.replaceAll("[€]", "");
                     break;
                 case "£":
-                    cleanString = s.toString().replaceAll("[£]", "");
+                    cleanString = s.replaceAll("[£]", "");
                     break;
                 default:
-                    cleanString = s.toString().replaceAll("[$]", "");
+                    cleanString = s.replaceAll("[$]", "");
                     break;
             }
-            editText.setText(sharedPreferences.getString("lp_currency", "$") + cleanString);
+            String newText = sharedPreferences.getString("lp_currency", "$") + cleanString;
+            editText.setText(newText);
             editText.setSelection(cleanString.length() + 1);
             editText.addTextChangedListener(this);
         }
