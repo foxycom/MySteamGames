@@ -24,7 +24,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
@@ -193,7 +192,6 @@ public class EditGameActivity extends AppCompatActivity {
                 return;
             }
         }
-        Toast.makeText(v.getContext(), "Game saved", Toast.LENGTH_LONG).show();
         Intent returnIntent = new Intent();
         setResult(Activity.RESULT_OK, returnIntent);
         finish();

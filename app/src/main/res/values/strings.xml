@@ -45,6 +45,7 @@
 
     <!-- Game details activity -->
     <string name="edit">Edit</string>
+    <string name="snackbar_game_saved">Game saved</string>
 
     <!-- Edit game activity -->
     <string name="save">Save</string>

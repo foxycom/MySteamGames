@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
@@ -78,14 +78,6 @@ public class GameDetailsActivity extends AppCompatActivity {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.game_details_menu, menu);
-
-        // We have to color the edit icon with the same color of the title
-        Drawable drawable = menu.findItem(R.id.menu_game_details_edit).getIcon();
-        if (drawable != null) {
-            drawable.mutate();
-            drawable.setColorFilter(getResources().getColor(R.color.colorTextAccent), PorterDuff.Mode.SRC_ATOP);
-        }
-
         return true;
     }
 
@@ -113,10 +105,13 @@ public class GameDetailsActivity extends AppCompatActivity {
             String timePlayed = result.getString(result.getColumnIndex(UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_FOREVER));
             String gamePrice = result.getString(result.getColumnIndex(UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE));
             TextView tvSpent = (TextView) findViewById(R.id.tv_game_details_spent);
+
+            String priceText;
             switch (gamePrice) {
                 case "":
                 case "-1":
-                    tvGamePrice.setText("?" + sharedPreferences.getString("lp_currency", "$"));
+                    priceText = "?" + sharedPreferences.getString("lp_currency", "$");
+                    tvGamePrice.setText(priceText);
                     tvGamePricePerHour.setText("?" + sharedPreferences.getString("lp_currency", "$") + "/h");
                     tvSpent.setVisibility(View.VISIBLE);
                     break;
@@ -126,7 +121,8 @@ public class GameDetailsActivity extends AppCompatActivity {
                     tvSpent.setVisibility(View.INVISIBLE);
                     break;
                 default:
-                    tvGamePrice.setText(gamePrice + sharedPreferences.getString("lp_currency", "$"));
+                    priceText = gamePrice + sharedPreferences.getString("lp_currency", "$");
+                    tvGamePrice.setText(priceText);
                     Double hours = Double.valueOf(timePlayed) / 60;
                     Double pricePerHour = Double.valueOf(gamePrice) / hours;
                     DecimalFormat df = new DecimalFormat("#.##");
@@ -208,6 +204,13 @@ public class GameDetailsActivity extends AppCompatActivity {
                 String price = tvGamePrice.getText().toString();
                 price = price.substring(0, price.length() - 1);
                 newPrice = price;
+
+                CoordinatorLayout coordinatorLayout =
+                        (CoordinatorLayout) findViewById(R.id.activity_game_details_coordinator);
+
+                Snackbar snackbar = Snackbar.make(coordinatorLayout,
+                        R.string.snackbar_game_saved, Snackbar.LENGTH_LONG);
+                snackbar.show();
             }
         }
     }
