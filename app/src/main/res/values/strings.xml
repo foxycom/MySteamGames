@@ -24,6 +24,9 @@
     <string name="menu_sort_total_price">Total price</string>
     <string name="menu_sort_price_per_hour">Price per hour</string>
     <string name="never_played">Never played yet</string>
+    <string name="tab_recent_title">Recent</string>
+    <string name="tab_favorite_title">Favorite</string>
+    <string name="tab_all_title">All</string>
 
     <!-- Drawer -->
     <string name="default_account_name">Account name</string>

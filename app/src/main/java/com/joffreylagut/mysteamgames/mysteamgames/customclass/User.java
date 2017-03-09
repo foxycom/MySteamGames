@@ -1,6 +1,7 @@
 package com.joffreylagut.mysteamgames.mysteamgames.customclass;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -74,4 +75,36 @@ public class User {
     }
 
     public void setNbMinutesPlayed(int nbMinutesPlayed) { this.nbMinutesPlayed = nbMinutesPlayed; }
+
+    /**
+     * This function is returning the user recently played games.
+     *
+     * @return a list of recently played games
+     */
+    public List<OwnedGame> getRecentlyPlayedGames() {
+        List<OwnedGame> recentlyPlayedGames = new ArrayList<>();
+        for (OwnedGame currentGame : this.ownedGames) {
+            if (currentGame.getTimePlayed2Weeks() != 0) {
+                recentlyPlayedGames.add(currentGame);
+            }
+        }
+        return recentlyPlayedGames;
+    }
+
+    // TODO change this function when the favorites will be implemented
+
+    /**
+     * This function is returning the user favorite games.
+     *
+     * @return a list of favorite games
+     */
+    public List<OwnedGame> getFavoriteGames() {
+        List<OwnedGame> recentlyPlayedGames = new ArrayList<>();
+        for (OwnedGame currentGame : this.ownedGames) {
+            if (currentGame.getTimePlayed2Weeks() != 0) {
+                recentlyPlayedGames.add(currentGame);
+            }
+        }
+        return recentlyPlayedGames;
+    }
 }

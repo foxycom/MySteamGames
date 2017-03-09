@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ import com.joffreylagut.mysteamgames.mysteamgames.customclass.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.customclass.User;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.AnimatedTabHostListener;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.GameListSorter;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
@@ -50,7 +52,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static android.support.design.widget.Snackbar.make;
@@ -74,7 +75,9 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
     private TextView tvNumberOfGames;
     private TextView tvTotalTimePlayed;
     private TextView tvMoneySpent;
-    private RecyclerView recyclerView;
+    private RecyclerView rvAllGames;
+    private RecyclerView rvRecentGames;
+    private RecyclerView rvFavoriteGames;
     private TextView tvTotalPricePerHour;
 
     // Variable used to determine if we want to display ASC or DESC menu item
@@ -142,9 +145,35 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Now we setup the TabHost and its tabs
+        TabHost host = (TabHost) findViewById(R.id.tabhost);
+        host.setup();
+
+        //Tab recent
+        TabHost.TabSpec spec = host.newTabSpec(getResources().getString(R.string.tab_recent_title));
+        spec.setContent(R.id.tab_recent);
+        spec.setIndicator(getResources().getString(R.string.tab_recent_title));
+        host.addTab(spec);
+
+        //Tab favorite
+        spec = host.newTabSpec(getResources().getString(R.string.tab_favorite_title));
+        spec.setContent(R.id.tab_favorite);
+        spec.setIndicator(getResources().getString(R.string.tab_favorite_title));
+        host.addTab(spec);
+        host.setOnTabChangedListener(new AnimatedTabHostListener(this, host));
+
+        //Tab all
+        spec = host.newTabSpec(getResources().getString(R.string.tab_all_title));
+        spec.setContent(R.id.tab_all);
+        spec.setIndicator(getResources().getString(R.string.tab_all_title));
+        host.addTab(spec);
+
         // Then, we are linking our views with the layout
         pbLoading = (ProgressBar) findViewById(R.id.pb_loading);
-        recyclerView = (RecyclerView) findViewById(R.id.rv_games);
+        rvAllGames = (RecyclerView) findViewById(R.id.rv_all_games);
+        rvRecentGames = (RecyclerView) findViewById(R.id.rv_recent_games);
+        rvFavoriteGames = (RecyclerView) findViewById(R.id.rv_favorite_games);
+        rvAllGames = (RecyclerView) findViewById(R.id.rv_all_games);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
 
         View hView = navigationView.getHeaderView(0);
@@ -265,18 +294,27 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
 
     private void sortAndShowGameItemList() {
 
-        // We have to get the adapter
-        GameListAdapter gameListAdapter = (GameListAdapter) recyclerView.getAdapter();
-        // To then get the list
-        List<GameListItem> sortedList = gameListAdapter.getGameList();
+        // We have to get the adapters
+        GameListAdapter allGamesListAdapter = (GameListAdapter) rvAllGames.getAdapter();
+        GameListAdapter recentGamesListAdapter = (GameListAdapter) rvRecentGames.getAdapter();
+        GameListAdapter favoritesGamesListAdapter = (GameListAdapter) rvFavoriteGames.getAdapter();
 
-        // Now we have to sort the list
+        // To then get the lists
+        List<GameListItem> allGamesSortedList = allGamesListAdapter.getGameList();
+        List<GameListItem> recentGamesSortedList = recentGamesListAdapter.getGameList();
+        List<GameListItem> favoriteGamesSortedList = favoritesGamesListAdapter.getGameList();
+
+        // Now we have to sort the lists
         switch (currentSort) {
             case "alphabetical":
-                sortedList = GameListSorter.sortByName(sortedList, currentSortAsc);
+                allGamesSortedList = GameListSorter.sortByName(allGamesSortedList, currentSortAsc);
+                recentGamesSortedList = GameListSorter.sortByName(recentGamesSortedList, currentSortAsc);
+                favoriteGamesSortedList = GameListSorter.sortByName(favoriteGamesSortedList, currentSortAsc);
                 break;
             case "time_played":
-                sortedList = GameListSorter.sortByTimePlayed(sortedList, currentSortAsc);
+                allGamesSortedList = GameListSorter.sortByTimePlayed(allGamesSortedList, currentSortAsc);
+                recentGamesSortedList = GameListSorter.sortByTimePlayed(recentGamesSortedList, currentSortAsc);
+                favoriteGamesSortedList = GameListSorter.sortByTimePlayed(favoriteGamesSortedList, currentSortAsc);
                 break;
             case "price_per_hour":
                 /*// Here, we have to remove all the free to play
@@ -287,16 +325,26 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
                         it.remove();
                     }
                 }*/
-                sortedList = GameListSorter.sortByPricePerHour(sortedList, currentSortAsc);
+                allGamesSortedList = GameListSorter.sortByPricePerHour(allGamesSortedList, currentSortAsc);
+                recentGamesSortedList = GameListSorter.sortByPricePerHour(recentGamesSortedList, currentSortAsc);
+                favoriteGamesSortedList = GameListSorter.sortByPricePerHour(favoriteGamesSortedList, currentSortAsc);
                 break;
             case "price":
-                sortedList = GameListSorter.sortByPrice(sortedList, currentSortAsc);
+                allGamesSortedList = GameListSorter.sortByPrice(allGamesSortedList, currentSortAsc);
+                recentGamesSortedList = GameListSorter.sortByPrice(recentGamesSortedList, currentSortAsc);
+                favoriteGamesSortedList = GameListSorter.sortByPrice(favoriteGamesSortedList, currentSortAsc);
                 break;
         }
 
-        // Now that we have the sortedlist, we put the new adapter in the recyclerview
-        gameListAdapter.setGameList(sortedList);
-        recyclerView.setAdapter(gameListAdapter);
+        // Now that we have the sortedlists, we put the new adapters in the recyclerviews
+        allGamesListAdapter.setGameList(allGamesSortedList);
+        rvAllGames.setAdapter(allGamesListAdapter);
+
+        recentGamesListAdapter.setGameList(recentGamesSortedList);
+        rvRecentGames.setAdapter(recentGamesListAdapter);
+
+        favoritesGamesListAdapter.setGameList(favoriteGamesSortedList);
+        rvFavoriteGames.setAdapter(favoritesGamesListAdapter);
 
     }
 
@@ -386,16 +434,29 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         tvTotalPricePerHour.setText(String.valueOf(df.format(totalPricePerHour)) + sharedPreferences.getString("lp_currency", "$") + "/h");
         tvMoneySpent.setText(String.valueOf(df.format(totalMoneySpent)) + sharedPreferences.getString("lp_currency", "$"));
 
-        // We insert the data in our RecyclerView
-        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        // We insert the data in our RecyclerViews
 
-        List<GameListItem> sortedList = createGameListItemList(currentUser.getOwnedGames());
+        List<GameListItem> recentGamesList = createGameListItemList(
+                currentUser.getRecentlyPlayedGames());
+        GameListAdapter recentGamesListAdapter = new GameListAdapter(recentGamesList, this);
+        rvRecentGames.setAdapter(recentGamesListAdapter);
+        rvRecentGames.setLayoutManager(new GridLayoutManager(this, 2));
 
-        Collections.sort(sortedList);
+        List<GameListItem> favoriteGamesList = createGameListItemList(
+                currentUser.getFavoriteGames());
+        GameListAdapter favoriteGamesListAdapter = new GameListAdapter(recentGamesList, this);
+        rvFavoriteGames.setAdapter(favoriteGamesListAdapter);
+        rvFavoriteGames.setLayoutManager(new GridLayoutManager(this, 2));
 
-        GameListAdapter gameListAdapter = new GameListAdapter(sortedList, this);
-        recyclerView.setAdapter(gameListAdapter);
+        List<GameListItem> allGamesList = createGameListItemList(currentUser.getOwnedGames());
+        GameListAdapter allGamesListAdapter = new GameListAdapter(allGamesList, this);
+        rvAllGames.setAdapter(allGamesListAdapter);
+        rvAllGames.setLayoutManager(new GridLayoutManager(this, 2));
+
+        // We change the current sort of the lists
+        currentSort = "time_played";
+        // We call the method that will sort and display the new lists
+        sortAndShowGameItemList();
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -404,7 +465,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
             if (resultCode == Activity.RESULT_OK) {
                 String newPrice = data.getStringExtra("newPrice");
                 int adapterPosition = data.getIntExtra("adapterPosition", 0);
-                GameListAdapter gameListAdapter = (GameListAdapter) recyclerView.getAdapter();
+                GameListAdapter gameListAdapter = (GameListAdapter) rvAllGames.getAdapter();
                 GameListItem itemToEdit = gameListAdapter.getGameList().get(adapterPosition);
                 itemToEdit.setGamePrice(Double.valueOf(newPrice));
                 gameListAdapter.getGameList().set(adapterPosition, itemToEdit);
