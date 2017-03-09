@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.joffreylagut.mysteamgames.mysteamgames.customclass.GameBundle;
-import com.joffreylagut.mysteamgames.mysteamgames.customclass.User;
+import com.joffreylagut.mysteamgames.mysteamgames.objects.GameBundle;
+import com.joffreylagut.mysteamgames.mysteamgames.objects.User;
 
 import java.net.MalformedURLException;
 import java.net.URL;

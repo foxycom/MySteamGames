@@ -1,4 +1,4 @@
-package com.joffreylagut.mysteamgames.mysteamgames.customclass;
+package com.joffreylagut.mysteamgames.mysteamgames.objects;
 
 /**
  * Created by Joffrey on 15/02/2017.

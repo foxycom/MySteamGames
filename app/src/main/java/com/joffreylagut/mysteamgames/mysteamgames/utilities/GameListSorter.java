@@ -1,6 +1,6 @@
 package com.joffreylagut.mysteamgames.mysteamgames.utilities;
 
-import com.joffreylagut.mysteamgames.mysteamgames.customclass.GameListItem;
+import com.joffreylagut.mysteamgames.mysteamgames.objects.GameListItem;
 
 import java.util.Collections;
 import java.util.Comparator;

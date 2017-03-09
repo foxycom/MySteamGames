@@ -1,11 +1,13 @@
 package com.joffreylagut.mysteamgames.mysteamgames;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
@@ -18,7 +20,6 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,24 +31,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
-import com.joffreylagut.mysteamgames.mysteamgames.customclass.Game;
-import com.joffreylagut.mysteamgames.mysteamgames.customclass.GameListItem;
-import com.joffreylagut.mysteamgames.mysteamgames.customclass.OwnedGame;
-import com.joffreylagut.mysteamgames.mysteamgames.customclass.User;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
+import com.joffreylagut.mysteamgames.mysteamgames.objects.Game;
+import com.joffreylagut.mysteamgames.mysteamgames.objects.GameListItem;
+import com.joffreylagut.mysteamgames.mysteamgames.objects.OwnedGame;
+import com.joffreylagut.mysteamgames.mysteamgames.objects.User;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.AnimatedTabHostListener;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.GameListSorter;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.RetrieveDataFromSteamIntentService;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -55,7 +50,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.support.design.widget.Snackbar.make;
-import static com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls.createGameImageURL;
 
 public class MainActivity extends AppCompatActivity implements GameListAdapter.ListItemClickListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -80,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
     private RecyclerView rvFavoriteGames;
     private TextView tvTotalPricePerHour;
 
+    private SteamDataReceiver receiver;
+
     // Variable used to determine if we want to display ASC or DESC menu item
     private boolean currentSortAsc;
     private String currentSort;
@@ -94,8 +90,18 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         // We initialize it here.
         Stetho.initializeWithDefaults(this);
 
+        // We start the service that retrieve steam information
+        Intent dataRetrieverService = new Intent(this, RetrieveDataFromSteamIntentService.class);
+        startService(dataRetrieverService);
+
+        IntentFilter filter = new IntentFilter(SteamDataReceiver.PROCESS_RESPONSE);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        receiver = new SteamDataReceiver();
+        registerReceiver(receiver, filter);
+
         // We set the view by calling this private method
         setViews();
+        pbLoading.setVisibility(View.INVISIBLE);
 
         // We are declaring a new UserDbHelper to access to the db.
         userDbHelper = UserDbHelper.getInstance(this);
@@ -111,14 +117,6 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         Long steamID = Long.valueOf(sharedPreferences.getString("etp_steamID", "0"));
         refreshUserProfileInformationFromDb(steamID);
 
-        // We are generating the URL and then ask the Steam API
-        SteamAPICalls.getURLPlayerProfileInformation(sharedPreferences.getString("etp_steamID", ""));
-        RetrieveProfileInformation myProfileInformation = new RetrieveProfileInformation();
-        URL[] listURLAPIToCall = {
-                SteamAPICalls.getURLPlayerProfileInformation(sharedPreferences.getString("etp_steamID", "")),
-                SteamAPICalls.getURLPlayerOwnedGames(sharedPreferences.getString("etp_steamID", ""))
-        };
-        myProfileInformation.execute(listURLAPIToCall);
     }
 
     private void setViews() {
@@ -483,101 +481,6 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         message.show();
     }
 
-    public void ParseJSONProfile(String JSONProfil) {
-
-        try {
-            // We are directly going to the object containing our player information.
-            JSONObject player = new JSONObject(JSONProfil)
-                    .getJSONObject("response")
-                    .getJSONArray("players").getJSONObject(0);
-
-            // We insert the information in our container.
-            long steamID = Long.valueOf(player.getString("steamid"));
-            String accountName = player.getString("personaname");
-            String accountPicture = player.getString("avatarfull");
-
-            // We first check if the user already exist in db
-            userDbHelper = UserDbHelper.getInstance(this);
-            User userInDB = userDbHelper.getUserBySteamID(mDb, steamID);
-
-            if (userInDB != null) {
-                // The user already exist, we have to update his informations.
-                userDbHelper.updateUserBySteamID(mDb, String.valueOf(steamID),
-                        accountName, accountPicture);
-            }else{
-                // The user doesn't exist, we have to insert him in DB.
-                userDbHelper.addNewUser(mDb, String.valueOf(steamID)
-                        , accountName, accountPicture);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void ParseJSONGames(String JSONGames){
-        try {
-            JSONArray jsonArrayGames = new JSONObject(JSONGames).getJSONObject("response").getJSONArray("games");
-            User user;
-            int jsonArrayLenght = jsonArrayGames.length();
-            for (int i=0; i < jsonArrayGames.length(); i++){
-
-                // We retrieve and store all of the information in variables.
-                JSONObject jsonGame = jsonArrayGames.getJSONObject(i);
-
-                String appID = jsonGame.getString("appid");
-                String name = jsonGame.getString("name");
-                String playtime_2weeks = "";
-                if(jsonGame.has("playtime_2weeks")) playtime_2weeks = jsonGame.getString("playtime_2weeks");
-                String playtime_forever = jsonGame.getString("playtime_forever");
-                String img_icon_url = jsonGame.getString("img_icon_url");
-                img_icon_url = createGameImageURL(img_icon_url, appID).toString();
-                String img_logo_url = jsonGame.getString("img_logo_url");
-                img_logo_url = SteamAPICalls.createGameImageURL(img_logo_url, appID).toString();
-
-                UserDbHelper userDbHelper = new UserDbHelper(this);
-
-                // We retrieve the User in DB.
-                user = userDbHelper.getUserBySteamID(mDb, Long.valueOf(sharedPreferences.getString("etp_steamID", "")));
-
-                // First, we check if the game already exist in db.
-                Cursor cursor = userDbHelper.getGameBySteamID(mDb, appID);
-                if(cursor.getCount() != 0){
-                    // The game already exist, we have to update it in db.
-                    userDbHelper.updateGameBySteamID(mDb, appID, name, img_logo_url,
-                            img_icon_url, "Steam");
-                }else{
-                    // The game doesn't exist, we have to add it in db.
-                    userDbHelper.addNewGame(mDb, appID, name, img_logo_url,
-                            img_icon_url, "Steam");
-                }
-
-                // Now that the game is in DB, we have to check if the game is already owned by
-                // the user in DB.
-                // We retrieve the gameUD in DB.
-                cursor = userDbHelper.getGameBySteamID(mDb, appID);
-                String gameID = "0";
-                if(cursor.getCount() != 0){
-                    gameID = cursor.getString(cursor.getColumnIndex(UserContract.GameEntry._ID));
-                }
-
-                cursor = userDbHelper.getOwnedGame(mDb, String.valueOf(user.getUserID()), gameID);
-                if(cursor.getCount() != 0){
-                    // The game is already owned by the user, we have to update it.
-                    userDbHelper.updateOwnedGame(mDb, String.valueOf(user.getUserID()), gameID,
-                            playtime_forever, playtime_2weeks, null, null);
-                }else{
-                    // The game isn't already owned in db, we add it.
-                    userDbHelper.addNewOwnedGame(mDb, String.valueOf(user.getUserID()), gameID,
-                            playtime_forever, playtime_2weeks, null);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
     public List<GameListItem> createGameListItemList(List<OwnedGame> ownedGames){
         List<GameListItem> gameListItems = new ArrayList<>();
         GameListItem item;
@@ -596,50 +499,17 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         return gameListItems;
     }
 
-    // TODO Change the AsyncTask into a Loader
-    class RetrieveProfileInformation extends AsyncTask<URL, Void, String[]> {
+    public class SteamDataReceiver extends BroadcastReceiver {
 
+        public static final String PROCESS_RESPONSE = "com.joffreylagut.mysteamgames.mysteamgames.intent.action.PROCESS_RESPONSE";
 
-        protected void onPreExecute() {
-            pbLoading.setVisibility(View.VISIBLE);
-        }
-
-        protected String[] doInBackground(URL... urls) {
-            // Do some validation here
-            String[] responses = new String[urls.length];
-            int i = 0;
-            for(URL currentURL : urls) {
-                try {
-                    HttpURLConnection urlConnection = (HttpURLConnection) currentURL.openConnection();
-                    try {
-                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                        StringBuilder stringBuilder = new StringBuilder();
-                        String line;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            stringBuilder.append(line).append("\n");
-                        }
-                        bufferedReader.close();
-                        responses[i] = stringBuilder.toString();
-                        i++;
-                    } finally {
-                        urlConnection.disconnect();
-                    }
-                } catch (Exception e) {
-                    Log.e("ERROR", e.getMessage(), e);
-                    responses[i] = "Error";
-                    i++;
-                }
-            }
-            Log.i("INFO", responses[0]);
-            Log.i("INFO", responses[1]);
-            if(!responses[0].equals("Error with userJSON")) ParseJSONProfile(responses[0]);
-            if(!responses[1].equals("Error with gamesJSON")) ParseJSONGames(responses[1]);
-            return responses;
-        }
-
-        protected void onPostExecute(String[] responses) {
+        @Override
+        public void onReceive(Context context, Intent intent) {
             pbLoading.setVisibility(View.INVISIBLE);
 
+            if (currentUser == null) {
+                refreshUserProfileInformationFromDb(Long.valueOf(sharedPreferences.getString("etp_steamID", "")));
+            } else {
             Snackbar snackbar = Snackbar.make(coordinatorLayout, R.string.new_steam_data_loaded, Snackbar.LENGTH_LONG)
                     .setAction(R.string.snackbar_action_refresh, new View.OnClickListener() {
                         @Override
@@ -648,7 +518,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
                         }
                     });
             snackbar.show();
-
+            }
         }
     }
 }

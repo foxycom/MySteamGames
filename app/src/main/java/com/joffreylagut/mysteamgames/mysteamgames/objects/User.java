@@ -1,4 +1,4 @@
-package com.joffreylagut.mysteamgames.mysteamgames.customclass;
+package com.joffreylagut.mysteamgames.mysteamgames.objects;
 
 import java.net.URL;
 import java.util.ArrayList;

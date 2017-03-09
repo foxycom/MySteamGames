@@ -41,6 +41,10 @@
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
+        <!-- Declaring Service in Manifest -->
+        <service
+            android:name=".utilities.RetrieveDataFromSteamIntentService"
+            android:exported="false" />
     </application>
 
 </manifest>
