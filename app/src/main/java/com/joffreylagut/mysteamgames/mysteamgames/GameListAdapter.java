@@ -100,7 +100,7 @@ class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesListView
                 timePlayed.setText(stringTimePlayed);
             }
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            double nbHours = gameItem.getGameTimePlayed() / 60;
+            double nbHours = (double) gameItem.getGameTimePlayed() / 60;
             String gamePriceFinal = String.valueOf(gameItem.getGamePrice());
             switch (gamePriceFinal) {
                 case "-1.0":
