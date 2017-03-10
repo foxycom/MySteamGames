@@ -7,5 +7,5 @@
         android:entryValues="@array/list_currency"
         android:key="lp_currency"
         android:summary="Select the currency to display in the app."
-        android:title="Currency" />
+        android:title="@string/currency" />
 </PreferenceScreen>

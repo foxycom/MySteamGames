@@ -207,7 +207,7 @@ public class EditGameActivity extends AppCompatActivity {
     }
 
     /**
-     * The function remove the currrency from the String in parameter.
+     * The function remove the currency from the String in parameter.
      * For example, "€25.2" will be returned "25.2"
      *
      * @param stringToClean String with the currency and the amount.

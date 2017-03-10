@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // We have to get the adapters
         GameListAdapter allGamesListAdapter = (GameListAdapter) recyclerViewToSort.getAdapter();
-
+        if (allGamesListAdapter == null) return;
         // To then get the lists
         List<GameListItem> allGamesSortedList = allGamesListAdapter.getGameList();
 
@@ -538,19 +538,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
                     }
                 }
-                if (recyclerName.equals("rvFavorite") && !edited) {
+                if (recyclerName.equals("rvFavorite") && edited) {
                     GameListAdapter newFavoriteGameListAdapter =
                             new GameListAdapter(newFavoriteGamesList, this, "rvFavorite");
                     rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
                     sortAndShowGameItemList(rvFavoriteGames);
                 } else {
-                    // We update only the item updated in the RecyclerView used to open the activity
-                    GameListItem itemToEdit = gameListAdapter.getGameList().get(adapterPosition);
-                    if (newPrice != null) {
+                    if (newPrice != null && !newPrice.equals(R.string.free)) {
+                        // We update only the item updated in the RecyclerView used to open the activity
+                        GameListItem itemToEdit = gameListAdapter.getGameList().get(adapterPosition);
                         itemToEdit.setGamePrice(Double.valueOf(newPrice));
+                        gameListAdapter.getGameList().set(adapterPosition, itemToEdit);
+                        gameListAdapter.notifyItemChanged(adapterPosition);
                     }
-                    gameListAdapter.getGameList().set(adapterPosition, itemToEdit);
-                    gameListAdapter.notifyItemChanged(adapterPosition);
                 }
             }
         }

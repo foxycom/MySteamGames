@@ -223,7 +223,12 @@ public class GameDetailsActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 displayGameInformation();
                 String price = tvGamePrice.getText().toString();
-                price = price.substring(0, price.length() - 1);
+
+                if (!price.equals(getResources().getString(R.string.free))) {
+                    price = price.substring(0, price.length() - 1);
+                } else {
+                    price = "0";
+                }
                 newPrice = price;
                 edited = true;
 
