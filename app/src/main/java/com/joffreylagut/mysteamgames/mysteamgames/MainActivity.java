@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // We refresh the user information from DB
-        refreshUserProfileInformationFromDb();
+        refreshUserProfileInformationFromDb(true);
 
         // We call the method that will sort and display the new lists
         sortAndShowGameItemList(rvAllGames);
@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         rvToSort.setAdapter(allGamesListAdapter);
     }
 
-    private void refreshUserProfileInformationFromDb() {
+    private void refreshUserProfileInformationFromDb(boolean refreshRecyclerViews) {
 
         // If the user have already used the app, the saved information will be displayed.
         Long steamID = Long.valueOf(sharedPreferences.getString("etp_steamID", "0"));
@@ -426,6 +426,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
                 + sharedPreferences.getString("lp_currency", "$");
         tvMoneySpent.setText(moneySpentText);
 
+        if (refreshRecyclerViews) {
         // We insert the data in our RecyclerViews
 
         List<GameListItem> recentGamesList = createGameListItemList(
@@ -448,8 +449,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         rvAllGames.setAdapter(allGamesListAdapter);
         rvAllGames.setLayoutManager(new GridLayoutManager(this, 2));
 
-        // We change the current sort of the lists
-        currentSort = "time_played";
+        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -463,7 +463,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
                 String recyclerName = data.getStringExtra("recyclerName");
 
                 // We refresh the user information from DB to update currentUser
-                refreshUserProfileInformationFromDb();
+                refreshUserProfileInformationFromDb(false);
 
                 // We make a new list to put in the recyclerViews
                 List<GameListItem> newOwnedGamesList =
@@ -553,13 +553,13 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
             pbLoading.setVisibility(View.INVISIBLE);
 
             if (currentUser == null) {
-                refreshUserProfileInformationFromDb();
+                refreshUserProfileInformationFromDb(true);
             } else {
             Snackbar snackbar = Snackbar.make(coordinatorLayout, R.string.new_steam_data_loaded, Snackbar.LENGTH_LONG)
                     .setAction(R.string.snackbar_action_refresh, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            refreshUserProfileInformationFromDb();
+                            refreshUserProfileInformationFromDb(true);
                         }
                     });
             snackbar.show();
