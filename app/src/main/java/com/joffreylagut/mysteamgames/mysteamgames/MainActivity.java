@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 currentGame = new Game();
                 currentGame.setGameID(result.getInt(result.getColumnIndex(
                         UserContract.OwnedGamesEntry.COLUMN_GAME_ID)));
-                // We have to retriev all the game information in DB.
+                // We have to retrieve all the game information in DB.
                 gameRow = userDbHelper.getGameBy_ID(mDb, String.valueOf(currentGame.getGameID()));
                 if(gameRow.getCount() != 0){
                     gameRow.moveToFirst();
@@ -396,6 +396,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 currentOwnedGame.setTimePlayed2Weeks(result.getInt(result.getColumnIndex(
                         UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_2_WEEKS)));
                 userOwnedGames.add(currentOwnedGame);
+                int favorite = result.getInt(result.getColumnIndex(
+                        UserContract.OwnedGamesEntry.COLUMN_FAVORITE));
+                if (favorite == 1) {
+                    currentOwnedGame.setFavorite(true);
+                } else {
+                    currentOwnedGame.setFavorite(false);
+                }
+
 
                 if (result.getDouble(result.getColumnIndex(
                         UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE)) != -1.00) {
@@ -431,27 +439,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tvMoneySpent.setText(moneySpentText);
 
         if (refreshRecyclerViews) {
-        // We insert the data in our RecyclerViews
+            // We insert the data in our RecyclerViews
 
-        List<GameListItem> recentGamesList = createGameListItemList(
-                currentUser.getRecentlyPlayedGames());
-        GameListAdapter recentGamesListAdapter =
-                new GameListAdapter(recentGamesList, this, "rvRecentGames");
-        rvRecentGames.setAdapter(recentGamesListAdapter);
-        rvRecentGames.setLayoutManager(new GridLayoutManager(this, 2));
+            List<GameListItem> recentGamesList = createGameListItemList(
+                    currentUser.getRecentlyPlayedGames());
+            GameListAdapter recentGamesListAdapter =
+                    new GameListAdapter(recentGamesList, this, "rvRecentGames");
+            rvRecentGames.setAdapter(recentGamesListAdapter);
+            rvRecentGames.setLayoutManager(new GridLayoutManager(this, 2));
 
-        List<GameListItem> favoriteGamesList = createGameListItemList(
-                currentUser.getFavoriteGames());
-        GameListAdapter favoriteGamesListAdapter =
-                new GameListAdapter(favoriteGamesList, this, "rvFavoriteGames");
-        rvFavoriteGames.setAdapter(favoriteGamesListAdapter);
-        rvFavoriteGames.setLayoutManager(new GridLayoutManager(this, 2));
+            List<GameListItem> favoriteGamesList = createGameListItemList(
+                    currentUser.getFavoriteGames());
+            GameListAdapter favoriteGamesListAdapter =
+                    new GameListAdapter(favoriteGamesList, this, "rvFavoriteGames");
+            rvFavoriteGames.setAdapter(favoriteGamesListAdapter);
+            rvFavoriteGames.setLayoutManager(new GridLayoutManager(this, 2));
 
-        List<GameListItem> allGamesList = createGameListItemList(currentUser.getOwnedGames());
-        GameListAdapter allGamesListAdapter =
-                new GameListAdapter(allGamesList, this, "rvAllGames");
-        rvAllGames.setAdapter(allGamesListAdapter);
-        rvAllGames.setLayoutManager(new GridLayoutManager(this, 2));
+            List<GameListItem> allGamesList = createGameListItemList(currentUser.getOwnedGames());
+            GameListAdapter allGamesListAdapter =
+                    new GameListAdapter(allGamesList, this, "rvAllGames");
+            rvAllGames.setAdapter(allGamesListAdapter);
+            rvAllGames.setLayoutManager(new GridLayoutManager(this, 2));
 
         }
     }
@@ -465,6 +473,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String newPrice = data.getStringExtra("newPrice");
                 int adapterPosition = data.getIntExtra("adapterPosition", 0);
                 String recyclerName = data.getStringExtra("recyclerName");
+                Boolean edited = data.getBooleanExtra("edited", false);
 
                 // We refresh the user information from DB to update currentUser
                 refreshUserProfileInformationFromDb(false);
@@ -472,6 +481,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 // We make a new list to put in the recyclerViews
                 List<GameListItem> newOwnedGamesList =
                         createGameListItemList(currentUser.getOwnedGames());
+                List<GameListItem> newFavoriteGamesList = createGameListItemList(
+                        currentUser.getFavoriteGames());
+                List<GameListItem> newRecentGamesList = createGameListItemList(
+                        currentUser.getRecentlyPlayedGames());
 
                 // Now, we have to identify the recyclerView that have opened GameDetailActivity
                 // We prepare a variable to get the adapter
@@ -484,7 +497,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         GameListAdapter newGameListAdapter =
                                 new GameListAdapter(newOwnedGamesList, this, "rvRecentGames");
                         rvRecentGames.setAdapter(newGameListAdapter);
-                        rvFavoriteGames.setAdapter(newGameListAdapter);
+                        GameListAdapter newFavoriteGameListAdapter =
+                                new GameListAdapter(newFavoriteGamesList, this, "rvFavorite");
+                        rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
 
                         sortAndShowGameItemList(rvFavoriteGames);
                         sortAndShowGameItemList(rvRecentGames);
@@ -498,8 +513,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         // We have to update the other RecyclerView
                         GameListAdapter newGameListAdapter =
                                 new GameListAdapter(newOwnedGamesList, this, "rvRecentGames");
-                        rvRecentGames.setAdapter(newGameListAdapter);
                         rvAllGames.setAdapter(newGameListAdapter);
+                        GameListAdapter newRecentGameListAdapter =
+                                new GameListAdapter(newRecentGamesList, this, "rvFavorite");
+                        rvRecentGames.setAdapter(newRecentGameListAdapter);
+
                         sortAndShowGameItemList(rvAllGames);
                         sortAndShowGameItemList(rvRecentGames);
 
@@ -512,18 +530,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         GameListAdapter newGameListAdapter =
                                 new GameListAdapter(newOwnedGamesList, this, "rvRecentGames");
                         rvAllGames.setAdapter(newGameListAdapter);
-                        rvFavoriteGames.setAdapter(newGameListAdapter);
+                        GameListAdapter newFavoriteGameListAdapter =
+                                new GameListAdapter(newFavoriteGamesList, this, "rvFavorite");
+                        rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
                         sortAndShowGameItemList(rvAllGames);
                         sortAndShowGameItemList(rvFavoriteGames);
                         break;
                     }
                 }
-
-                // We update only the item updated in the RecyclerView used to open the activity
-                GameListItem itemToEdit = gameListAdapter.getGameList().get(adapterPosition);
-                itemToEdit.setGamePrice(Double.valueOf(newPrice));
-                gameListAdapter.getGameList().set(adapterPosition, itemToEdit);
-                gameListAdapter.notifyItemChanged(adapterPosition);
+                if (recyclerName.equals("rvFavorite") && !edited) {
+                    GameListAdapter newFavoriteGameListAdapter =
+                            new GameListAdapter(newFavoriteGamesList, this, "rvFavorite");
+                    rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
+                    sortAndShowGameItemList(rvFavoriteGames);
+                } else {
+                    // We update only the item updated in the RecyclerView used to open the activity
+                    GameListItem itemToEdit = gameListAdapter.getGameList().get(adapterPosition);
+                    if (newPrice != null) {
+                        itemToEdit.setGamePrice(Double.valueOf(newPrice));
+                    }
+                    gameListAdapter.getGameList().set(adapterPosition, itemToEdit);
+                    gameListAdapter.notifyItemChanged(adapterPosition);
+                }
             }
         }
     }
@@ -571,13 +599,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 Snackbar snackbar = Snackbar.make(coordinatorLayout,
                         R.string.new_steam_data_loaded, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.snackbar_action_refresh, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            refreshUserProfileInformationFromDb(true);
-                        }
-                    });
-            snackbar.show();
+                        .setAction(R.string.snackbar_action_refresh, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                refreshUserProfileInformationFromDb(true);
+                            }
+                        });
+                snackbar.show();
             }
         }
     }

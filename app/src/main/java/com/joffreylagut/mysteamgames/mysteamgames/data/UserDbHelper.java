@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.joffreylagut.mysteamgames.mysteamgames.objects.Game;
 import com.joffreylagut.mysteamgames.mysteamgames.objects.GameBundle;
+import com.joffreylagut.mysteamgames.mysteamgames.objects.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.objects.User;
 
 import java.net.MalformedURLException;
@@ -28,11 +30,12 @@ public class UserDbHelper extends SQLiteOpenHelper {
      * Version of the database.
      * This var must be incremented everytime you change the database schema.
      */
-    public static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     /**
      * Name of the database.
      */
-    public static final String DATABASE_NAME = "myGameTimePrice.db";
+    private static final String DATABASE_NAME = "myGameTimePrice.db";
+
     private static UserDbHelper sInstance;
 
     public UserDbHelper(Context context) {
@@ -560,7 +563,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
      *
      * @param db Database that we want to create OwnedGames table inside.
      */
-    public void createOwnedGamesTable(SQLiteDatabase db) {
+    private void createOwnedGamesTable(SQLiteDatabase db) {
         final String SQL_CREATE_OWNEDGAMES_TABLE =
                 "CREATE TABLE " + UserContract.OwnedGamesEntry.TABLE_NAME + " (" +
                         UserContract.OwnedGamesEntry.COLUMN_USER_ID + " BIGINT, " +
@@ -569,6 +572,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
                         UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_2_WEEKS + " INTEGER, " +
                         UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE + " DOUBLE, " +
                         UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID + " INTEGER, " +
+                        UserContract.OwnedGamesEntry.COLUMN_FAVORITE + " BOOLEAN, " +
                         "PRIMARY KEY(" + UserContract.OwnedGamesEntry.COLUMN_USER_ID + ", " +
                         UserContract.OwnedGamesEntry.COLUMN_GAME_ID + "), FOREIGN KEY (" +
                         UserContract.OwnedGamesEntry.COLUMN_USER_ID + ") REFERENCES " +
@@ -585,28 +589,30 @@ public class UserDbHelper extends SQLiteOpenHelper {
 
     /**
      * Function that alter the OwnedGames table in the db in parameter.
-     *
      * @param db Database that we want to alter OwnedGames table inside.
      */
     public void alterOwnedGamesTable(SQLiteDatabase db) {
-        /**final String SQL_ALTER_OWNEDGAMES_TABLE = "";
-         if(SQL_ALTER_OWNEDGAMES_TABLE.length()>0){
-         db.execSQL(SQL_ALTER_OWNEDGAMES_TABLE);
-         }**/
-        /**String SQL_ALTER_OWNEDGAMES_TABLE = "UPDATE OWNEDGAMES SET gamePrice = '-1' WHERE gamePrice = '';";
-         db.execSQL(SQL_ALTER_OWNEDGAMES_TABLE);
-         SQL_ALTER_OWNEDGAMES_TABLE = "ALTER TABLE OWNEDGAMES RENAME TO OWNEDGAMES_Temp";
-         db.execSQL(SQL_ALTER_OWNEDGAMES_TABLE);
-         createOwnedGamesTable(db);
-         SQL_ALTER_OWNEDGAMES_TABLE = "INSERT INTO OWNEDGAMES SELECT userID, gameID, timePlayedForever, timePlayed2Weeks, gamePrice FROM OWNEDGAMES_Temp;";
-         db.execSQL(SQL_ALTER_OWNEDGAMES_TABLE);
-         SQL_ALTER_OWNEDGAMES_TABLE = "DROP Table OWNEDGAMES_Temp";
-         db.execSQL(SQL_ALTER_OWNEDGAMES_TABLE);**/
+        String SQL_ALTER_OWNEDGAMES_TABLE =
+                "ALTER TABLE " + UserContract.OwnedGamesEntry.TABLE_NAME +
+                        " ADD COLUMN " + UserContract.OwnedGamesEntry.COLUMN_FAVORITE +
+                        " BOOLEAN DEFAULT false;";
+        if (SQL_ALTER_OWNEDGAMES_TABLE.length() > 0) {
+            db.execSQL(SQL_ALTER_OWNEDGAMES_TABLE);
+        }
+
+        ContentValues values = new ContentValues();
+        values.put(UserContract.OwnedGamesEntry.COLUMN_FAVORITE,
+                false);
+        db.update(UserContract.OwnedGamesEntry.TABLE_NAME,
+                values,
+                UserContract.OwnedGamesEntry.COLUMN_FAVORITE + "=?",
+                new String[]{"false"}
+        );
+
     }
 
     /**
      * Function that drop the OwnedGames table in the database in parameter.
-     *
      * @param db Database that we want to drop OwnedGames table inside.
      */
     public void dropOwnedGamesTable(SQLiteDatabase db) {
@@ -616,27 +622,47 @@ public class UserDbHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Function returning all of the rows in OwnedGames table.
-     *
-     * @param db Database to look into.
-     * @return cursor Cursor containing all of the rows.
+     * Function doing the request in database and returning the result.
+     * @param db
+     * @param columns
+     * @param where
+     * @param whereArgs
+     * @param groupBy
+     * @param having
+     * @param order
+     * @param limit
+     * @return Cursor result
      */
-    public Cursor getAllOwnedGames(SQLiteDatabase db) {
-        String where = null;
-        String whereArgs[] = null;
-        String groupBy = null;
-        String having = null;
-        String order = null;
-        String limit = null;
-
+    private Cursor selectOwnedGame(SQLiteDatabase db,
+                                   String[] columns,
+                                   String where,
+                                   String whereArgs[],
+                                   String groupBy,
+                                   String having,
+                                   String order,
+                                   String limit) {
         Cursor cursor = db.query(UserContract.OwnedGamesEntry.TABLE_NAME,
-                null,
+                columns,
                 where,
                 whereArgs,
                 groupBy,
                 having,
                 order,
                 limit);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
+    /**
+     * Function returning all of the rows in OwnedGames table.
+     * @param db Database to look into.
+     * @return cursor Cursor containing all of the rows.
+     */
+    public Cursor getAllOwnedGames(SQLiteDatabase db) {
+
+        Cursor cursor = selectOwnedGame(db, null, null, null, null, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
         }
@@ -651,25 +677,76 @@ public class UserDbHelper extends SQLiteOpenHelper {
      * @return Cursor containing the rows matching the request.
      */
     public Cursor getOwnedGamesByUserID(SQLiteDatabase db, String userID) {
-        String where = UserContract.OwnedGamesEntry.COLUMN_USER_ID + " = " + userID;
-        String whereArgs[] = null;
-        String groupBy = null;
-        String having = null;
-        String order = null;
-        String limit = null;
+        String where = UserContract.OwnedGamesEntry.COLUMN_USER_ID + " =?";
+        String whereArgs[] = {userID};
 
-        Cursor cursor = db.query(UserContract.OwnedGamesEntry.TABLE_NAME,
-                null,
-                where,
-                whereArgs,
-                groupBy,
-                having,
-                order,
-                limit);
+        Cursor cursor = selectOwnedGame(db, null, where, whereArgs, null, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
         }
         return cursor;
+    }
+
+    /**
+     * Function returning a List<OwnedGame> owned by the user.
+     * @param db     Database to query.
+     * @param userID ID of the user that we want to find his game.
+     * @return List<OwnedGame>
+     */
+    public List<OwnedGame> getFavoritesOwnedGamesByUserID(SQLiteDatabase db, String userID) {
+        // We prepare and execute the request
+        String where = UserContract.OwnedGamesEntry.COLUMN_USER_ID + " =? AND " +
+                UserContract.OwnedGamesEntry.COLUMN_FAVORITE + " =?";
+        String whereArgs[] = {userID, "true"};
+        Cursor cursor = selectOwnedGame(db, null, where, whereArgs, null, null, null, null);
+        if (cursor == null) {
+            Log.e(TAG, "getFavoritesOwnedGamesByUserID: There is no OwnedGame in" +
+                    " database for the userID " + userID);
+            return null;
+        }
+        cursor.moveToFirst();
+
+        // Now, we have to parse all of the result and put them in a list
+        List<OwnedGame> favoriteGames = new ArrayList<>();
+
+        while (!cursor.isAfterLast()) {
+            OwnedGame currentOwnedGame = new OwnedGame();
+            Game currentGame = new Game();
+
+            currentGame.setGameID(cursor.getInt(
+                    cursor.getColumnIndex(UserContract.OwnedGamesEntry.COLUMN_GAME_ID)));
+            Cursor gameCursor = getGameBy_ID(db, String.valueOf(currentGame.getGameID()));
+            if (gameCursor == null) {
+                Log.e(TAG, "getFavoritesOwnedGamesByUserID: There is no Game in" +
+                        " database for the gameID " + currentGame.getGameID());
+                currentGame = null;
+            } else {
+                gameCursor.moveToFirst();
+                currentGame.setGameID(Integer.parseInt(gameCursor.getString(
+                        gameCursor.getColumnIndex(UserContract.GameEntry._ID))));
+                currentGame.setSteamID(Long.valueOf(gameCursor.getString(
+                        gameCursor.getColumnIndex(UserContract.GameEntry.COLUMN_STEAM_ID))));
+                currentGame.setGameName(gameCursor.getString(
+                        gameCursor.getColumnIndex(UserContract.GameEntry.COLUMN_GAME_NAME)));
+                currentGame.setMarketplace(gameCursor.getString(
+                        gameCursor.getColumnIndex(UserContract.GameEntry.COLUMN_MARKETPLACE)));
+                try {
+                    URL gameIcon = new URL(gameCursor.getString(
+                            gameCursor.getColumnIndex(UserContract.GameEntry.COLUMN_GAME_ICON)));
+                    currentGame.setGameIcon(gameIcon);
+                    URL gameLogo = new URL(gameCursor.getString(
+                            gameCursor.getColumnIndex(UserContract.GameEntry.COLUMN_GAME_LOGO)));
+                    currentGame.setGameIcon(gameLogo);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+            gameCursor.close();
+            currentOwnedGame.setGame(currentGame);
+            favoriteGames.add(currentOwnedGame);
+        }
+        cursor.close();
+        return favoriteGames;
     }
 
     /**
@@ -740,11 +817,12 @@ public class UserDbHelper extends SQLiteOpenHelper {
      * @param timePlayedForever Column of the OwnedGame table.
      * @param timePlayed2Weeks  Column of the OwnedGame table.
      * @param gamePrice         Column of the OwnedGame table.
+     * @param favorite          Column of the OwnedGame table.
      * @return Number of line inserted in database.
      */
     public long addNewOwnedGame(SQLiteDatabase db, String userID, String gameID,
                                 String timePlayedForever, String timePlayed2Weeks,
-                                String gamePrice) {
+                                String gamePrice, String favorite) {
         ContentValues ownedGame = new ContentValues();
         ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_USER_ID, userID);
         ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_GAME_ID, gameID);
@@ -755,6 +833,9 @@ public class UserDbHelper extends SQLiteOpenHelper {
             ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE, "-1.00");
         }
         ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_2_WEEKS, timePlayed2Weeks);
+        if (favorite != null) {
+            ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_FAVORITE, favorite);
+        }
         return db.insert(UserContract.OwnedGamesEntry.TABLE_NAME, null, ownedGame);
     }
 
@@ -767,11 +848,12 @@ public class UserDbHelper extends SQLiteOpenHelper {
      * @param timePlayedForever Column of the OwnedGame table.
      * @param timePlayed2Weeks  Column of the OwnedGame table.
      * @param gamePrice         Column of the OwnedGame table.
+     * @param favorite          Column of the OwnedGame table.
      * @return The number of rows updated.
      */
     public long updateOwnedGame(SQLiteDatabase db, String userID, String gameID,
                                 String timePlayedForever, String timePlayed2Weeks,
-                                String gamePrice, String bundleID) {
+                                String gamePrice, String bundleID, String favorite) {
 
         ContentValues ownedGame = new ContentValues();
         if (userID != null) ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_USER_ID, userID);
@@ -788,6 +870,9 @@ public class UserDbHelper extends SQLiteOpenHelper {
                 ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID, bundleID);
             }
             ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID, bundleID);
+        }
+        if (favorite != null) {
+            ownedGame.put(UserContract.OwnedGamesEntry.COLUMN_FAVORITE, favorite);
         }
         return db.update(UserContract.OwnedGamesEntry.TABLE_NAME, ownedGame,
                 UserContract.OwnedGamesEntry.COLUMN_USER_ID + "=" + userID

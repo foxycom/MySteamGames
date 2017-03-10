@@ -9,15 +9,18 @@ public class OwnedGame {
     private int timePlayedForever;
     private int timePlayed2Weeks;
     private double gamePrice;
+    private boolean favorite;
 
     public OwnedGame() {
     }
 
-    public OwnedGame(Game game, int timePlayedForever, int timePlayed2Weeks, double gamePrice) {
+    public OwnedGame(Game game, int timePlayedForever, int timePlayed2Weeks, double gamePrice,
+                     boolean favorite) {
         this.game = game;
         this.timePlayedForever = timePlayedForever;
         this.timePlayed2Weeks = timePlayed2Weeks;
         this.gamePrice = gamePrice;
+        this.favorite = favorite;
     }
 
     public Game getGame() {
@@ -50,5 +53,13 @@ public class OwnedGame {
 
     public void setGamePrice(double gamePrice) {
         this.gamePrice = gamePrice;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }

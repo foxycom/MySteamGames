@@ -175,11 +175,11 @@ public class RetrieveDataFromSteamIntentService extends IntentService {
                 if (cursor.getCount() != 0) {
                     // The game is already owned by the user, we have to update it.
                     userDbHelper.updateOwnedGame(mDb, String.valueOf(user.getUserID()), gameID,
-                            playtime_forever, playtime_2weeks, null, null);
+                            playtime_forever, playtime_2weeks, null, null, null);
                 } else {
                     // The game isn't already owned in db, we add it.
                     userDbHelper.addNewOwnedGame(mDb, String.valueOf(user.getUserID()), gameID,
-                            playtime_forever, playtime_2weeks, null);
+                            playtime_forever, playtime_2weeks, null, null);
                 }
             }
         } catch (Exception e) {

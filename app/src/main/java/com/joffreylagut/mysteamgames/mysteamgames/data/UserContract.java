@@ -53,6 +53,7 @@ public final class UserContract {
         public static final String COLUMN_TIME_PLAYED_2_WEEKS = "timePlayed2Weeks";
         public static final String COLUMN_GAME_PRICE = "gamePrice";
         public static final String COLUMN_BUNDLE_ID = "bundleID";
+        public static final String COLUMN_FAVORITE = "favorite";
     }
 
     /**

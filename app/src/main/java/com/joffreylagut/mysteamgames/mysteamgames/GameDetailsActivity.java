@@ -36,7 +36,9 @@ public class GameDetailsActivity extends AppCompatActivity {
     private UserDbHelper userDbHelper;
     private int gameID;
     private int userID;
+    private boolean favorite;
     private int adapterPosition;
+    private boolean edited;
     private ImageView ivGameBlurred;
     private ImageView ivGame;
     private TextView tvTimePlayed;
@@ -61,7 +63,7 @@ public class GameDetailsActivity extends AppCompatActivity {
         tvBundleName = (TextView) findViewById(R.id.tv_game_details_bundle_name);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
+        edited = false;
 
         // Preparing the database.
         userDbHelper = UserDbHelper.getInstance(this);
@@ -69,7 +71,7 @@ public class GameDetailsActivity extends AppCompatActivity {
 
         // We retrieve the gameID to display the game details.
         Intent intent = getIntent();
-        gameID = intent.getIntExtra("gameID",0);
+        gameID = intent.getIntExtra("gameID", 0);
         userID = intent.getIntExtra("userID", 0);
         recyclerName = intent.getStringExtra("recyclerName");
         adapterPosition = intent.getIntExtra("adapterPosition", 0);
@@ -81,7 +83,52 @@ public class GameDetailsActivity extends AppCompatActivity {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.game_details_menu, menu);
+
+        MenuItem itemFavorite = menu.findItem(R.id.menu_game_details_favorite);
+        if (favorite) {
+            itemFavorite.setIcon(R.drawable.ic_star_white);
+        } else {
+            itemFavorite.setIcon(R.drawable.ic_star_border_white);
+        }
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_game_details_edit:
+                Intent intentEdit = new Intent(this, EditGameActivity.class);
+                intentEdit.putExtra("gameID", gameID);
+                intentEdit.putExtra("userID", userID);
+
+                // If the user is running on SDK 16 or newer, display a transition.
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    Bundle bndlAnimation = ActivityOptions.makeCustomAnimation(this,
+                            R.transition.right_to_left_incoming, R.transition.right_to_left_outgoing)
+                            .toBundle();
+                    this.startActivityForResult(intentEdit, 1, bndlAnimation);
+                } else {
+                    this.startActivityForResult(intentEdit, 1);
+                }
+                return true;
+            case R.id.menu_game_details_favorite:
+                if (favorite) {
+                    userDbHelper.updateOwnedGame(db, String.valueOf(userID), String.valueOf(gameID),
+                            null, null, null, null, "0");
+                } else {
+                    userDbHelper.updateOwnedGame(db, String.valueOf(userID), String.valueOf(gameID),
+                            null, null, null, null, "1");
+                }
+                // We have to change the icon
+                favorite = !favorite;
+                edited = true;
+                invalidateOptionsMenu();
+                return true;
+            default:
+                this.onBackPressed();
+                return true;
+        }
+
     }
 
     private void displayGameInformation(){
@@ -99,6 +146,7 @@ public class GameDetailsActivity extends AppCompatActivity {
                 Picasso.with(this).load(urlGame).transform(new BlurTransformation(this, 5)).into(ivGameBlurred);
 
             }
+
         }else{
             // The game doesn't exist in DB. We log an error message.
             Log.e(TAG, "displayGameInformation: There is no game in database with the _ID " + gameID);
@@ -137,6 +185,10 @@ public class GameDetailsActivity extends AppCompatActivity {
             }
             tvTimePlayed.setText(SteamAPICalls.convertTimePlayed(Integer.valueOf(timePlayed), true));
 
+            int isFavorite = result.getInt(result.getColumnIndex(
+                    UserContract.OwnedGamesEntry.COLUMN_FAVORITE));
+            favorite = isFavorite == 1;
+
             // We have to check is the game is included in a bundle
             String bundleID = result.getString(result.getColumnIndex(UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID));
 
@@ -157,51 +209,11 @@ public class GameDetailsActivity extends AppCompatActivity {
                 llBundle.getLayoutParams().height = 0;
                 llBundle.requestLayout();
             }
+            invalidateOptionsMenu();
         }else{
             // The game doesn't exist in DB. We log an error message.
             Log.e(TAG, "displayGameInformation: The user "+ userID + "doesn't own the game with the ID " + gameID);
         }
-    }
-
-    /**
-     * This hook is called whenever an item in your options menu is selected.
-     * The default implementation simply returns false to have the normal
-     * processing happen (calling the item's Runnable or sending a message to
-     * its Handler as appropriate).  You can use this method for any items
-     * for which you would like to do processing without those other
-     * facilities.
-     * <p>
-     * <p>Derived classes should call through to the base class for it to
-     * perform the default menu handling.</p>
-     *
-     * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to
-     * proceed, true to consume it here.
-     * @see #onCreateOptionsMenu
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_game_details_edit:
-                Intent intentEdit = new Intent(this, EditGameActivity.class);
-                intentEdit.putExtra("gameID", gameID);
-                intentEdit.putExtra("userID", userID);
-
-                // If the user is runing on SDK 16 or newer, display a transition.
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                    Bundle bndlAnimation = ActivityOptions.makeCustomAnimation(this,
-                            R.transition.right_to_left_incoming, R.transition.right_to_left_outgoing)
-                            .toBundle();
-                    this.startActivityForResult(intentEdit, 1, bndlAnimation);
-                } else {
-                    this.startActivityForResult(intentEdit, 1);
-                }
-                return true;
-            default:
-                this.onBackPressed();
-                return true;
-        }
-
     }
 
     @Override
@@ -213,6 +225,7 @@ public class GameDetailsActivity extends AppCompatActivity {
                 String price = tvGamePrice.getText().toString();
                 price = price.substring(0, price.length() - 1);
                 newPrice = price;
+                edited = true;
 
                 CoordinatorLayout coordinatorLayout =
                         (CoordinatorLayout) findViewById(R.id.activity_game_details_coordinator);
@@ -233,20 +246,22 @@ public class GameDetailsActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent returnIntent = new Intent();
         returnIntent.putExtra("adapterPosition", adapterPosition);
-        switch (newPrice) {
-            case "null":
-                setResult(Activity.RESULT_CANCELED, returnIntent);
-                break;
-            case "Fre":
-                returnIntent.putExtra("newPrice", "0");
-                returnIntent.putExtra("recyclerName", recyclerName);
-                setResult(Activity.RESULT_OK, returnIntent);
-                break;
-            default:
-                returnIntent.putExtra("newPrice", newPrice);
-                returnIntent.putExtra("recyclerName", recyclerName);
-                setResult(Activity.RESULT_OK, returnIntent);
-                break;
+        if (edited) {
+            switch (newPrice) {
+                case "null":
+                    break;
+                case "Fre":
+                    returnIntent.putExtra("newPrice", "0");
+                    break;
+                default:
+                    returnIntent.putExtra("newPrice", newPrice);
+                    break;
+            }
+            returnIntent.putExtra("recyclerName", recyclerName);
+            returnIntent.putExtra("favorite", favorite);
+            setResult(Activity.RESULT_OK, returnIntent);
+        } else {
+            setResult(Activity.RESULT_CANCELED, returnIntent);
         }
         finish();
         // We want to display an animation to go back on the previous activity

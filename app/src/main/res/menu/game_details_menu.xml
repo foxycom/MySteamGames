@@ -2,9 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/menu_game_details_favorite"
+        android:icon="@drawable/ic_star_border_white"
+        android:orderInCategory="1"
+        android:title="@string/edit"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/menu_game_details_edit"
         android:icon="@drawable/ic_edit"
         android:orderInCategory="10"
         android:title="@string/edit"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 </menu>

@@ -91,17 +91,14 @@ public class User {
         return recentlyPlayedGames;
     }
 
-    // TODO change this function when the favorites will be implemented
-
     /**
      * This function is returning the user favorite games.
-     *
      * @return a list of favorite games
      */
     public List<OwnedGame> getFavoriteGames() {
         List<OwnedGame> recentlyPlayedGames = new ArrayList<>();
         for (OwnedGame currentGame : this.ownedGames) {
-            if (currentGame.getTimePlayed2Weeks() != 0) {
+            if (currentGame.isFavorite()) {
                 recentlyPlayedGames.add(currentGame);
             }
         }
