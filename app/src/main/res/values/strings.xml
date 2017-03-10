@@ -46,6 +46,16 @@
     <!-- Game details activity -->
     <string name="edit">Edit</string>
     <string name="snackbar_game_saved">Game saved</string>
+    <string name="game_image_blurred_description">Game image blurred</string>
+    <string name="game_image_description">Game image</string>
+    <string name="controller_icon_description">Controller icon</string>
+    <string name="money_icon_description">Money icon</string>
+    <string name="time_icon_description">Clock icon</string>
+    <string name="of_gaming">of gaming</string>
+    <string name="bundle_introduction">This game is included in the bundle</string>
+    <string name="default_bundle">Humble Monthly</string>
+    <string name="default_price">25$</string>
+    <string name="spent_to_buy">spent to buy it</string>
 
     <!-- Edit game activity -->
     <string name="save">Save</string>

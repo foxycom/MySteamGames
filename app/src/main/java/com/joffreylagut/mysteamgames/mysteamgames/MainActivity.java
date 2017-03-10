@@ -52,7 +52,7 @@ import java.util.List;
 
 import static android.support.design.widget.Snackbar.make;
 
-public class MainActivity extends AppCompatActivity implements GameListAdapter.ListItemClickListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     Double totalMoneySpent = 0.00;
     UserDbHelper userDbHelper;
@@ -212,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         return true;
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
@@ -298,10 +297,15 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         return true;
     }
 
-    private void sortAndShowGameItemList(RecyclerView rvToSort) {
+    /**
+     * Method that sort the items of a RecyclerView and then refresh it.
+     *
+     * @param recyclerViewToSort RecyclerView that we want to sort and refresh.
+     */
+    private void sortAndShowGameItemList(RecyclerView recyclerViewToSort) {
 
         // We have to get the adapters
-        GameListAdapter allGamesListAdapter = (GameListAdapter) rvToSort.getAdapter();
+        GameListAdapter allGamesListAdapter = (GameListAdapter) recyclerViewToSort.getAdapter();
 
         // To then get the lists
         List<GameListItem> allGamesSortedList = allGamesListAdapter.getGameList();
@@ -332,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
 
         // Now that we have the sortedlists, we put the new adapters in the recyclerviews
         allGamesListAdapter.setGameList(allGamesSortedList);
-        rvToSort.setAdapter(allGamesListAdapter);
+        recyclerViewToSort.setAdapter(allGamesListAdapter);
     }
 
     private void refreshUserProfileInformationFromDb(boolean refreshRecyclerViews) {
@@ -472,40 +476,47 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
                 // Now, we have to identify the recyclerView that have opened GameDetailActivity
                 // We prepare a variable to get the adapter
                 GameListAdapter gameListAdapter;
-                if (recyclerName.equals("rvAllGames")) {
-                    gameListAdapter = (GameListAdapter) rvAllGames.getAdapter();
+                switch (recyclerName) {
+                    case "rvAllGames": {
+                        gameListAdapter = (GameListAdapter) rvAllGames.getAdapter();
 
-                    // We have to update the other RecyclerView
-                    GameListAdapter newGameListAdapter =
-                            new GameListAdapter(newOwnedGamesList, this, "rvRecentGames");
-                    rvRecentGames.setAdapter(newGameListAdapter);
-                    rvFavoriteGames.setAdapter(newGameListAdapter);
+                        // We have to update the other RecyclerView
+                        GameListAdapter newGameListAdapter =
+                                new GameListAdapter(newOwnedGamesList, this, "rvRecentGames");
+                        rvRecentGames.setAdapter(newGameListAdapter);
+                        rvFavoriteGames.setAdapter(newGameListAdapter);
 
-                    sortAndShowGameItemList(rvFavoriteGames);
-                    sortAndShowGameItemList(rvRecentGames);
+                        sortAndShowGameItemList(rvFavoriteGames);
+                        sortAndShowGameItemList(rvRecentGames);
 
-                } else if (recyclerName.equals("rvFavoriteGames")) {
+                        break;
+                    }
+                    case "rvFavoriteGames": {
 
-                    gameListAdapter = (GameListAdapter) rvFavoriteGames.getAdapter();
+                        gameListAdapter = (GameListAdapter) rvFavoriteGames.getAdapter();
 
-                    // We have to update the other RecyclerView
-                    GameListAdapter newGameListAdapter =
-                            new GameListAdapter(newOwnedGamesList, this, "rvRecentGames");
-                    rvRecentGames.setAdapter(newGameListAdapter);
-                    rvAllGames.setAdapter(newGameListAdapter);
-                    sortAndShowGameItemList(rvAllGames);
-                    sortAndShowGameItemList(rvRecentGames);
+                        // We have to update the other RecyclerView
+                        GameListAdapter newGameListAdapter =
+                                new GameListAdapter(newOwnedGamesList, this, "rvRecentGames");
+                        rvRecentGames.setAdapter(newGameListAdapter);
+                        rvAllGames.setAdapter(newGameListAdapter);
+                        sortAndShowGameItemList(rvAllGames);
+                        sortAndShowGameItemList(rvRecentGames);
 
-                } else {
-                    gameListAdapter = (GameListAdapter) rvRecentGames.getAdapter();
+                        break;
+                    }
+                    default: {
+                        gameListAdapter = (GameListAdapter) rvRecentGames.getAdapter();
 
-                    // We have to update the other RecyclerView
-                    GameListAdapter newGameListAdapter =
-                            new GameListAdapter(newOwnedGamesList, this, "rvRecentGames");
-                    rvAllGames.setAdapter(newGameListAdapter);
-                    rvFavoriteGames.setAdapter(newGameListAdapter);
-                    sortAndShowGameItemList(rvAllGames);
-                    sortAndShowGameItemList(rvFavoriteGames);
+                        // We have to update the other RecyclerView
+                        GameListAdapter newGameListAdapter =
+                                new GameListAdapter(newOwnedGamesList, this, "rvRecentGames");
+                        rvAllGames.setAdapter(newGameListAdapter);
+                        rvFavoriteGames.setAdapter(newGameListAdapter);
+                        sortAndShowGameItemList(rvAllGames);
+                        sortAndShowGameItemList(rvFavoriteGames);
+                        break;
+                    }
                 }
 
                 // We update only the item updated in the RecyclerView used to open the activity
@@ -517,15 +528,13 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         }
     }
 
-    @Override
-    public void ListItemClicked(String clickedItemName) {
-        if (message != null) {
-            message.cancel();
-        }
-        message = Toast.makeText(this, "Click on " + clickedItemName, Toast.LENGTH_LONG);
-        message.show();
-    }
-
+    /**
+     * This function transforms a List<OwnedGame> into a List<GameListItem> usable by the
+     * GameListAdapters.
+     *
+     * @param ownedGames List<OwnedGame> that you want to convert.
+     * @return List<GameListItem> that can be used by GameListAdapters.
+     */
     public List<GameListItem> createGameListItemList(List<OwnedGame> ownedGames){
         List<GameListItem> gameListItems = new ArrayList<>();
         GameListItem item;
@@ -544,9 +553,14 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
         return gameListItems;
     }
 
+    /**
+     * This class is created to receive the response from the service responsible of Steam data
+     * loading.
+     */
     public class SteamDataReceiver extends BroadcastReceiver {
 
-        public static final String PROCESS_RESPONSE = "com.joffreylagut.mysteamgames.mysteamgames.intent.action.PROCESS_RESPONSE";
+        public static final String PROCESS_RESPONSE =
+                "com.joffreylagut.mysteamgames.mysteamgames.intent.action.PROCESS_RESPONSE";
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -555,7 +569,8 @@ public class MainActivity extends AppCompatActivity implements GameListAdapter.L
             if (currentUser == null) {
                 refreshUserProfileInformationFromDb(true);
             } else {
-            Snackbar snackbar = Snackbar.make(coordinatorLayout, R.string.new_steam_data_loaded, Snackbar.LENGTH_LONG)
+                Snackbar snackbar = Snackbar.make(coordinatorLayout,
+                        R.string.new_steam_data_loaded, Snackbar.LENGTH_LONG)
                     .setAction(R.string.snackbar_action_refresh, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

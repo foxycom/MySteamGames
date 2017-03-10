@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
@@ -36,7 +37,7 @@ public class GameDetailsActivity extends AppCompatActivity {
     private int gameID;
     private int userID;
     private int adapterPosition;
-    private ImageView ivGameBlured;
+    private ImageView ivGameBlurred;
     private ImageView ivGame;
     private TextView tvTimePlayed;
     private TextView tvGamePrice;
@@ -52,7 +53,7 @@ public class GameDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_details);
 
         // First, we are linking our views with the layout
-        ivGameBlured = (ImageView)findViewById(R.id.iv_game_details_picture_blured);
+        ivGameBlurred = (ImageView) findViewById(R.id.iv_game_details_picture_blurred);
         ivGame = (ImageView)findViewById(R.id.iv_game_details_picture);
         tvTimePlayed = (TextView)findViewById(R.id.tv_game_details_time_played);
         tvGamePrice = (TextView)findViewById(R.id.tv_game_details_game_price);
@@ -95,7 +96,7 @@ public class GameDetailsActivity extends AppCompatActivity {
             String urlGame = result.getString(result.getColumnIndex(UserContract.GameEntry.COLUMN_GAME_LOGO));
             if(urlGame.length() != 0) {
                 Picasso.with(this).load(urlGame).into(ivGame);
-                Picasso.with(this).load(urlGame).transform(new BlurTransformation(this, 5)).into(ivGameBlured);
+                Picasso.with(this).load(urlGame).transform(new BlurTransformation(this, 5)).into(ivGameBlurred);
 
             }
         }else{
@@ -145,12 +146,16 @@ public class GameDetailsActivity extends AppCompatActivity {
                 if (result.getCount() != 0) {
                     String bundleName = result.getString(result.getColumnIndex(UserContract.BundleEntry.COLUMN_BUNDLE_NAME));
                     tvBundleName.setText(bundleName);
-                    findViewById(R.id.ll_game_details_bundle).setVisibility(View.VISIBLE);
+                    LinearLayout llBundle = (LinearLayout) findViewById(R.id.ll_game_details_bundle);
+                    llBundle.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    llBundle.requestLayout();
                 } else {
                     Log.e(TAG, "displayGameInformation: The bundle " + bundleID + "doesn't exist in database.");
                 }
-
-
+            } else {
+                LinearLayout llBundle = (LinearLayout) findViewById(R.id.ll_game_details_bundle);
+                llBundle.getLayoutParams().height = 0;
+                llBundle.requestLayout();
             }
         }else{
             // The game doesn't exist in DB. We log an error message.

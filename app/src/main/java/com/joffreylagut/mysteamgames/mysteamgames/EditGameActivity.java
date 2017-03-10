@@ -140,6 +140,11 @@ public class EditGameActivity extends AppCompatActivity {
         viewToShow.requestLayout();
     }
 
+    /**
+     * Method called when the user click on Save
+     *
+     * @param v View that have called the method.
+     */
     public void saveGame(View v) {
         Cursor request;
         // In first, we need to retrieve all the information

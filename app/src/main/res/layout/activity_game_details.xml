@@ -18,12 +18,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="@dimen/card_primary_title_bottom_padding">
 
         <ImageView
-            android:id="@+id/iv_game_details_picture_blured"
+            android:id="@+id/iv_game_details_picture_blurred"
             android:layout_width="match_parent"
             android:layout_height="150dp"
+            android:contentDescription="@string/game_image_blurred_description"
             android:scaleType="centerCrop"
             android:src="@drawable/logo" />
 
@@ -32,6 +33,7 @@
             android:layout_width="275dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
+            android:contentDescription="@string/game_image_description"
             android:scaleType="centerCrop"
             android:src="@drawable/logo" />
     </android.support.v7.widget.CardView>
@@ -39,12 +41,13 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
+        android:layout_marginLeft="@dimen/card_primary_title_bottom_padding"
+        android:layout_marginRight="@dimen/card_primary_title_bottom_padding">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/card_primary_title_bottom_padding"
             android:orientation="vertical">
 
             <TextView
@@ -63,13 +66,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="8dp"
-                android:paddingLeft="@dimen/card_padding_left_and_right">
+                android:paddingLeft="@dimen/card_padding_left_and_right"
+                android:paddingRight="@dimen/card_padding_left_and_right">
 
                 <ImageView
                     android:id="@+id/tv_game_details_time_played_ico"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:alpha="0.54"
+                    android:contentDescription="@string/time_icon_description"
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/ic_access_time_black" />
 
@@ -79,27 +84,31 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="3dp"
-                    android:text="225" />
+                    android:layout_marginStart="3dp"
+                    android:text="@string/default_time_played" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="3dp"
-                    android:text="played" />
+                    android:layout_marginStart="3dp"
+                    android:text="@string/played" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="8dp"
-                android:paddingLeft="@dimen/card_padding_left_and_right">
+                android:paddingLeft="@dimen/card_padding_left_and_right"
+                android:paddingRight="@dimen/card_padding_left_and_right">
 
                 <ImageView
                     android:id="@+id/tv_game_details_game_price_ico"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:alpha="0.54"
+                    android:contentDescription="@string/money_icon_description"
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/ic_attach_money_black" />
 
@@ -109,7 +118,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="3dp"
-                    android:text="25€" />
+                    android:layout_marginStart="3dp"
+                    android:text="@string/default_price" />
 
                 <TextView
                     android:id="@+id/tv_game_details_spent"
@@ -117,20 +127,24 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="3dp"
-                    android:text="spent to buy it" />
+                    android:layout_marginStart="3dp"
+                    android:text="@string/spent_to_buy" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="8dp"
-                android:paddingLeft="@dimen/card_padding_left_and_right">
+                android:paddingLeft="@dimen/card_padding_left_and_right"
+                android:paddingRight="@dimen/card_padding_left_and_right"
+                android:paddingStart="@dimen/card_padding_left_and_right">
 
                 <ImageView
                     android:id="@+id/tv_game_details_game_price_per_hour_ico"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:alpha="0.54"
+                    android:contentDescription="@string/controller_icon_description"
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/ic_videogame_asset_black" />
 
@@ -140,37 +154,40 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="3dp"
-                    android:text="0,11€/h" />
+                    android:layout_marginStart="3dp"
+                    android:text="@string/default_price_per_hour" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="3dp"
-                    android:text="of gaming" />
+                    android:layout_marginStart="3dp"
+                    android:text="@string/of_gaming" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_game_details_bundle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="invisible">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/card_padding_left_and_right"
-                    android:text="This game is included in the bundle" />
+                    android:paddingRight="@dimen/card_padding_left_and_right"
+                    android:text="@string/bundle_introduction" />
 
                 <TextView
                     android:id="@+id/tv_game_details_bundle_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:paddingBottom="16dp"
+                    android:layout_marginLeft="@dimen/card_padding_left_and_right"
+                    android:layout_marginStart="@dimen/card_padding_left_and_right"
                     android:paddingLeft="@dimen/card_padding_left_and_right"
-                    android:text="Humble Monthly" />
+                    android:paddingRight="@dimen/card_padding_left_and_right"
+                    android:text="@string/default_bundle" />
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
