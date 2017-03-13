@@ -29,7 +29,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
@@ -38,9 +37,11 @@ import com.joffreylagut.mysteamgames.mysteamgames.objects.Game;
 import com.joffreylagut.mysteamgames.mysteamgames.objects.GameListItem;
 import com.joffreylagut.mysteamgames.mysteamgames.objects.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.objects.User;
+import com.joffreylagut.mysteamgames.mysteamgames.sync.NotificationUtils;
+import com.joffreylagut.mysteamgames.mysteamgames.sync.ReminderUtilities;
+import com.joffreylagut.mysteamgames.mysteamgames.sync.RetrieveDataFromSteamIntentService;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.AnimatedTabHostListener;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.GameListSorter;
-import com.joffreylagut.mysteamgames.mysteamgames.utilities.RetrieveDataFromSteamIntentService;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
 
@@ -48,20 +49,26 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.support.design.widget.Snackbar.make;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    Double totalMoneySpent = 0.00;
-    UserDbHelper userDbHelper;
-    SharedPreferences sharedPreferences;
-    CoordinatorLayout coordinatorLayout;
+    // Declaration of final values used in this activity
+    public static final String rvAllGamesName = "rvAllGames";
+    public static final String rvFavoriteGamesName = "rvFavoriteGames";
+    public static final String rvRecentGamesName = "rvRecentGames";
+
     // Declaration of the global values of this activity.
     private User currentUser = new User();
-    private Toast message = null;
     private SQLiteDatabase mDb;
+    private Double totalMoneySpent = 0.00;
+    private UserDbHelper userDbHelper;
+    private SharedPreferences sharedPreferences;
+    private CoordinatorLayout coordinatorLayout;
+
     // Declaration of all the view that we will interact with.
     private ImageView ivProfile;
     private ProgressBar pbLoading;
@@ -77,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // Variable used to determine if we want to display ASC or DESC menu item
     private boolean currentSortAsc;
     private String currentSort;
+
+    // Variable used to store the datetime of the last steam data refresh
+    private Date lastRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +106,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         SteamDataReceiver receiver = new SteamDataReceiver();
         registerReceiver(receiver, filter);
+
+        ReminderUtilities.schedulesRetrieveDataFromSteam(this);
 
         // We set the view by calling this private method
         setViews();
@@ -120,6 +132,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         sortAndShowGameItemList(rvFavoriteGames);
         sortAndShowGameItemList(rvRecentGames);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (lastRefresh != null) {
+            Date currentDate = new Date();
+            Long timeDifference = currentDate.getTime() - lastRefresh.getTime();
+            if (timeDifference > 3600000) {
+                // We start the service that retrieve steam information
+                Intent dataRetrieverService = new Intent(this, RetrieveDataFromSteamIntentService.class);
+                startService(dataRetrieverService);
+            }
+        }
     }
 
     private void setViews() {
@@ -228,8 +254,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_send) {
-            make(coordinatorLayout, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+            make(coordinatorLayout, "Test notification", Snackbar.LENGTH_LONG).show();
+            NotificationUtils.newGameDetected(this);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -444,20 +470,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             List<GameListItem> recentGamesList = createGameListItemList(
                     currentUser.getRecentlyPlayedGames());
             GameListAdapter recentGamesListAdapter =
-                    new GameListAdapter(recentGamesList, this, "rvRecentGames");
+                    new GameListAdapter(recentGamesList, this, rvRecentGamesName);
             rvRecentGames.setAdapter(recentGamesListAdapter);
             rvRecentGames.setLayoutManager(new GridLayoutManager(this, 2));
 
             List<GameListItem> favoriteGamesList = createGameListItemList(
                     currentUser.getFavoriteGames());
             GameListAdapter favoriteGamesListAdapter =
-                    new GameListAdapter(favoriteGamesList, this, "rvFavoriteGames");
+                    new GameListAdapter(favoriteGamesList, this, rvFavoriteGamesName);
             rvFavoriteGames.setAdapter(favoriteGamesListAdapter);
             rvFavoriteGames.setLayoutManager(new GridLayoutManager(this, 2));
 
             List<GameListItem> allGamesList = createGameListItemList(currentUser.getOwnedGames());
             GameListAdapter allGamesListAdapter =
-                    new GameListAdapter(allGamesList, this, "rvAllGames");
+                    new GameListAdapter(allGamesList, this, rvAllGamesName);
             rvAllGames.setAdapter(allGamesListAdapter);
             rvAllGames.setLayoutManager(new GridLayoutManager(this, 2));
 
@@ -466,92 +492,91 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == 1) {
-            // We check if the user have updated the game
-            if (resultCode == Activity.RESULT_OK) {
-                // We retrieve the information from the intent
-                String newPrice = data.getStringExtra("newPrice");
-                int adapterPosition = data.getIntExtra("adapterPosition", 0);
-                String recyclerName = data.getStringExtra("recyclerName");
-                Boolean edited = data.getBooleanExtra("edited", false);
+        // If we havn't a requestCode and a resultCode, we return directly
+        if (requestCode != 1 || resultCode != Activity.RESULT_OK) return;
 
-                // We refresh the user information from DB to update currentUser
-                refreshUserProfileInformationFromDb(false);
+        // We retrieve the information from the intent
+        String newPrice = data.getStringExtra("newPrice");
+        int adapterPosition = data.getIntExtra("adapterPosition", 0);
+        String recyclerName = data.getStringExtra("recyclerName");
+        Boolean edited = data.getBooleanExtra("edited", false);
 
-                // We make a new list to put in the recyclerViews
-                List<GameListItem> newOwnedGamesList =
-                        createGameListItemList(currentUser.getOwnedGames());
-                List<GameListItem> newFavoriteGamesList = createGameListItemList(
-                        currentUser.getFavoriteGames());
-                List<GameListItem> newRecentGamesList = createGameListItemList(
-                        currentUser.getRecentlyPlayedGames());
+        // We refresh the user information from DB to update currentUser
+        refreshUserProfileInformationFromDb(false);
 
-                // Now, we have to identify the recyclerView that have opened GameDetailActivity
-                // We prepare a variable to get the adapter
-                GameListAdapter gameListAdapter;
-                switch (recyclerName) {
-                    case "rvAllGames": {
-                        gameListAdapter = (GameListAdapter) rvAllGames.getAdapter();
+        // We make a new list to put in the recyclerViews
+        List<GameListItem> newOwnedGamesList =
+                createGameListItemList(currentUser.getOwnedGames());
+        List<GameListItem> newFavoriteGamesList = createGameListItemList(
+                currentUser.getFavoriteGames());
+        List<GameListItem> newRecentGamesList = createGameListItemList(
+                currentUser.getRecentlyPlayedGames());
 
-                        // We have to update the other RecyclerView
-                        GameListAdapter newGameListAdapter =
-                                new GameListAdapter(newOwnedGamesList, this, "rvRecentGames");
-                        rvRecentGames.setAdapter(newGameListAdapter);
-                        GameListAdapter newFavoriteGameListAdapter =
-                                new GameListAdapter(newFavoriteGamesList, this, "rvFavorite");
-                        rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
+        // Now, we have to identify the recyclerView that have opened GameDetailActivity
+        // We prepare a variable to get the adapter
+        GameListAdapter gameListAdapter;
+        switch (recyclerName) {
+            case rvAllGamesName: {
+                gameListAdapter = (GameListAdapter) rvAllGames.getAdapter();
 
-                        sortAndShowGameItemList(rvFavoriteGames);
-                        sortAndShowGameItemList(rvRecentGames);
+                // We have to update the other RecyclerView
+                GameListAdapter newGameListAdapter =
+                        new GameListAdapter(newOwnedGamesList, this, rvRecentGamesName);
+                rvRecentGames.setAdapter(newGameListAdapter);
+                GameListAdapter newFavoriteGameListAdapter =
+                        new GameListAdapter(newFavoriteGamesList, this, rvFavoriteGamesName);
+                rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
 
-                        break;
-                    }
-                    case "rvFavoriteGames": {
+                sortAndShowGameItemList(rvFavoriteGames);
+                sortAndShowGameItemList(rvRecentGames);
 
-                        gameListAdapter = (GameListAdapter) rvFavoriteGames.getAdapter();
+                break;
+            }
+            case rvFavoriteGamesName: {
 
-                        // We have to update the other RecyclerView
-                        GameListAdapter newGameListAdapter =
-                                new GameListAdapter(newOwnedGamesList, this, "rvRecentGames");
-                        rvAllGames.setAdapter(newGameListAdapter);
-                        GameListAdapter newRecentGameListAdapter =
-                                new GameListAdapter(newRecentGamesList, this, "rvFavorite");
-                        rvRecentGames.setAdapter(newRecentGameListAdapter);
+                gameListAdapter = (GameListAdapter) rvFavoriteGames.getAdapter();
 
-                        sortAndShowGameItemList(rvAllGames);
-                        sortAndShowGameItemList(rvRecentGames);
+                // We have to update the other RecyclerView
+                GameListAdapter newGameListAdapter =
+                        new GameListAdapter(newOwnedGamesList, this, rvRecentGamesName);
+                rvAllGames.setAdapter(newGameListAdapter);
+                GameListAdapter newRecentGameListAdapter =
+                        new GameListAdapter(newRecentGamesList, this, rvFavoriteGamesName);
+                rvRecentGames.setAdapter(newRecentGameListAdapter);
 
-                        break;
-                    }
-                    default: {
-                        gameListAdapter = (GameListAdapter) rvRecentGames.getAdapter();
+                sortAndShowGameItemList(rvAllGames);
+                sortAndShowGameItemList(rvRecentGames);
 
-                        // We have to update the other RecyclerView
-                        GameListAdapter newGameListAdapter =
-                                new GameListAdapter(newOwnedGamesList, this, "rvRecentGames");
-                        rvAllGames.setAdapter(newGameListAdapter);
-                        GameListAdapter newFavoriteGameListAdapter =
-                                new GameListAdapter(newFavoriteGamesList, this, "rvFavorite");
-                        rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
-                        sortAndShowGameItemList(rvAllGames);
-                        sortAndShowGameItemList(rvFavoriteGames);
-                        break;
-                    }
-                }
-                if (recyclerName.equals("rvFavorite") && edited) {
-                    GameListAdapter newFavoriteGameListAdapter =
-                            new GameListAdapter(newFavoriteGamesList, this, "rvFavorite");
-                    rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
-                    sortAndShowGameItemList(rvFavoriteGames);
-                } else {
-                    if (newPrice != null && !newPrice.equals(R.string.free)) {
-                        // We update only the item updated in the RecyclerView used to open the activity
-                        GameListItem itemToEdit = gameListAdapter.getGameList().get(adapterPosition);
-                        itemToEdit.setGamePrice(Double.valueOf(newPrice));
-                        gameListAdapter.getGameList().set(adapterPosition, itemToEdit);
-                        gameListAdapter.notifyItemChanged(adapterPosition);
-                    }
-                }
+                break;
+            }
+            default: {
+                gameListAdapter = (GameListAdapter) rvRecentGames.getAdapter();
+
+                // We have to update the other RecyclerView
+                GameListAdapter newGameListAdapter =
+                        new GameListAdapter(newOwnedGamesList, this, rvAllGamesName);
+                rvAllGames.setAdapter(newGameListAdapter);
+                GameListAdapter newFavoriteGameListAdapter =
+                        new GameListAdapter(newFavoriteGamesList, this, rvFavoriteGamesName);
+                rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
+                sortAndShowGameItemList(rvAllGames);
+                sortAndShowGameItemList(rvFavoriteGames);
+                break;
+            }
+        }
+        if (recyclerName.equals(rvFavoriteGamesName) && edited) {
+            GameListAdapter newFavoriteGameListAdapter =
+                    new GameListAdapter(newFavoriteGamesList, this, rvFavoriteGamesName);
+            rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
+            sortAndShowGameItemList(rvFavoriteGames);
+        } else {
+            if (newPrice != null &&
+                    !newPrice.equals(getResources().getString(R.string.free))) {
+                // We update only the item updated in the RecyclerView used to open the activity
+                GameListItem itemToEdit = gameListAdapter.getGameList().get(adapterPosition);
+                itemToEdit.setGamePrice(Double.valueOf(newPrice));
+                gameListAdapter.getGameList().set(adapterPosition, itemToEdit);
+                gameListAdapter.notifyItemChanged(adapterPosition);
             }
         }
     }
@@ -593,6 +618,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public void onReceive(Context context, Intent intent) {
             pbLoading.setVisibility(View.INVISIBLE);
+            lastRefresh = new Date();
 
             if (currentUser == null) {
                 refreshUserProfileInformationFromDb(true);

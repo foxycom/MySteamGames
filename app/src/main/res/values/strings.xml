@@ -3,8 +3,11 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-
     <string name="app_name">Game time price</string>
+
+    <!-- Notification -->
+    <string name="new_game_notification_title">New game in your library</string>
+    <string name="new_game_notification_body">There is a new game in your Steam library.\nDon\'t forget to add its price!</string>
 
     <!-- LoginActivity -->
     <string name="activity_login_title">Login</string>

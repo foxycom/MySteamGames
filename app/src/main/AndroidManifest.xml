@@ -43,8 +43,16 @@
             android:theme="@style/AppTheme" />
         <!-- Declaring Service in Manifest -->
         <service
-            android:name=".utilities.RetrieveDataFromSteamIntentService"
+            android:name=".sync.RetrieveDataFromSteamIntentService"
             android:exported="false" />
+
+        <service
+            android:name=".sync.RetrieveDataFromSteamJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

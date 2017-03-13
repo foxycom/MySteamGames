@@ -1,4 +1,4 @@
-package com.joffreylagut.mysteamgames.mysteamgames.utilities;
+package com.joffreylagut.mysteamgames.mysteamgames.sync;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -13,6 +13,7 @@ import com.joffreylagut.mysteamgames.mysteamgames.MainActivity;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.objects.User;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +37,7 @@ public class RetrieveDataFromSteamIntentService extends IntentService {
     private SQLiteDatabase mDb;
     private UserDbHelper userDbHelper;
     private SharedPreferences sharedPreferences;
+    private boolean newGameDetected;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -46,6 +48,9 @@ public class RetrieveDataFromSteamIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        // We set newGameDetected to false
+        newGameDetected = false;
+
         // We are declaring a new UserDbHelper to access to the db.
         userDbHelper = UserDbHelper.getInstance(this);
         mDb = userDbHelper.getWritableDatabase();
@@ -87,6 +92,7 @@ public class RetrieveDataFromSteamIntentService extends IntentService {
         if (!responses[1].equals("Error with gamesJSON")) ParseJSONGames(responses[1]);
 
         Intent broadcastIntent = new Intent();
+        broadcastIntent.putExtra("newGameDetected", newGameDetected);
         broadcastIntent.setAction(MainActivity.SteamDataReceiver.PROCESS_RESPONSE);
         broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
         sendBroadcast(broadcastIntent);
@@ -180,6 +186,7 @@ public class RetrieveDataFromSteamIntentService extends IntentService {
                     // The game isn't already owned in db, we add it.
                     userDbHelper.addNewOwnedGame(mDb, String.valueOf(user.getUserID()), gameID,
                             playtime_forever, playtime_2weeks, null, null);
+                    newGameDetected = true;
                 }
             }
         } catch (Exception e) {
