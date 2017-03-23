@@ -1,2 +1,21 @@
 # MySteamGames
-Personal project to learn Android development.
+A personal project to learn Android development.
+Feel free to pick and reuse some part of the code.
+
+# Description
+This app allows you to visualize the cost per hour of your Steam games.
+You are able to watch which games were good investments! Don't know which game to play? Pick one that you have never played!
+
+Features:
+- Login with your Steam account to get your library.
+- Add the price of your games to see their cost per hour.
+- You are buying bundles? Add them in the app to automatically calculate the real price of each game.
+- Manage your favorite to watch only the game that matter for you.
+
+# Download
+This app is available for free on the Google Play: https://play.google.com/store/apps/details?id=com.joffreylagut.mysteamgames.mysteamgames
+
+# Libraries used
+- Picasso: https://github.com/square/picasso
+- Picasso transformation: https://github.com/wasabeef/picasso-transformations
+- Stetho: http://facebook.github.io/stetho/
