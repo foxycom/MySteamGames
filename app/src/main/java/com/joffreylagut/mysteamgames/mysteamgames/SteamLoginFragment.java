@@ -107,14 +107,12 @@ public class SteamLoginFragment extends Fragment {
                 String before = mainString.substring(0, mainString.indexOf(substr));
                 String after = mainString.substring(mainString.indexOf(substr) + substr.length());
 
-                String steamId = after.substring(2, 19);
-
-                Log.d("Steam ID: ", steamId);
+                Long steamId = Long.valueOf(after.substring(2, 19));
 
                 //Prefs.putString("steamid", steamId);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("etp_steamID", steamId);
-                editor.commit();
+                editor.putLong("etp_steamID", steamId);
+                editor.apply();
                 Log.d(TAG, "Steam ID: " + steamId);
 
                 Intent intent = new Intent(getActivity(), MainActivity.class);

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -31,12 +30,10 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.facebook.stetho.Stetho;
-import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
-import com.joffreylagut.mysteamgames.mysteamgames.objects.Game;
-import com.joffreylagut.mysteamgames.mysteamgames.objects.GameListItem;
-import com.joffreylagut.mysteamgames.mysteamgames.objects.OwnedGame;
-import com.joffreylagut.mysteamgames.mysteamgames.objects.User;
+import com.joffreylagut.mysteamgames.mysteamgames.models.GameListItem;
+import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
+import com.joffreylagut.mysteamgames.mysteamgames.models.User;
 import com.joffreylagut.mysteamgames.mysteamgames.sync.NotificationUtils;
 import com.joffreylagut.mysteamgames.mysteamgames.sync.ReminderUtilities;
 import com.joffreylagut.mysteamgames.mysteamgames.sync.RetrieveDataFromSteamIntentService;
@@ -45,14 +42,20 @@ import com.joffreylagut.mysteamgames.mysteamgames.utilities.GameListSorter;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static android.support.design.widget.Snackbar.make;
+
+/**
+ * MainActivity.java
+ * Purpose: Display the games of the user.
+ *
+ * @author Joffrey LAGUT
+ * @version 1.5 2017-04-08
+ */
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -63,8 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // Declaration of the global values of this activity.
     private User currentUser = new User();
-    private SQLiteDatabase mDb;
-    private Double totalMoneySpent = 0.00;
+    private SQLiteDatabase mDb;;
     private UserDbHelper userDbHelper;
     private SharedPreferences sharedPreferences;
     private CoordinatorLayout coordinatorLayout;
@@ -368,80 +370,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void refreshUserProfileInformationFromDb(boolean refreshRecyclerViews) {
 
         // If the user have already used the app, the saved information will be displayed.
-        Long steamID = Long.valueOf(sharedPreferences.getString("etp_steamID", "0"));
+        Long steamID = sharedPreferences.getLong("etp_steamID", 0);
 
-        currentUser = userDbHelper.getUserBySteamID(mDb, steamID);
+        currentUser = userDbHelper.getUserBySteamId(mDb, steamID, true);
 
-        if (currentUser == null) return;
-        // Then, we get the list of owned games from OwnedGames table.
-        List<OwnedGame> userOwnedGames = new ArrayList<>();
-        OwnedGame currentOwnedGame;
-        Game currentGame;
-        Cursor result;
-        Cursor gameRow;
-        currentUser.setNbMinutesPlayed(0);
+        if (currentUser.getUserID() == 0) return;
 
-        result = userDbHelper.getOwnedGamesByUserID(mDb, String.valueOf(currentUser.getUserID()));
-        if(result.getCount() !=0){
-            result.moveToFirst();
-            while (!result.isAfterLast()) {
-                currentOwnedGame = new OwnedGame();
-                currentGame = new Game();
-                currentGame.setGameID(result.getInt(result.getColumnIndex(
-                        UserContract.OwnedGamesEntry.COLUMN_GAME_ID)));
-                // We have to retrieve all the game information in DB.
-                gameRow = userDbHelper.getGameBy_ID(mDb, String.valueOf(currentGame.getGameID()));
-                if(gameRow.getCount() != 0){
-                    gameRow.moveToFirst();
-                    currentGame.setGameName(gameRow.getString(gameRow.getColumnIndex(
-                            UserContract.GameEntry.COLUMN_GAME_NAME)));
-                    currentGame.setSteamID(Long.valueOf(gameRow.getString(gameRow.getColumnIndex(
-                            UserContract.GameEntry.COLUMN_STEAM_ID))));
-                    currentGame.setMarketplace(gameRow.getString(gameRow.getColumnIndex(
-                            UserContract.GameEntry.COLUMN_MARKETPLACE)));
-
-                    try {
-                        currentGame.setGameLogo(new URL(
-                                gameRow.getString(gameRow.getColumnIndex(
-                                        UserContract.GameEntry.COLUMN_GAME_LOGO))));
-                        currentGame.setGameIcon(new URL(
-                                gameRow.getString(gameRow.getColumnIndex(
-                                        UserContract.GameEntry.COLUMN_GAME_ICON))));
-
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-                }
-                gameRow.close();
-
-                currentOwnedGame.setGame(currentGame);
-                currentOwnedGame.setGamePrice(result.getDouble(result.getColumnIndex(
-                        UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE)));
-                currentOwnedGame.setTimePlayedForever(result.getInt(result.getColumnIndex(
-                        UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_FOREVER)));
-                currentOwnedGame.setTimePlayed2Weeks(result.getInt(result.getColumnIndex(
-                        UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_2_WEEKS)));
-                userOwnedGames.add(currentOwnedGame);
-                int favorite = result.getInt(result.getColumnIndex(
-                        UserContract.OwnedGamesEntry.COLUMN_FAVORITE));
-                if (favorite == 1) {
-                    currentOwnedGame.setFavorite(true);
-                } else {
-                    currentOwnedGame.setFavorite(false);
-                }
-
-
-                if (result.getDouble(result.getColumnIndex(
-                        UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE)) != -1.00) {
-                    totalMoneySpent = totalMoneySpent + result.getDouble(result.getColumnIndex(
-                            UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE));
-                }
-                currentUser.setNbMinutesPlayed(currentUser.getNbMinutesPlayed() + currentOwnedGame.getTimePlayedForever());
-                result.moveToNext();
-            }
-            result.close();
-        }
-        currentUser.setOwnedGames(userOwnedGames);
         // Now we can display the user's information.
         if(currentUser.getAccountName() != null){
             tvAccountName.setText(currentUser.getAccountName());
@@ -455,6 +389,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String urlImageToLoad = currentUser.getAccountPicture().toString();
             Picasso.with(this).load(urlImageToLoad).into(ivProfile);
         }
+
+        // We have to calculate the total money that the user have spent
+        Double totalMoneySpent = 0.00;
+        for (OwnedGame currentOwnedGame:currentUser.getOwnedGames()) {
+            if(currentOwnedGame.getGamePrice() > 0){
+                totalMoneySpent = totalMoneySpent + currentOwnedGame.getGamePrice();
+            }
+        }
+
         Double nbHoursTotal = (double) currentUser.getNbMinutesPlayed() / 60;
         Double totalPricePerHour = totalMoneySpent / nbHoursTotal;
         DecimalFormat df = new DecimalFormat("#.##");
@@ -492,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        // If we havn't a requestCode and a resultCode, we return directly
+        // If we haven't a requestCode and a resultCode, we return directly
         if (requestCode != 1 || resultCode != Activity.RESULT_OK) return;
 
         // We retrieve the information from the intent
@@ -588,7 +531,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @param ownedGames List<OwnedGame> that you want to convert.
      * @return List<GameListItem> that can be used by GameListAdapters.
      */
-    public List<GameListItem> createGameListItemList(List<OwnedGame> ownedGames){
+    public static List<GameListItem> createGameListItemList(List<OwnedGame> ownedGames){
+        // TODO Unit tests
         List<GameListItem> gameListItems = new ArrayList<>();
         GameListItem item;
 
@@ -599,7 +543,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             item.setGameName(ownedGame.getGame().getGameName());
             item.setGamePrice(ownedGame.getGamePrice());
             item.setGameID(ownedGame.getGame().getGameID());
-            item.setUserID(currentUser.getUserID());
+            item.setUserID(ownedGame.getUserId());
             gameListItems.add(item);
         }
 

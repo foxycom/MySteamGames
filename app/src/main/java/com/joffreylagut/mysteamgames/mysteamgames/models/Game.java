@@ -1,21 +1,29 @@
-package com.joffreylagut.mysteamgames.mysteamgames.objects;
+package com.joffreylagut.mysteamgames.mysteamgames.models;
 
 import java.net.URL;
 
 /**
- * Created by Joffrey on 15/02/2017.
+ * Game.java
+ * Purpose: Blueprint for a Game object.
+ *
+ * @author Joffrey LAGUT
+ * @version 1.5 2017-04-10
  */
 
 public class Game {
 
-    private int gameID;
-    private long steamID;
-    private String gameName;
-    private URL gameLogo;
-    private URL gameIcon;
-    private String marketplace;
+    private int gameID = 0; // Optional
+    private long steamID = 0; // Optional
+    private String gameName; // Mandatory
+    private URL gameLogo = null; // Optional
+    private URL gameIcon = null; // Optional
+    private String marketplace = ""; // Optional
 
     public Game() {
+    }
+
+    public Game(String name){
+        this.gameName = name;
     }
 
     public Game(int gameID, long steamID, String gameName, URL gameLogo, URL gameIcon, String marketplace) {

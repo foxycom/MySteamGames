@@ -1,13 +1,18 @@
-package com.joffreylagut.mysteamgames.mysteamgames.objects;
+package com.joffreylagut.mysteamgames.mysteamgames.models;
 
 import java.net.URL;
 
 /**
- * Created by Joffrey on 08/02/2017.
+ * GameListItem.java
+ * Purpose: Blueprint for a GameListItem object. Those objects are used in the RecyclerViews
+ * in the MainActivity.java.
+ *
+ * @author Joffrey LAGUT
+ * @version 1.5 2017-04-10
  */
 
 public class GameListItem implements Comparable {
-    // TODO Change the name of all the attributes and generate new getters/setters. Be carefull with the RecyclerView.Adapter
+
     private int gameID;
     private int gameSteamID;
     private URL gameImage;
@@ -17,16 +22,6 @@ public class GameListItem implements Comparable {
     private int userID;
 
     public GameListItem() {
-    }
-
-    public GameListItem(int gameID, int gameSteamID, URL gameImage, String gameName, int gameTimePlayed, double gamePrice, int userID) {
-        this.gameID = gameID;
-        this.gameSteamID = gameSteamID;
-        this.gameImage = gameImage;
-        this.gameName = gameName;
-        this.gameTimePlayed = gameTimePlayed;
-        this.gamePrice = gamePrice;
-        this.userID = userID;
     }
 
     public int getGameID() {

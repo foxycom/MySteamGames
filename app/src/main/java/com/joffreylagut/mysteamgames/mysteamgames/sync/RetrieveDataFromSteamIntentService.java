@@ -1,18 +1,19 @@
 package com.joffreylagut.mysteamgames.mysteamgames.sync;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
 import com.joffreylagut.mysteamgames.mysteamgames.MainActivity;
-import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
-import com.joffreylagut.mysteamgames.mysteamgames.objects.User;
+import com.joffreylagut.mysteamgames.mysteamgames.models.Game;
+import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
+import com.joffreylagut.mysteamgames.mysteamgames.models.User;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 
 import org.json.JSONArray;
@@ -22,22 +23,20 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import static com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls.createGameImageURL;
 
 /**
- * Created by Joffrey on 09/03/2017.
+ * RetrieveDataFromSteamIntentService.java
+ * Purpose: Handle all the instrumental tests for RetrieveDataFromSteamIntentService.java
+ *
+ * @author Joffrey LAGUT
+ * @version 1.1 2017-04-07
  */
 
 public class RetrieveDataFromSteamIntentService extends IntentService {
-
-    public static final String RESPONSE_STRING = "myResponse";
-    public static final String RESPONSE_MESSAGE = "myResponseMessage";
-    private SQLiteDatabase mDb;
-    private UserDbHelper userDbHelper;
-    private SharedPreferences sharedPreferences;
-    private boolean newGameDetected;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -48,18 +47,16 @@ public class RetrieveDataFromSteamIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        // We set newGameDetected to false
-        newGameDetected = false;
 
         // We are declaring a new UserDbHelper to access to the db.
-        userDbHelper = UserDbHelper.getInstance(this);
-        mDb = userDbHelper.getWritableDatabase();
+        UserDbHelper userDbHelper = UserDbHelper.getInstance(this);
+        SQLiteDatabase mDb = userDbHelper.getWritableDatabase();
         // We load the SharedPreferences
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         URL[] listURLAPIToCall = {
-                SteamAPICalls.getURLPlayerProfileInformation(sharedPreferences.getString("etp_steamID", "")),
-                SteamAPICalls.getURLPlayerOwnedGames(sharedPreferences.getString("etp_steamID", ""))
+                SteamAPICalls.getURLPlayerProfileInformation(sharedPreferences.getLong("etp_steamID", 0)),
+                SteamAPICalls.getURLPlayerOwnedGames(sharedPreferences.getLong("etp_steamID", 0))
         };
         // Do some validation here
         String[] responses = new String[listURLAPIToCall.length];
@@ -88,109 +85,130 @@ public class RetrieveDataFromSteamIntentService extends IntentService {
         }
         Log.i("INFO", responses[0]);
         Log.i("INFO", responses[1]);
-        if (!responses[0].equals("Error with userJSON")) ParseJSONProfile(responses[0]);
-        if (!responses[1].equals("Error with gamesJSON")) ParseJSONGames(responses[1]);
+        User user = new User();
+        if (!responses[0].equals("Error with userJSON")){
+            user = InsertSteamJsonUserInformationInDb(this, responses[0]);
+        }
+        if (!responses[1].equals("Error with gamesJSON")) {
+            InsertSteamJsonUserGamesInDb(this, responses[1], user.getUserID());
+        }
 
         Intent broadcastIntent = new Intent();
-        broadcastIntent.putExtra("newGameDetected", newGameDetected);
+        broadcastIntent.putExtra("newGameDetected", false);
         broadcastIntent.setAction(MainActivity.SteamDataReceiver.PROCESS_RESPONSE);
         broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
         sendBroadcast(broadcastIntent);
     }
 
-    private void ParseJSONProfile(String JSONProfil) {
+    /**
+     * This method is parsing the String in parameter to insert the user in database.
+     * The user is updated if already in db.
+     *
+     * @param context Context
+     * @param JSONUserProfile json converted into a string.
+     */
+    static User InsertSteamJsonUserInformationInDb(Context context, String JSONUserProfile) {
 
         try {
             // We are directly going to the object containing our player information.
-            JSONObject player = new JSONObject(JSONProfil)
+            JSONObject player = new JSONObject(JSONUserProfile)
                     .getJSONObject("response")
                     .getJSONArray("players").getJSONObject(0);
 
-            // We insert the information in our container.
-            long steamID = Long.valueOf(player.getString("steamid"));
-            String accountName = player.getString("personaname");
-            String accountPicture = player.getString("avatarfull");
+            // We create a new user with the information from the JSON
+            User currentUser = new User();
+            currentUser.setSteamID(Long.valueOf(player.getString("steamid")));
+            currentUser.setAccountName(player.getString("personaname"));
+            URL accountPictureUrl = null;
+            try {
+                accountPictureUrl = new URL(player.getString("avatarfull"));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            currentUser.setAccountPicture(accountPictureUrl);
 
-            // We first check if the user already exist in db
-            userDbHelper = UserDbHelper.getInstance(this);
-            User userInDB = userDbHelper.getUserBySteamID(mDb, steamID);
+            // We check if the user already exist in db
+            UserDbHelper userDbHelper = UserDbHelper.getInstance(context);
+            SQLiteDatabase mDb = userDbHelper.getWritableDatabase();
+            User userInDB = userDbHelper.getUserBySteamId(mDb, currentUser.getSteamID(), false);
 
-            if (userInDB != null) {
-                // The user already exist, we have to update his informations.
-                userDbHelper.updateUserBySteamID(mDb, String.valueOf(steamID),
-                        accountName, accountPicture);
+            if (userInDB.getUserID() != 0) {
+                // The user already exist, we have to update his information.
+                userDbHelper.updateUserBySteamID(mDb, currentUser);
+                currentUser.setUserID(userInDB.getUserID());
             } else {
                 // The user doesn't exist, we have to insert him in DB.
-                userDbHelper.addNewUser(mDb, String.valueOf(steamID)
-                        , accountName, accountPicture);
+                currentUser = userDbHelper.addNewUser(mDb, currentUser);
             }
+            return currentUser;
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return new User();
     }
 
-    private void ParseJSONGames(String JSONGames) {
+    /**
+     * This method is parsing the String in parameter to insert the games owned by the user in database.
+     * The games are updated if already in db.
+     *
+     * @param context Context
+     * @param JSONUserGames  json converted into a string.
+     */
+    public static void InsertSteamJsonUserGamesInDb(Context context, String JSONUserGames, int userId) {
+        // TODO Fix the error bellow
+        UserDbHelper userDbHelper = UserDbHelper.getInstance(context);
+        SQLiteDatabase db = userDbHelper.getWritableDatabase();
+
         try {
-            JSONArray jsonArrayGames = new JSONObject(JSONGames).getJSONObject("response").getJSONArray("games");
-            User user;
-            int jsonArrayLenght = jsonArrayGames.length();
+
+            JSONArray jsonArrayGames = new JSONObject(JSONUserGames).getJSONObject("response").getJSONArray("games");
             for (int i = 0; i < jsonArrayGames.length(); i++) {
 
                 // We retrieve and store all of the information in variables.
                 JSONObject jsonGame = jsonArrayGames.getJSONObject(i);
 
-                String appID = jsonGame.getString("appid");
-                String name = jsonGame.getString("name");
-                String playtime_2weeks = "";
-                if (jsonGame.has("playtime_2weeks"))
-                    playtime_2weeks = jsonGame.getString("playtime_2weeks");
-                String playtime_forever = jsonGame.getString("playtime_forever");
-                String img_icon_url = jsonGame.getString("img_icon_url");
-                img_icon_url = createGameImageURL(img_icon_url, appID).toString();
-                String img_logo_url = jsonGame.getString("img_logo_url");
-                img_logo_url = createGameImageURL(img_logo_url, appID).toString();
+                Game game = new Game(jsonGame.getString("name"));
 
-                UserDbHelper userDbHelper = new UserDbHelper(this);
+                // Now we create a new OwnedGame object.
+                OwnedGame ownedGame = new OwnedGame(userId, game);
 
-                // We retrieve the User in DB.
-                user = userDbHelper.getUserBySteamID(mDb, Long.valueOf(sharedPreferences.getString("etp_steamID", "")));
+                ownedGame.setUserId(userId);
+                ownedGame.getGame().setSteamID(jsonGame.getLong("appid"));
+                ownedGame.getGame().setGameName(jsonGame.getString("name"));
+                if (jsonGame.has("playtime_2weeks")) {
+                    ownedGame.setTimePlayed2Weeks(jsonGame.getInt("playtime_2weeks"));
+                }
+                ownedGame.setTimePlayedForever(jsonGame.getInt("playtime_forever"));
+                ownedGame.getGame().setGameIcon(createGameImageURL(jsonGame.getString("img_icon_url"), ownedGame.getGame().getSteamID()));
+                ownedGame.getGame().setGameLogo(createGameImageURL(jsonGame.getString("img_logo_url"), ownedGame.getGame().getSteamID()));
+                ownedGame.getGame().setMarketplace("Steam");
+
 
                 // First, we check if the game already exist in db.
-                Cursor cursor = userDbHelper.getGameBySteamID(mDb, appID);
-                if (cursor.getCount() != 0) {
+                Game gameFromDb = userDbHelper.getGameBySteamID(db, ownedGame.getGame().getSteamID());
+                if (gameFromDb.getGameID() != 0) {
+                    ownedGame.getGame().setGameID(gameFromDb.getGameID());
                     // The game already exist, we have to update it in db.
-                    userDbHelper.updateGameBySteamID(mDb, appID, name, img_logo_url,
-                            img_icon_url, "Steam");
+                    userDbHelper.updateGameById(db, ownedGame.getGame());
                 } else {
                     // The game doesn't exist, we have to add it in db.
-                    userDbHelper.addNewGame(mDb, appID, name, img_logo_url,
-                            img_icon_url, "Steam");
+                    ownedGame.setGame(userDbHelper.addNewGame(db, ownedGame.getGame()));
                 }
 
-                // Now that the game is in DB, we have to check if the game is already owned by
-                // the user in DB.
-                // We retrieve the gameUD in DB.
-                cursor = userDbHelper.getGameBySteamID(mDb, appID);
-                String gameID = "0";
-                if (cursor.getCount() != 0) {
-                    gameID = cursor.getString(cursor.getColumnIndex(UserContract.GameEntry._ID));
-                }
-
-                cursor = userDbHelper.getOwnedGame(mDb, String.valueOf(user.getUserID()), gameID);
-                if (cursor.getCount() != 0) {
-                    // The game is already owned by the user, we have to update it.
-                    userDbHelper.updateOwnedGame(mDb, String.valueOf(user.getUserID()), gameID,
-                            playtime_forever, playtime_2weeks, null, null, null);
-                } else {
-                    // The game isn't already owned in db, we add it.
-                    userDbHelper.addNewOwnedGame(mDb, String.valueOf(user.getUserID()), gameID,
-                            playtime_forever, playtime_2weeks, null, null);
-                    newGameDetected = true;
+                // Now that the game is in DB, we have to check if the game is already owned by the user.
+                OwnedGame ownedGameFromDb = userDbHelper.getOwnedGame(db, userId, ownedGame.getGame().getGameID());
+                if(ownedGameFromDb == null){
+                    // The user don't own the game yet, we have to add it in db
+                    userDbHelper.addNewOwnedGame(db,ownedGame);
+                }else{
+                    // We update the game
+                    userDbHelper.updateOwnedGame(db, ownedGame);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }

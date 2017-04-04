@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -25,8 +24,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
-import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
+import com.joffreylagut.mysteamgames.mysteamgames.models.Game;
+import com.joffreylagut.mysteamgames.mysteamgames.models.GameBundle;
+import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -98,7 +99,7 @@ public class EditGameActivity extends AppCompatActivity {
 
         });
 
-        // We attach a watcher to the edittext that are here to display currency
+        // We attach a watcher to the edit text that are here to display currency
         etGamePrice.addTextChangedListener(new MoneyTextWatcher(etGamePrice));
         etBundlePrice.addTextChangedListener(new MoneyTextWatcher(etBundlePrice));
 
@@ -146,51 +147,60 @@ public class EditGameActivity extends AppCompatActivity {
      * @param v View that have called the method.
      */
     public void saveGame(View v) {
-        Cursor request;
+        // TODO Fix the error bellow
+
         // In first, we need to retrieve all the information
-        String gameName = etGameName.getText().toString();
+        Game game = new Game(etGameName.getText().toString());
+        game.setGameID(gameID);
+
+        OwnedGame ownedGame = new OwnedGame(userID, game);
+        ownedGame.setUserId(userID);
         double timePlayed = Double.parseDouble(etTimePlayed.getText().toString());
         String timeUnit = spTimeUnit.getSelectedItem().toString();
         // If the user have set the time in hour, we need to convert it in minutes
-        if (timeUnit.equals("h")) timePlayed = timePlayed * 60;
+        if (timeUnit.equals("h")){
+            ownedGame.setTimePlayedForever((int) (timePlayed * 60));
+        }else{
+            ownedGame.setTimePlayedForever((int) timePlayed);
+        }
         if (rdBoughtAlone.isChecked()) {
             // The game have been bought alone
             // We have to clean the currency
             String cleanString = removeCurrency(etGamePrice.getText().toString());
-            if (cleanString.length() == 0) cleanString = "0";
+            if (cleanString.length() == 0){
+                cleanString = "0";
+            }
             // We get the price
             Double gamePrice = Double.valueOf(cleanString);
+            ownedGame.setGamePrice(gamePrice);
             // We have all of the information needed to update the game in DB
-            userDbHelper.updateGameByID(db, String.valueOf(gameID), null, gameName, null, null, null);
-            userDbHelper.updateOwnedGame(db, String.valueOf(userID), String.valueOf(gameID),
-                    String.valueOf(timePlayed), null, String.valueOf(gamePrice), "-1", null);
+            userDbHelper.updateGameById(db, ownedGame.getGame());
+            userDbHelper.updateOwnedGame(db, ownedGame);
         } else {
             // The game is in a bundle
             // We have to clean the currency
             String cleanString = removeCurrency(etBundlePrice.getText().toString());
             if (cleanString.length() == 0) cleanString = "0";
-            // We get the price
-            Double bundlePrice = Double.valueOf(cleanString);
-            String bundleName = spBundleName.getSelectedItem().toString();
-            if (!bundleName.equals(getResources().getString(R.string.spinner_choose_bundle_item)) &&
-                    !bundleName.equals(getResources().getString(R.string.spinner_new_bundle_item))) {
+            // We create a GameBundle object
+            GameBundle gameBundle = new GameBundle();
+            gameBundle.setName(spBundleName.getSelectedItem().toString());
+            gameBundle.setPrice(Double.valueOf(cleanString));
+            if (!gameBundle.getName().equals(getResources().getString(R.string.spinner_choose_bundle_item)) &&
+                    !gameBundle.getName().equals(getResources().getString(R.string.spinner_new_bundle_item))) {
                 // First, we check if there is already a bundle with this name
-                request = userDbHelper.getBundleByName(db, bundleName, String.valueOf(userID));
-                int bundleID;
-                if (request.getCount() != 0) {
+                GameBundle gameBundleFromDb = userDbHelper.getGameBundleByName(db, gameBundle.getName(), userID);
+                if (gameBundleFromDb.getId() != 0) {
                     // The user already own a bundle with this name so we update the bundle.
-                    bundleID = request.getInt(request.getColumnIndex(UserContract.BundleEntry._ID));
-                    userDbHelper.updateBundle(db, String.valueOf(bundleID),
-                            null, String.valueOf(bundlePrice));
+                    gameBundle.setId(gameBundleFromDb.getId());
+                    userDbHelper.updateGameBundle(db, gameBundle);
                 } else {
                     // We create a new bundle
-                    bundleID = Integer.parseInt(String.valueOf(userDbHelper.addNewBundle(db, bundleName, String.valueOf(bundlePrice))));
+                    userDbHelper.addNewGameBundle(db, gameBundle);
                 }
                 // To finish, we update the ownedgame table
-                userDbHelper.updateOwnedGame(db, String.valueOf(userID),
-                        String.valueOf(gameID), String.valueOf(timePlayed),
-                        null, null, String.valueOf(bundleID), null);
-                userDbHelper.updateOnwedGamePriceFromBundle(db, String.valueOf(bundleID));
+                ownedGame.setGameBundle(gameBundle);
+                userDbHelper.updateOwnedGame(db, ownedGame);
+                userDbHelper.updateOwnedGamePriceFromBundle(db, gameBundle.getId());
 
             } else {
                 showView(findViewById(R.id.tv_error_bundle_name));
@@ -228,53 +238,17 @@ public class EditGameActivity extends AppCompatActivity {
      * Method that will query the database and insert the values into the views.
      */
     private void displayInformation() {
+        // TODO Fix the error bellow
+
         // We are putting the values inside the time unit spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.time_unit, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spTimeUnit.setAdapter(adapter);
 
-        // We declare all of the variable to stock db information
-        String timePlayed = null;
-        String gamePrice = null;
-        int bundleID = 0;
-        String gameName = null;
-        String marketPlace = null;
-        String bundleName = null;
-        String bundlePrice = null;
-
         // We get all the information in OwnedGame table
-        Cursor request = userDbHelper.getOwnedGame(db, String.valueOf(userID), String.valueOf(gameID));
-        if (request.getCount() != 0) {
-            request.moveToFirst();
-            timePlayed = request.getString(
-                    request.getColumnIndex(UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_FOREVER));
-            gamePrice = request.getString(
-                    request.getColumnIndex(UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE));
-            bundleID = request.getInt(
-                    request.getColumnIndex(UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID));
-        }
+        OwnedGame ownedGame = userDbHelper.getOwnedGame(db, userID, gameID);
 
-        // If the game in in a GameBundle, we get the information about the bundle
-        if (bundleID != 0) {
-            request = userDbHelper.getBundleByID(db, String.valueOf(bundleID));
-            if (request.getCount() != 0) {
-                request.moveToFirst();
-                bundleName = request.getString(
-                        request.getColumnIndex(UserContract.BundleEntry.COLUMN_BUNDLE_NAME));
-                bundlePrice = request.getString(
-                        request.getColumnIndex(UserContract.BundleEntry.COLUMN_BUNDLE_PRICE));
-            }
-        }
-        // We get all the information from Game table
-        request = userDbHelper.getGameBy_ID(db, String.valueOf(gameID));
-        if (request.getCount() != 0) {
-            request.moveToFirst();
-            gameName = request.getString(
-                    request.getColumnIndex(UserContract.GameEntry.COLUMN_GAME_NAME));
-            marketPlace = request.getString(
-                    request.getColumnIndex(UserContract.GameEntry.COLUMN_MARKETPLACE));
-        }
         // We are putting the values inside the bundle spinner
         arraySpinnerBundle = new ArrayList<>();
         listUserBundleWithPrice = new ArrayList<>();
@@ -283,18 +257,12 @@ public class EditGameActivity extends AppCompatActivity {
         arraySpinnerBundle.add(getResources().getString(R.string.spinner_new_bundle_item));
 
         // DB values
-        request = userDbHelper.getUserBundles(db, String.valueOf(userID));
-        if (request.getCount() != 0) {
-            request.moveToFirst();
-            while (!request.isAfterLast()) {
-                String getBundleName = request.getString(
-                        request.getColumnIndex(UserContract.BundleEntry.COLUMN_BUNDLE_NAME));
-                String getBundlePrice = request.getString((
-                        request.getColumnIndex(UserContract.BundleEntry.COLUMN_BUNDLE_PRICE)));
-                String[] result = {getBundleName, getBundlePrice};
+        List<GameBundle> userGameBundles = userDbHelper.getUserGameBundles(db, userID);
+        if (userGameBundles.size() != 0) {
+            for(GameBundle gameBundle : userGameBundles){
+                String[] result = {gameBundle.getName(), String.valueOf(gameBundle.getPrice())};
                 listUserBundleWithPrice.add(result);
-                arraySpinnerBundle.add(getBundleName);
-                request.moveToNext();
+                arraySpinnerBundle.add(gameBundle.getName());
             }
         }
 
@@ -304,8 +272,8 @@ public class EditGameActivity extends AppCompatActivity {
         adapterBundle.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spBundleName.setAdapter(adapterBundle);
         // Select the game bundle if exist
-        if (bundleName != null) {
-            int bundleNamePosition = getIndex(spBundleName, bundleName);
+        if (ownedGame.getGameBundle().getName() != null) {
+            int bundleNamePosition = getIndex(spBundleName, ownedGame.getGameBundle().getName());
             if (bundleNamePosition != -1) spBundleName.setSelection(bundleNamePosition);
         }
 
@@ -367,10 +335,10 @@ public class EditGameActivity extends AppCompatActivity {
         });
 
         // Steam games information are auto-updated so we deactivate the fields
-        if (marketPlace != null && marketPlace.equals("Steam")) {
+        if (ownedGame.getGame().getMarketplace() != null && ownedGame.getGame().getMarketplace().equals("Steam")) {
             etTimePlayed.setEnabled(false);
             etGameName.setEnabled(false);
-            // Since we are storing time in minutes in DB, we choose automaticaly mn in the spinner
+            // Since we are storing time in minutes in DB, we choose automatically mn in the spinner
             int spinnerPosition = adapter.getPosition("mn");
             spTimeUnit.setSelection(spinnerPosition);
             spTimeUnit.setEnabled(false);
@@ -378,17 +346,19 @@ public class EditGameActivity extends AppCompatActivity {
 
 
         // We can now insert the values in views
-        etGameName.setText(gameName);
-        etTimePlayed.setText(timePlayed);
-        if (!(gamePrice != null && gamePrice.equals("-1"))) etGamePrice.setText(gamePrice);
-        if (bundleID == 0) {
+        etGameName.setText(ownedGame.getGame().getGameName());
+        etTimePlayed.setText(String.valueOf(ownedGame.getTimePlayedForever()));
+        if (ownedGame.getGameBundle().getId() == 0) {
             rdBoughtAlone.setChecked(true);
             rdBoughtBundle.setChecked(false);
             showViewsFromRadioButtonState(false);
+            if (ownedGame.getGamePrice() != -1.00){
+                etGamePrice.setText(String.valueOf(ownedGame.getGamePrice()));
+            }
         } else {
             rdBoughtAlone.setChecked(false);
             rdBoughtBundle.setChecked(true);
-            etBundlePrice.setText(bundlePrice);
+            etBundlePrice.setText(String.valueOf(ownedGame.getGameBundle().getPrice()));
             showViewsFromRadioButtonState(true);
         }
 

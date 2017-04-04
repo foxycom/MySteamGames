@@ -1,7 +1,11 @@
-package com.joffreylagut.mysteamgames.mysteamgames.objects;
+package com.joffreylagut.mysteamgames.mysteamgames.models;
 
 /**
- * Created by jlagu on 28/02/2017.
+ * GameBundle.java
+ * Purpose: Blueprint for a GameBundle object.
+ *
+ * @author Joffrey LAGUT
+ * @version 1.5 2017-04-10
  */
 
 public class GameBundle {
@@ -11,12 +15,6 @@ public class GameBundle {
     private double price;
 
     public GameBundle() {
-    }
-
-    public GameBundle(int id, String name, double price) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
     }
 
     public int getId() {

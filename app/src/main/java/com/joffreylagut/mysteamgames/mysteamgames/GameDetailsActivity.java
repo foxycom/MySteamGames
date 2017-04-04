@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -20,8 +19,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.joffreylagut.mysteamgames.mysteamgames.data.UserContract;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
+import com.joffreylagut.mysteamgames.mysteamgames.models.Game;
+import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
 
@@ -95,6 +95,8 @@ public class GameDetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // TODO Fix the error bellow
+
         switch (item.getItemId()) {
             case R.id.menu_game_details_edit:
                 Intent intentEdit = new Intent(this, EditGameActivity.class);
@@ -112,12 +114,14 @@ public class GameDetailsActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.menu_game_details_favorite:
+                Game currentGame = userDbHelper.getGameById(db, gameID);
+                OwnedGame ownedGame = new OwnedGame(userID, currentGame);
                 if (favorite) {
-                    userDbHelper.updateOwnedGame(db, String.valueOf(userID), String.valueOf(gameID),
-                            null, null, null, null, "0");
+                    ownedGame.setFavorite(false);
+                    userDbHelper.updateOwnedGame(db, ownedGame);
                 } else {
-                    userDbHelper.updateOwnedGame(db, String.valueOf(userID), String.valueOf(gameID),
-                            null, null, null, null, "1");
+                    ownedGame.setFavorite(true);
+                    userDbHelper.updateOwnedGame(db, ownedGame);
                 }
                 // We have to change the icon
                 favorite = !favorite;
@@ -128,82 +132,57 @@ public class GameDetailsActivity extends AppCompatActivity {
                 this.onBackPressed();
                 return true;
         }
-
     }
 
     private void displayGameInformation(){
 
-        // First, we have to get all the information about the game.
-        Cursor result = userDbHelper.getGameBy_ID(db, String.valueOf(gameID));
-        if(result.getCount() != 0){
-            result.moveToFirst();
-            String gameName = result.getString(
-                    result.getColumnIndex(UserContract.GameEntry.COLUMN_GAME_NAME));
-            getSupportActionBar().setTitle(gameName);
-            String urlGame = result.getString(result.getColumnIndex(UserContract.GameEntry.COLUMN_GAME_LOGO));
-            if(urlGame.length() != 0) {
-                Picasso.with(this).load(urlGame).into(ivGame);
-                Picasso.with(this).load(urlGame).transform(new BlurTransformation(this, 5)).into(ivGameBlurred);
-
+        // TODO Fix the error bellow
+        // First, we have to get all the information about the owned game
+        OwnedGame ownedGame = userDbHelper.getOwnedGame(db, userID, gameID);
+        if(ownedGame.getGame().getGameID() != 0){
+            getSupportActionBar().setTitle(ownedGame.getGame().getGameName());
+            if(ownedGame.getGame().getGameLogo() != null) {
+                Picasso.with(this).load(ownedGame.getGame().getGameLogo().toString()).into(ivGame);
+                Picasso.with(this).load(ownedGame.getGame().getGameLogo().toString()).transform(new BlurTransformation(this, 5)).into(ivGameBlurred);
             }
 
-        }else{
-            // The game doesn't exist in DB. We log an error message.
-            Log.e(TAG, "displayGameInformation: There is no game in database with the _ID " + gameID);
-        }
-
-        // Then, we have to get the other information about the game usage.
-        result = userDbHelper.getOwnedGame(db, String.valueOf(userID), String.valueOf(gameID));
-        if(result.getCount() != 0){
-            String timePlayed = result.getString(result.getColumnIndex(UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_FOREVER));
-            String gamePrice = result.getString(result.getColumnIndex(UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE));
             TextView tvSpent = (TextView) findViewById(R.id.tv_game_details_spent);
 
             String priceText;
-            switch (gamePrice) {
-                case "":
-                case "-1":
+            switch (String.valueOf(ownedGame.getGamePrice())) {
+                case "-1.0":
                     priceText = "?" + sharedPreferences.getString("lp_currency", "$");
                     tvGamePrice.setText(priceText);
                     tvGamePricePerHour.setText("?" + sharedPreferences.getString("lp_currency", "$") + "/h");
                     tvSpent.setVisibility(View.VISIBLE);
                     break;
+                // TODO Test the case of the free to play
                 case "0":
                     tvGamePrice.setText(getResources().getString(R.string.free));
                     tvGamePricePerHour.setText(getResources().getString(R.string.free));
                     tvSpent.setVisibility(View.INVISIBLE);
                     break;
                 default:
-                    priceText = gamePrice + sharedPreferences.getString("lp_currency", "$");
+                    priceText = ownedGame.getGamePrice() + sharedPreferences.getString("lp_currency", "$");
                     tvGamePrice.setText(priceText);
-                    Double hours = Double.valueOf(timePlayed) / 60;
-                    Double pricePerHour = Double.valueOf(gamePrice) / hours;
+                    Double hours = (double) ownedGame.getTimePlayedForever() / 60;
+                    Double pricePerHour = ownedGame.getGamePrice() / hours;
                     DecimalFormat df = new DecimalFormat("#.##");
                     tvGamePricePerHour.setText(String.valueOf(df.format(pricePerHour)) + sharedPreferences.getString("lp_currency", "$") + "/h");
                     tvSpent.setVisibility(View.VISIBLE);
                     break;
             }
-            tvTimePlayed.setText(SteamAPICalls.convertTimePlayed(Integer.valueOf(timePlayed), true));
+            tvTimePlayed.setText(SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever(), true));
 
-            int isFavorite = result.getInt(result.getColumnIndex(
-                    UserContract.OwnedGamesEntry.COLUMN_FAVORITE));
-            favorite = isFavorite == 1;
+            favorite = ownedGame.isFavorite();
 
             // We have to check is the game is included in a bundle
-            String bundleID = result.getString(result.getColumnIndex(UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID));
 
-            if (bundleID != null) {
-                // it's the case, we have to retrieve the bundle information
-                result = userDbHelper.getBundleByID(db, bundleID);
-                if (result.getCount() != 0) {
-                    String bundleName = result.getString(result.getColumnIndex(UserContract.BundleEntry.COLUMN_BUNDLE_NAME));
-                    tvBundleName.setText(bundleName);
+            if (ownedGame.getGameBundle().getId() != 0) {
+                    tvBundleName.setText(ownedGame.getGameBundle().getName());
                     LinearLayout llBundle = (LinearLayout) findViewById(R.id.ll_game_details_bundle);
                     llBundle.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
                     llBundle.requestLayout();
-                } else {
-                    Log.e(TAG, "displayGameInformation: The bundle " + bundleID + "doesn't exist in database.");
-                }
             } else {
                 LinearLayout llBundle = (LinearLayout) findViewById(R.id.ll_game_details_bundle);
                 llBundle.getLayoutParams().height = 0;
@@ -211,7 +190,7 @@ public class GameDetailsActivity extends AppCompatActivity {
             }
             invalidateOptionsMenu();
         }else{
-            // The game doesn't exist in DB. We log an error message.
+            // The owned game is not found in DB.
             Log.e(TAG, "displayGameInformation: The user "+ userID + "doesn't own the game with the ID " + gameID);
         }
     }

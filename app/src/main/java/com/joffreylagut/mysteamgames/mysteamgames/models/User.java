@@ -1,11 +1,15 @@
-package com.joffreylagut.mysteamgames.mysteamgames.objects;
+package com.joffreylagut.mysteamgames.mysteamgames.models;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Joffrey on 10/02/2017.
+ * User.java
+ * Purpose: Blueprint for a User object.
+ *
+ * @author Joffrey LAGUT
+ * @version 1.5 2017-04-10
  */
 
 public class User {
@@ -17,17 +21,8 @@ public class User {
     private List<OwnedGame> ownedGames;
     private int nbMinutesPlayed;
 
-    public User(int userID, long steamID, String accountName, URL accountPicture,
-                List<OwnedGame> ownedGames, int nbMinutesPlayed) {
-        this.userID = userID;
-        this.steamID = steamID;
-        this.accountName = accountName;
-        this.accountPicture = accountPicture;
-        this.ownedGames = ownedGames;
-        this.nbMinutesPlayed = nbMinutesPlayed;
-    }
-
     public User() {
+        ownedGames = new ArrayList<>();
     }
 
     public int getUserID() {
@@ -96,12 +91,12 @@ public class User {
      * @return a list of favorite games
      */
     public List<OwnedGame> getFavoriteGames() {
-        List<OwnedGame> recentlyPlayedGames = new ArrayList<>();
+        List<OwnedGame> games = new ArrayList<>();
         for (OwnedGame currentGame : this.ownedGames) {
             if (currentGame.isFavorite()) {
-                recentlyPlayedGames.add(currentGame);
+                games.add(currentGame);
             }
         }
-        return recentlyPlayedGames;
+        return games;
     }
 }

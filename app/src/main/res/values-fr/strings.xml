@@ -59,4 +59,5 @@
     <string name="currency">Devise</string>
     <string name="new_game_notification_body">"Il y a un nouveau jeu dans votre bibliothèque Steam.\nPensez à ajouter son prix."</string>
     <string name="new_game_notification_title">Nouveau jeu dans votre bibliothèque</string>
+    <string name="unknown">inconnu</string>
 </resources>

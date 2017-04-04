@@ -2,27 +2,37 @@ package com.joffreylagut.mysteamgames.mysteamgames.utilities;
 
 import android.net.Uri;
 
-import com.joffreylagut.mysteamgames.mysteamgames.data.AppPreferences;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Created by Joffrey on 10/02/2017.
+ * SteamAPICalls.java
+ * Purpose: Contains all the methods relatives to the Steam API.
+ *
+ * @author Joffrey LAGUT
+ * @version 1.5 2017-04-08
  */
 
 public class SteamAPICalls {
 
-    final static String steamAPIBaseUrl = "http://api.steampowered.com";
-    final static String steamCallProfileURL = "/ISteamUser/GetPlayerSummaries/v0002/";
-    final static String steamCallOwnedGamesURL = "/IPlayerService/GetOwnedGames/v0001/";
+    // API Key to use the steam Web API.
+    static final String API_KEY = "B1F028BA4B3F02C594462737E055DB44";
 
-    public static URL getURLPlayerProfileInformation(String steamPlayerId){
+    final static String STEAM_API_BASE_URL = "http://api.steampowered.com";
+    final static String STEAM_CALL_USER_PROFILE_URL = "/ISteamUser/GetPlayerSummaries/v0002/";
+    final static String STEAM_CALL_USER_OWNED_GAMES_URL = "/IPlayerService/GetOwnedGames/v0001/";
+
+    /**
+     * This function return the URL of the User profile JSON from the Steam API.
+     * @param steamPlayerId Id of the player that we want to fetch the information.
+     * @return the URL of the JSON User profile.
+     */
+    public static URL getURLPlayerProfileInformation(Long steamPlayerId){
         URL finalUrl = null;
-        Uri urlBuilt = Uri.parse(steamAPIBaseUrl + steamCallProfileURL)
+        Uri urlBuilt = Uri.parse(STEAM_API_BASE_URL + STEAM_CALL_USER_PROFILE_URL)
                 .buildUpon()
-                .appendQueryParameter("key", AppPreferences.getApiKey())
-                .appendQueryParameter("steamids",steamPlayerId)
+                .appendQueryParameter("key", API_KEY)
+                .appendQueryParameter("steamids",String.valueOf(steamPlayerId))
                 .build();
 
         try {
@@ -34,13 +44,18 @@ public class SteamAPICalls {
         return finalUrl;
     }
 
-    public static URL getURLPlayerOwnedGames(String steamPlayerId){
+    /**
+     * This function return the URL of the User games JSON from the Steam API.
+     * @param steamPlayerId Id of the player that we want to fetch the information.
+     * @return the URL of the JSON User games.
+     */
+    public static URL getURLPlayerOwnedGames(long steamPlayerId){
         URL finalUrl = null;
-        Uri urlBuilt = Uri.parse(steamAPIBaseUrl + steamCallOwnedGamesURL)
+        Uri urlBuilt = Uri.parse(STEAM_API_BASE_URL + STEAM_CALL_USER_OWNED_GAMES_URL)
                 .buildUpon()
-                .appendQueryParameter("key", AppPreferences.getApiKey())
+                .appendQueryParameter("key", API_KEY)
                 .appendQueryParameter("include_appinfo","1")
-                .appendQueryParameter("steamid",steamPlayerId)
+                .appendQueryParameter("steamid",String.valueOf(steamPlayerId))
                 .build();
 
         try {
@@ -51,6 +66,13 @@ public class SteamAPICalls {
         return finalUrl;
     }
 
+    /**
+     * Convert the minutes into hours in a formatted string (xxh). If there is less than 60 minutes,
+     * return xxmn.
+     * @param totalMinutes The amount of minutes that we want to convert into hours.
+     * @param showBoth return hours and minutes if true.
+     * @return a string containing the time played with a correct formatting.
+     */
     public static String convertTimePlayed(int totalMinutes, boolean showBoth) {
         int hours = totalMinutes / 60;
         int minutes = totalMinutes % 60;
@@ -66,11 +88,23 @@ public class SteamAPICalls {
 
     }
 
+    /**
+     * Convert the minutes into hours in a formatted string (xxh). If there is less than 60 minutes,
+     * return xxmn.
+     * @param totalMinutes The amount of minutes that we want to convert into hours.
+     * @return a string containing the time played with a correct formatting.
+     */
     public static String convertTimePlayed(int totalMinutes) {
         return convertTimePlayed(totalMinutes, false);
     }
 
-    public static URL createGameImageURL(String imageID, String appID){
+    /**
+     * This function create the URL to the games pictures on the Steam server.
+     * @param imageID ID found in the JSON user games.
+     * @param appID Game id from the JSON user games.
+     * @return an URL to the image.
+     */
+    public static URL createGameImageURL(String imageID, long appID){
         String composedURL = "http://media.steampowered.com/steamcommunity/public/images/apps/" +
                 appID + "/" + imageID + ".jpg";
         URL finalURL = null;

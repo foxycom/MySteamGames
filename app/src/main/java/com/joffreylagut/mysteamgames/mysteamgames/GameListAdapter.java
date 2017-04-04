@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.joffreylagut.mysteamgames.mysteamgames.objects.GameListItem;
+import com.joffreylagut.mysteamgames.mysteamgames.models.GameListItem;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
 
