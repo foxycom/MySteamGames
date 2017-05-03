@@ -1,4 +1,4 @@
-package com.joffreylagut.mysteamgames.mysteamgames;
+package com.joffreylagut.mysteamgames.mysteamgames.data;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -14,7 +14,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.models.GameListItem;
+import com.joffreylagut.mysteamgames.mysteamgames.ui.GameDetailsActivity;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
 
@@ -25,13 +27,13 @@ import java.util.List;
  * Created by Joffrey on 08/02/2017.
  */
 
-class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesListViewHolder> {
+public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesListViewHolder> {
 
     private List<GameListItem> gameList;
     private Context context;
     private String recyclerName;
 
-    GameListAdapter(List<GameListItem> gameList, Context context, String recyclerName) {
+    public GameListAdapter(List<GameListItem> gameList, Context context, String recyclerName) {
         this.gameList = gameList;
         this.context = context;
         this.recyclerName = recyclerName;
@@ -43,11 +45,11 @@ class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesListView
         return new GamesListViewHolder(view);
     }
 
-    List<GameListItem> getGameList() {
+    public List<GameListItem> getGameList() {
         return this.gameList;
     }
 
-    void setGameList(List<GameListItem> gameList) {
+    public void setGameList(List<GameListItem> gameList) {
         this.gameList = gameList;
     }
 

@@ -1,4 +1,4 @@
-package com.joffreylagut.mysteamgames.mysteamgames;
+package com.joffreylagut.mysteamgames.mysteamgames.ui;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.models.Game;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;

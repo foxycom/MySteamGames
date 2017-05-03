@@ -1,7 +1,9 @@
-package com.joffreylagut.mysteamgames.mysteamgames;
+package com.joffreylagut.mysteamgames.mysteamgames.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.joffreylagut.mysteamgames.mysteamgames.R;
 
 /**
  * Created by Joffrey on 27/02/2017.

@@ -17,7 +17,6 @@
     <string name="free">Gratuit</string>
     <string name="game_bought">J\'ai acheté ce jeu</string>
     <string name="game_details_statistics_title">Statistiques</string>
-    <string name="game_details_time_played">- Temp de jeu :</string>
     <string name="game_image_blurred_description">Image du jeu foutée</string>
     <string name="game_image_description">Image du jeu</string>
     <string name="games">jeux</string>
@@ -25,7 +24,6 @@
     <string name="input_game_name">Nom</string>
     <string name="input_game_price">Prix du jeu</string>
     <string name="input_game_time">Temps de jeu</string>
-    <string name="input_price_hint">J\'ai acheté ce jeu</string>
     <string name="login_message">Connectez-vous à votre compte Steam pour voir votre bibliothèque.</string>
     <string name="menu_ascendant">Ascendant</string>
     <string name="menu_descendant">Descendant</string>
@@ -59,5 +57,4 @@
     <string name="currency">Devise</string>
     <string name="new_game_notification_body">"Il y a un nouveau jeu dans votre bibliothèque Steam.\nPensez à ajouter son prix."</string>
     <string name="new_game_notification_title">Nouveau jeu dans votre bibliothèque</string>
-    <string name="unknown">inconnu</string>
 </resources>

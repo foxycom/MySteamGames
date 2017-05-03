@@ -1,4 +1,4 @@
-package com.joffreylagut.mysteamgames.mysteamgames;
+package com.joffreylagut.mysteamgames.mysteamgames.ui;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -30,6 +30,8 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.facebook.stetho.Stetho;
+import com.joffreylagut.mysteamgames.mysteamgames.R;
+import com.joffreylagut.mysteamgames.mysteamgames.data.GameListAdapter;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.models.GameListItem;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
@@ -50,14 +52,14 @@ import java.util.List;
 import static android.support.design.widget.Snackbar.make;
 
 /**
- * MainActivity.java
+ * GameListActivity.java
  * Purpose: Display the games of the user.
  *
  * @author Joffrey LAGUT
  * @version 1.5 2017-04-08
  */
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class GameListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     // Declaration of final values used in this activity
     public static final String rvAllGamesName = "rvAllGames";

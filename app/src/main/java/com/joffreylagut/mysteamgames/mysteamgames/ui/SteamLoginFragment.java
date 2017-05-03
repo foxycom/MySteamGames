@@ -1,4 +1,4 @@
-package com.joffreylagut.mysteamgames.mysteamgames;
+package com.joffreylagut.mysteamgames.mysteamgames.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.joffreylagut.mysteamgames.mysteamgames.R;
 
 import static android.content.ContentValues.TAG;
 
@@ -115,7 +117,7 @@ public class SteamLoginFragment extends Fragment {
                 editor.apply();
                 Log.d(TAG, "Steam ID: " + steamId);
 
-                Intent intent = new Intent(getActivity(), MainActivity.class);
+                Intent intent = new Intent(getActivity(), GameListActivity.class);
                 startActivity(intent);
                 return false;
 

@@ -59,15 +59,12 @@
     <string name="default_bundle" translatable="false">Humble Monthly</string>
     <string name="default_price" translatable="false">25$</string>
     <string name="spent_to_buy">spent to buy it</string>
-    <string name="unknown">unknown</string>
 
     <!-- Edit game activity -->
     <string name="save">Save</string>
     <string name="error_bundle_name">Choose a bundle or add a new one.</string>
 
     <string name="game_details_statistics_title">Statistics</string>
-    <string name="game_details_time_played">- Time played:</string>
-    <string name="input_price_hint">I have bought this game for</string>
     <string name="activity_edit_game_title">Edit game</string>
     <string name="input_game_name">Name</string>
     <string name="input_game_time">Time played</string>

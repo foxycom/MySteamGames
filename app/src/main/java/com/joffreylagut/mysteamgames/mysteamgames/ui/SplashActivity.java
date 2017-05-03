@@ -1,4 +1,4 @@
-package com.joffreylagut.mysteamgames.mysteamgames;
+package com.joffreylagut.mysteamgames.mysteamgames.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,7 +29,7 @@ public class SplashActivity extends AppCompatActivity {
         Long steamID = sharedPreferences.getLong("etp_steamID", 0);
         if (steamID != 0) {
             // The user have already used the app. We can launch the main activity.
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, GameListActivity.class);
             startActivity(intent);
         } else {
             // This is the first launch. We have to ask the user to enter his SteamID.

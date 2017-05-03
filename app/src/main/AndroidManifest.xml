@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -21,25 +21,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.GameListActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".GameDetailsActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".ui.GameDetailsActivity"
+            android:parentActivityName=".ui.GameListActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoTitleActionBar" />
         <activity
-            android:name=".EditGameActivity"
-            android:parentActivityName=".GameDetailsActivity" />
+            android:name=".ui.EditGameActivity"
+            android:parentActivityName=".ui.GameDetailsActivity" />
         <activity
-            android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".ui.SettingsActivity"
+            android:parentActivityName=".ui.GameListActivity"
             android:theme="@style/AppTheme" />
         <!-- Declaring Service in Manifest -->
         <service

@@ -9,11 +9,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
-import com.joffreylagut.mysteamgames.mysteamgames.MainActivity;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.models.Game;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.models.User;
+import com.joffreylagut.mysteamgames.mysteamgames.ui.GameListActivity;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 
 import org.json.JSONArray;
@@ -95,7 +95,7 @@ public class RetrieveDataFromSteamIntentService extends IntentService {
 
         Intent broadcastIntent = new Intent();
         broadcastIntent.putExtra("newGameDetected", false);
-        broadcastIntent.setAction(MainActivity.SteamDataReceiver.PROCESS_RESPONSE);
+        broadcastIntent.setAction(GameListActivity.SteamDataReceiver.PROCESS_RESPONSE);
         broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
         sendBroadcast(broadcastIntent);
     }

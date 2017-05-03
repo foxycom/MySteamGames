@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginTop="48dp"
     android:paddingBottom="8dp"
-    tools:context="com.joffreylagut.mysteamgames.mysteamgames.MainActivity">
+    tools:context="com.joffreylagut.mysteamgames.mysteamgames.ui.GameListActivity">
 
 
     <TabHost

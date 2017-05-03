@@ -5,7 +5,7 @@ import java.net.URL;
 /**
  * GameListItem.java
  * Purpose: Blueprint for a GameListItem object. Those objects are used in the RecyclerViews
- * in the MainActivity.java.
+ * in the GameListActivity.java.
  *
  * @author Joffrey LAGUT
  * @version 1.5 2017-04-10

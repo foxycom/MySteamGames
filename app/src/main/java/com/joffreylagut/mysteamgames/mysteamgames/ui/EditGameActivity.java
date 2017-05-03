@@ -1,4 +1,4 @@
-package com.joffreylagut.mysteamgames.mysteamgames;
+package com.joffreylagut.mysteamgames.mysteamgames.ui;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -24,6 +24,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
+import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.models.Game;
 import com.joffreylagut.mysteamgames.mysteamgames.models.GameBundle;
