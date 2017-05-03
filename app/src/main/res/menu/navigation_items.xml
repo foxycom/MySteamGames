@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  navigation_items.xml
+  Purpose: Items included in the bottom navigation view.
+
+  @author Joffrey LAGUT
+  @version 1.0 2017-05-03
+-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_home"
+        android:title="@string/home_action"
+        android:icon="@drawable/ic_home_black"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_goals"
+        android:title="@string/goals_action"
+        android:icon="@drawable/ic_goal_black"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_success"
+        android:title="@string/success_action"
+        android:icon="@drawable/ic_success_black"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_account"
+        android:title="@string/account_action"
+        android:icon="@drawable/ic_account_black"
+        app:showAsAction="ifRoom"
+        android:enabled="true" />
+</menu>

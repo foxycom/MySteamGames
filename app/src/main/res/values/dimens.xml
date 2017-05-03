@@ -14,4 +14,11 @@
     <dimen name="card_primary_title_bottom_padding">16dp</dimen>
     <dimen name="card_padding_left_and_right">16dp</dimen>
 
+    <!-- Bottom navigation view Material design -->
+    <dimen name="bnv_height">56dp</dimen>
+    <dimen name="bnv_icon_size">24dp</dimen>
+    <dimen name="bnv_padding_top_active">6dp</dimen>
+    <dimen name="bnv_padding_top_inactive">8dp</dimen>
+    <dimen name="bnv_padding_bottom">10dp</dimen>
+
 </resources>

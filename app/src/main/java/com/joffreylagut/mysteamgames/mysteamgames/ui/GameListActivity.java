@@ -68,7 +68,7 @@ public class GameListActivity extends AppCompatActivity implements NavigationVie
 
     // Declaration of the global values of this activity.
     private User currentUser = new User();
-    private SQLiteDatabase mDb;;
+    private SQLiteDatabase mDb;
     private UserDbHelper userDbHelper;
     private SharedPreferences sharedPreferences;
     private CoordinatorLayout coordinatorLayout;
@@ -95,7 +95,7 @@ public class GameListActivity extends AppCompatActivity implements NavigationVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_game_list);
         setTitle(R.string.activity_main_title);
 
         // Stepho is providing us an access to the mobile database with Chrome.

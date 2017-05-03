@@ -3,7 +3,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="app_name">Game time price</string>
+    <string name="app_name">Game time price v2</string>
 
     <!-- Notification -->
     <string name="new_game_notification_title">New game in your library</string>
@@ -63,6 +63,13 @@
     <!-- Edit game activity -->
     <string name="save">Save</string>
     <string name="error_bundle_name">Choose a bundle or add a new one.</string>
+
+    <!-- Bottom navigation view -->
+    <string name="home_action">Home</string>
+    <string name="goals_action">Goals</string>
+    <string name="success_action">Success</string>
+    <string name="account_action">Account</string>
+
 
     <string name="game_details_statistics_title">Statistics</string>
     <string name="activity_edit_game_title">Edit game</string>
