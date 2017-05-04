@@ -8,8 +8,18 @@
     <dimen name="padding_between_input">8dp</dimen>
 
 
-    <!-- Card Margins, https://material.io/guidelines/components/cards.html#cards-content-blocks -->
-    <dimen name="card_title_text_size">24sp</dimen>
+    <!-- Material cards -->
+    <dimen name="card_horizontal_margins">8dp</dimen>
+    <dimen name="card_top_margin">8dp</dimen>
+    <dimen name="card_content_margin">16dp</dimen>
+    <dimen name="card_corner_radius">2dp</dimen>
+    <dimen name="card_icon_dimensions">40dp</dimen>
+
+    <dimen name="card_title_layout_width">0dp</dimen>
+    <dimen name="card_title_padding_left_start">16dp</dimen>
+    <dimen name="card_title_padding_right_end">0dp</dimen>
+    <dimen name="card_title_small_text_size">16sp</dimen>
+    <dimen name="card_title_big_text_size">24sp</dimen>
     <dimen name="card_primary_title_top_padding">24sp</dimen>
     <dimen name="card_primary_title_bottom_padding">16dp</dimen>
     <dimen name="card_padding_left_and_right">16dp</dimen>
@@ -21,4 +31,15 @@
     <dimen name="bnv_padding_top_inactive">8dp</dimen>
     <dimen name="bnv_padding_bottom">10dp</dimen>
 
+    <!-- Home game rectangle display -->
+    <dimen name="home_game_rectangle_width">0dp</dimen>
+    <dimen name="home_game_rectangle_margin_top">8dp</dimen>
+    <dimen name="home_game_rectangle_drawable_size">0dp</dimen>
+    <dimen name="home_game_rectangle_drawable_margins">0dp</dimen>
+    <dimen name="home_game_rectangle_title_margin_left_start">8dp</dimen>
+    <dimen name="home_game_rectangle_title_margin_top">8dp</dimen>
+    <dimen name="home_game_rectangle_progression_margin_left_start">8dp</dimen>
+    <dimen name="home_game_rectangle_progression_padding_bottom">8dp</dimen>
+    <dimen name="home_game_rectangle_progression_percent_margins">8dp</dimen>
+    <dimen name="home_game_rectangle_progression_percent_text_size">18sp</dimen>
 </resources>

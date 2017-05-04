@@ -1,15 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_home_page"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/home_action"
-        android:textSize="48sp"
-        android:gravity="center"
-        android:textAlignment="gravity" />
-</FrameLayout>
+    <android.support.v7.widget.CardView
+        android:id="@+id/home_goals_card"
+        style="@style/MaterialCards">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/card_content_margin">
+
+            <ImageView
+                android:id="@+id/goals_card_icon"
+                style="@style/MaterialCardIcon"
+                android:background="@drawable/ic_goal_black"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/home_goals_card_icon_content_description" />
+
+
+            <TextView
+                android:id="@+id/goals_card_title"
+                style="@style/MaterialCardTitle"
+                android:text="@string/home_card_goals_title"
+                app:layout_constraintBottom_toBottomOf="@+id/goals_card_icon"
+                app:layout_constraintLeft_toRightOf="@+id/goals_card_icon"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/goals_card_icon" />
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/goals_game1_layout"
+                style="@style/HomeGameRectangleLayout"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/goals_card_icon">
+
+                <!-- ContentDescription is ignored because already in the style.-->
+                <ImageView
+                    android:id="@+id/goal_square_game_1"
+                    style="@style/HomeGameRectangleDrawable"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/goals_game1_title"
+                    style="@style/HomeGameTitle"
+                    tools:text="@string/game_title_example_1"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/goal_square_game_1" />
+
+                <TextView
+                    android:id="@+id/goals_game1_progression_hours"
+                    style="@style/HomeGameProgressionText"
+                    tools:text="@string/game_goals_progression_hours_1"
+                    app:layout_constraintTop_toBottomOf="@+id/goals_game1_title"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <TextView
+                    android:id="@+id/goals_game1_progression_percent"
+                    style="@style/HomeGameProgressionPercent"
+                    tools:text="@string/game_goals_progression_percent_1"
+                    app:layout_constraintBottom_toBottomOf="@+id/goal_square_game_1"
+                    app:layout_constraintRight_toRightOf="@+id/goal_square_game_1"
+                    app:layout_constraintTop_toTopOf="@+id/goal_square_game_1"
+                    app:layout_constraintVertical_bias="0.545" />
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/goals_game2_layout"
+                style="@style/HomeGameRectangleLayout"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/goals_game1_layout">
+
+                <!-- ContentDescription is ignored because already in the style.-->
+                <ImageView
+                    android:id="@+id/goal_square_game_2"
+                    style="@style/HomeGameRectangleDrawable"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/goals_game2_title"
+                    style="@style/HomeGameTitle"
+                    tools:text="@string/game_title_example_2"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/goal_square_game_2" />
+
+                <TextView
+                    android:id="@+id/goals_game2_progression_hours"
+                    style="@style/HomeGameProgressionText"
+                    tools:text="@string/game_goals_progression_hours_2"
+                    app:layout_constraintTop_toBottomOf="@+id/goals_game2_title"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <TextView
+                    android:id="@+id/goals_game2_progression_percent"
+                    style="@style/HomeGameProgressionPercent"
+                    tools:text="@string/game_goals_progression_percent_2"
+                    app:layout_constraintBottom_toBottomOf="@+id/goal_square_game_2"
+                    app:layout_constraintRight_toRightOf="@+id/goal_square_game_2"
+                    app:layout_constraintTop_toTopOf="@+id/goal_square_game_2"
+                    app:layout_constraintVertical_bias="0.545" />
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/goals_game3_layout"
+                style="@style/HomeGameRectangleLayout"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/goals_game2_layout">
+
+                <!-- ContentDescription is ignored because already in the style.-->
+                <ImageView
+                    android:id="@+id/goal_square_game_3"
+                    style="@style/HomeGameRectangleDrawable"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/goals_game3_title"
+                    style="@style/HomeGameTitle"
+                    tools:text="@string/game_title_example_3"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/goal_square_game_3" />
+
+                <TextView
+                    android:id="@+id/goals_game3_progression_hours"
+                    style="@style/HomeGameProgressionText"
+                    tools:text="@string/game_goals_progression_hours_3"
+                    app:layout_constraintTop_toBottomOf="@+id/goals_game3_title"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <TextView
+                    android:id="@+id/goals_game3_progression_percent"
+                    style="@style/HomeGameProgressionPercent"
+                    tools:text="@string/game_goals_progression_percent_3"
+                    app:layout_constraintBottom_toBottomOf="@+id/goal_square_game_3"
+                    app:layout_constraintRight_toRightOf="@+id/goal_square_game_3"
+                    app:layout_constraintTop_toTopOf="@+id/goal_square_game_3"
+                    app:layout_constraintVertical_bias="0.545" />
+            </android.support.constraint.ConstraintLayout>
+
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

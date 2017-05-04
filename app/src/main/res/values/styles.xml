@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -24,7 +24,6 @@
         <item name="android:windowBackground">@drawable/splashscreen</item>
     </style>
 
-
     <style name="MaterialButton" parent="Theme.AppCompat.Light">
         <item name="colorControlHighlight">@color/colorPrimary</item>
         <item name="colorButtonNormal">@color/colorAccent</item>
@@ -43,5 +42,88 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- Home styles -->
+    <style name="MaterialCards">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/card_horizontal_margins</item>
+        <item name="android:layout_marginRight">@dimen/card_horizontal_margins</item>
+        <item name="android:layout_marginTop">@dimen/card_top_margin</item>
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
+    </style>
+
+    <style name="MaterialCardIcon">
+        <item name="android:layout_width">@dimen/card_icon_dimensions</item>
+        <item name="android:layout_height">@dimen/card_icon_dimensions</item>
+        <item name="android:backgroundTint" tools:targetApi="lollipop">
+            @color/cardview_shadow_start_color
+        </item>
+    </style>
+
+    <style name="MaterialCardTitle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">@dimen/card_title_layout_width</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:paddingLeft">@dimen/card_title_padding_left_start</item>
+        <item name="android:paddingStart" tools:targetApi="jelly_bean_mr1">
+            @dimen/card_title_padding_left_start
+        </item>
+        <item name="android:paddingRight">@dimen/card_title_padding_right_end</item>
+        <item name="android:paddingEnd" tools:targetApi="jelly_bean_mr1">
+            @dimen/card_title_padding_right_end
+        </item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/card_title_small_text_size</item>
+    </style>
+
+    <style name="HomeGameRectangleLayout">
+        <item name="android:layout_width">@dimen/home_game_rectangle_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/home_game_rectangle_margin_top</item>
+    </style>
+
+    <style name="HomeGameRectangleDrawable">
+        <item name="android:layout_width">@dimen/home_game_rectangle_drawable_size</item>
+        <item name="android:layout_height">@dimen/home_game_rectangle_drawable_size</item>
+        <item name="android:layout_margin">@dimen/home_game_rectangle_drawable_margins</item>
+        <item name="android:background">@drawable/square</item>
+        <item name="android:contentDescription">@string/home_rectangle_content_description</item>
+    </style>
+
+    <style name="HomeGameTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/home_game_rectangle_title_margin_left_start
+        </item>
+        <item name="android:layout_marginStart" tools:targetApi="jelly_bean_mr1">
+            @dimen/home_game_rectangle_title_margin_left_start
+        </item>
+        <item name="android:layout_marginTop">@dimen/home_game_rectangle_title_margin_top</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="HomeGameProgressionText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">
+            @dimen/home_game_rectangle_progression_margin_left_start
+        </item>
+        <item name="android:layout_marginStart" tools:targetApi="jelly_bean_mr1">
+            @dimen/home_game_rectangle_progression_margin_left_start
+        </item>
+        <item name="android:paddingBottom">@dimen/home_game_rectangle_progression_padding_bottom
+        </item>
+    </style>
+
+    <style name="HomeGameProgressionPercent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/home_game_rectangle_progression_percent_margins
+        </item>
+        <item name="android:textSize">@dimen/home_game_rectangle_progression_percent_text_size
+        </item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
 </resources>

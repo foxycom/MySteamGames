@@ -70,6 +70,10 @@
     <string name="success_action">Success</string>
     <string name="account_action">Account</string>
 
+    <!-- Home Fragment-->
+    <string name="home_card_goals_title">Goals almost achieved</string>
+    <string name="home_goals_card_icon_content_description">Goals</string>
+    <string name="home_rectangle_content_description">Rectangle around the game</string>
 
     <string name="game_details_statistics_title">Statistics</string>
     <string name="activity_edit_game_title">Edit game</string>
@@ -91,4 +95,17 @@
     </string-array>
     <string name="activity_settings_title">Settings</string>
     <string name="currency">Currency</string>
+
+    <!-- Example data -->
+    <string name="game_title_example_1">Borderlands 2</string>
+    <string name="game_goals_progression_hours_1">120 / 135h</string>
+    <string name="game_goals_progression_percent_1">89%</string>
+
+    <string name="game_title_example_2">Dungeon Defenders</string>
+    <string name="game_goals_progression_hours_2">12 / 48h</string>
+    <string name="game_goals_progression_percent_2">25%</string>
+
+    <string name="game_title_example_3">Dawn of War</string>
+    <string name="game_goals_progression_hours_3">25 / 43h</string>
+    <string name="game_goals_progression_percent_3">58%</string>
 </resources>
