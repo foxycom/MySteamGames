@@ -2,8 +2,6 @@ package com.joffreylagut.mysteamgames.mysteamgames.utilities;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.joffreylagut.mysteamgames.mysteamgames.data.Sample;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,16 +24,16 @@ public class SteamAPICallsInstrumentalTests {
     @Test
     public void getURLPlayerProfileInformation() throws MalformedURLException {
 
-        URL finalURL = new URL(SteamAPICalls.STEAM_API_BASE_URL + SteamAPICalls.STEAM_CALL_USER_PROFILE_URL + "?key=" + SteamAPICalls.API_KEY + "&steamids=" + Sample.DEFAULT_STEAM_ID);
-        URL generatedURL = SteamAPICalls.getURLPlayerProfileInformation(Sample.DEFAULT_STEAM_ID);
+        URL finalURL = new URL(SteamAPICalls.STEAM_API_BASE_URL + SteamAPICalls.STEAM_CALL_USER_PROFILE_URL + "?key=" + SteamAPICalls.API_KEY + "&steamids=" + SampleGenerator.DEFAULT_STEAM_ID);
+        URL generatedURL = SteamAPICalls.getURLPlayerProfileInformation(SampleGenerator.DEFAULT_STEAM_ID);
         assertTrue(finalURL.equals(generatedURL));
     }
 
     @Test
     public void getURLPlayerOwnedGames() throws MalformedURLException {
 
-        URL finalURL = new URL(SteamAPICalls.STEAM_API_BASE_URL + SteamAPICalls.STEAM_CALL_USER_OWNED_GAMES_URL + "?key=" + SteamAPICalls.API_KEY + "&include_appinfo=1"  + "&steamid=" + Sample.DEFAULT_STEAM_ID);
-        URL generatedURL = SteamAPICalls.getURLPlayerOwnedGames(Sample.DEFAULT_STEAM_ID);
+        URL finalURL = new URL(SteamAPICalls.STEAM_API_BASE_URL + SteamAPICalls.STEAM_CALL_USER_OWNED_GAMES_URL + "?key=" + SteamAPICalls.API_KEY + "&include_appinfo=1" + "&steamid=" + SampleGenerator.DEFAULT_STEAM_ID);
+        URL generatedURL = SteamAPICalls.getURLPlayerOwnedGames(SampleGenerator.DEFAULT_STEAM_ID);
         assertTrue(finalURL.equals(generatedURL));
     }
 

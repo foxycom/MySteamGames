@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
+
 /**
  * SplashActivity.java
  * Purpose: This activity is analysing if this is the first launched or not.
@@ -21,15 +23,13 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // There is no Layout in this activity. The background is defined in a theme.
 
-
-
         // We need to check in the preferences if the SteamID is defined.
         // We load the SharedPreferences
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Long steamID = sharedPreferences.getLong("etp_steamID", 0);
+        Long steamID = sharedPreferences.getLong(SharedPreferencesHelper.STEAM_ID, 0);
         if (steamID != 0) {
             // The user have already used the app. We can launch the main activity.
-            Intent intent = new Intent(this, GameListActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         } else {
             // This is the first launch. We have to ask the user to enter his SteamID.

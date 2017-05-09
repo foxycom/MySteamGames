@@ -34,14 +34,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
                 p.setSummary(value);
             }
         }
-
-        // COMPLETED (3) Add the OnPreferenceChangeListener specifically to the EditTextPreference
-        // Add the preference listener which checks that the size is correct to the size preference
-        //Preference preference = findPreference("etp_steamID");
-        //preference.setOnPreferenceChangeListener(this);
-
-        //findPreference("etp_steamID").setSummary(mSteamID);
-        //findPreference("lp_currency").setSummary(mCurrency);
     }
 
     @Override

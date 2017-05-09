@@ -34,4 +34,5 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     public void onFragmentInteraction(Uri uri) {
 
     }
+
 }

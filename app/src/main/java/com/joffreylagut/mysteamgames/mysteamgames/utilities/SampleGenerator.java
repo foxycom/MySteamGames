@@ -1,13 +1,21 @@
-package com.joffreylagut.mysteamgames.mysteamgames.data;
+package com.joffreylagut.mysteamgames.mysteamgames.utilities;
+
+import android.content.Context;
+
+import com.joffreylagut.mysteamgames.mysteamgames.R;
+import com.joffreylagut.mysteamgames.mysteamgames.data.GameTongueAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Sample.java
+ * SampleGenerator.java
  * Purpose: This class contains constants used in the app.
  *
  * @author Joffrey LAGUT
  * @version 1.0 2017-04-07
  */
-public class Sample {
+public class SampleGenerator {
 
     // API Key to use the steam Web API.
     public static final String API_KEY = "B1F028BA4B3F02C594462737E055DB44";
@@ -138,4 +146,66 @@ public class Sample {
             "\t\t\n" +
             "\t}\n" +
             "}";
+
+    /**
+     * Generate dummy data to display information in the views.
+     *
+     * @param context Environment variables.
+     * @return a list of GameTongue.
+     */
+    public static List<GameTongueAdapter.GameTongue> generateListGameTongue(Context context) {
+        List<GameTongueAdapter.GameTongue> gameTongues = new ArrayList<>();
+
+        gameTongues.add(new GameTongueAdapter.GameTongue(
+                1,
+                context.getResources().getString(R.string.game_title_example_1),
+                context.getResources().getString(R.string.game_goals_progression_hours_1),
+                context.getResources().getString(R.string.game_goals_progression_percent_1)
+        ));
+        gameTongues.add(new GameTongueAdapter.GameTongue(
+                1,
+                context.getResources().getString(R.string.game_title_example_2),
+                context.getResources().getString(R.string.game_goals_progression_hours_2),
+                context.getResources().getString(R.string.game_goals_progression_percent_2)
+        ));
+        gameTongues.add(new GameTongueAdapter.GameTongue(
+                1,
+                context.getResources().getString(R.string.game_title_example_3),
+                context.getResources().getString(R.string.game_goals_progression_hours_3),
+                context.getResources().getString(R.string.game_goals_progression_percent_3)
+        ));
+
+        return gameTongues;
+    }
+
+    /**
+     * Generate dummy data to display information in the views.
+     *
+     * @param context Environment variables.
+     * @return a list of GameTongue.
+     */
+    public static List<GameTongueAdapter.GameTongue> generateListMostProfitableGameTongue(Context context) {
+        List<GameTongueAdapter.GameTongue> gameTongues = new ArrayList<>();
+
+        gameTongues.add(new GameTongueAdapter.GameTongue(
+                1,
+                context.getResources().getString(R.string.game_title_example_1),
+                context.getResources().getString(R.string.game_hours_played_1),
+                context.getResources().getString(R.string.game_price_per_hour_1)
+        ));
+        gameTongues.add(new GameTongueAdapter.GameTongue(
+                1,
+                context.getResources().getString(R.string.game_title_example_2),
+                context.getResources().getString(R.string.game_hours_played_2),
+                context.getResources().getString(R.string.game_price_per_hour_2)
+        ));
+        gameTongues.add(new GameTongueAdapter.GameTongue(
+                1,
+                context.getResources().getString(R.string.game_title_example_3),
+                context.getResources().getString(R.string.game_hours_played_2),
+                context.getResources().getString(R.string.game_price_per_hour_2)
+        ));
+
+        return gameTongues;
+    }
 }

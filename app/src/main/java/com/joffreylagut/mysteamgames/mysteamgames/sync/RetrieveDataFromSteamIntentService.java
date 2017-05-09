@@ -14,6 +14,7 @@ import com.joffreylagut.mysteamgames.mysteamgames.models.Game;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.models.User;
 import com.joffreylagut.mysteamgames.mysteamgames.ui.GameListActivity;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 
 import org.json.JSONArray;
@@ -55,8 +56,8 @@ public class RetrieveDataFromSteamIntentService extends IntentService {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         URL[] listURLAPIToCall = {
-                SteamAPICalls.getURLPlayerProfileInformation(sharedPreferences.getLong("etp_steamID", 0)),
-                SteamAPICalls.getURLPlayerOwnedGames(sharedPreferences.getLong("etp_steamID", 0))
+                SteamAPICalls.getURLPlayerProfileInformation(sharedPreferences.getLong(SharedPreferencesHelper.STEAM_ID, 0)),
+                SteamAPICalls.getURLPlayerOwnedGames(sharedPreferences.getLong(SharedPreferencesHelper.STEAM_ID, 0))
         };
         // Do some validation here
         String[] responses = new String[listURLAPIToCall.length];
@@ -140,6 +141,11 @@ public class RetrieveDataFromSteamIntentService extends IntentService {
                 // The user doesn't exist, we have to insert him in DB.
                 currentUser = userDbHelper.addNewUser(mDb, currentUser);
             }
+
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+            editor.putInt("userId", currentUser.getUserID());
+            editor.apply();
+
             return currentUser;
 
         } catch (JSONException e) {

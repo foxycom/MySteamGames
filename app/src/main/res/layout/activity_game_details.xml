@@ -76,7 +76,7 @@
                     android:alpha="0.54"
                     android:contentDescription="@string/time_icon_description"
                     android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/ic_access_time_black" />
+                    app:srcCompat="@drawable/ic_access_time" />
 
                 <TextView
                     android:id="@+id/tv_game_details_time_played"
@@ -110,7 +110,7 @@
                     android:alpha="0.54"
                     android:contentDescription="@string/money_icon_description"
                     android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/ic_attach_money_black" />
+                    app:srcCompat="@drawable/ic_attach_money" />
 
                 <TextView
                     android:id="@+id/tv_game_details_game_price"

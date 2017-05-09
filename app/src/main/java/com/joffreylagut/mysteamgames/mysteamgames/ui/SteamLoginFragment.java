@@ -16,6 +16,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.joffreylagut.mysteamgames.mysteamgames.R;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
 
 import static android.content.ContentValues.TAG;
 
@@ -71,12 +72,6 @@ public class SteamLoginFragment extends Fragment {
 
         // We load the SharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-/*        new Prefs.Builder()
-                .setContext(this.getActivity())
-                .setMode(ContextWrapper.MODE_PRIVATE)
-                .setPrefsName(getActivity().getPackageName())
-                .setUseDefaultSharedPreference(true)
-                .build();*/
     }
 
     @Override
@@ -113,11 +108,11 @@ public class SteamLoginFragment extends Fragment {
 
                 //Prefs.putString("steamid", steamId);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putLong("etp_steamID", steamId);
+                editor.putLong(SharedPreferencesHelper.STEAM_ID, steamId);
                 editor.apply();
                 Log.d(TAG, "Steam ID: " + steamId);
 
-                Intent intent = new Intent(getActivity(), GameListActivity.class);
+                Intent intent = new Intent(getActivity(), MainActivity.class);
                 startActivity(intent);
                 return false;
 

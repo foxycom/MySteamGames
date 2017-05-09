@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:id="@+id/game_layout"
+    style="@style/HomeGameRectangleLayout"
+    android:layout_width="match_parent">
+
+    <!-- ContentDescription is ignored because already in the style.-->
+    <ImageView
+        android:id="@+id/square_game"
+        style="@style/HomeGameRectangleDrawable"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/game_title"
+        style="@style/HomeGameTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/square_game"
+        tools:text="@string/game_title_example_1" />
+
+    <TextView
+        android:id="@+id/game_progression_hours"
+        style="@style/HomeGameProgressionText"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/game_title"
+        tools:text="@string/game_goals_progression_hours_1" />
+
+    <TextView
+        android:id="@+id/game_progression_percents"
+        style="@style/HomeGameProgressionPercent"
+        app:layout_constraintBottom_toBottomOf="@+id/square_game"
+        app:layout_constraintRight_toRightOf="@+id/square_game"
+        app:layout_constraintTop_toTopOf="@+id/square_game"
+        app:layout_constraintVertical_bias="0.5"
+        tools:text="@string/game_goals_progression_percent_1" />
+</android.support.constraint.ConstraintLayout>

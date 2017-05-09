@@ -56,9 +56,6 @@
     <style name="MaterialCardIcon">
         <item name="android:layout_width">@dimen/card_icon_dimensions</item>
         <item name="android:layout_height">@dimen/card_icon_dimensions</item>
-        <item name="android:backgroundTint" tools:targetApi="lollipop">
-            @color/cardview_shadow_start_color
-        </item>
     </style>
 
     <style name="MaterialCardTitle">
@@ -80,7 +77,7 @@
     <style name="HomeGameRectangleLayout">
         <item name="android:layout_width">@dimen/home_game_rectangle_width</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/home_game_rectangle_margin_top</item>
+        <item name="android:paddingTop">@dimen/home_game_rectangle_margin_vertical</item>
     </style>
 
     <style name="HomeGameRectangleDrawable">
@@ -124,6 +121,11 @@
         <item name="android:textSize">@dimen/home_game_rectangle_progression_percent_text_size
         </item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="HomeListView">
+        <item name="android:layout_width">@dimen/card_listview_width</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
 </resources>

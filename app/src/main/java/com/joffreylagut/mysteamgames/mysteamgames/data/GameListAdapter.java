@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.models.GameListItem;
 import com.joffreylagut.mysteamgames.mysteamgames.ui.GameDetailsActivity;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
 
@@ -41,7 +42,7 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
 
     @Override
     public GamesListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.game_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_game_list, parent, false);
         return new GamesListViewHolder(view);
     }
 
@@ -117,9 +118,9 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
                     double pricePerHour = gameItem.getGamePrice() / nbHours;
                     DecimalFormat df = new DecimalFormat("#.##");
                     if (gameItem.getGameTimePlayed() == 0) {
-                        gamePrice.setText("— " + sharedPreferences.getString("lp_currency", "$") + "/h");
+                        gamePrice.setText("— " + sharedPreferences.getString(SharedPreferencesHelper.CURRENCY, "$") + "/h");
                     } else {
-                        gamePrice.setText(String.valueOf(df.format(pricePerHour)) + " " + sharedPreferences.getString("lp_currency", "$") + "/h");
+                        gamePrice.setText(String.valueOf(df.format(pricePerHour)) + " " + sharedPreferences.getString(SharedPreferencesHelper.CURRENCY, "$") + "/h");
                     }
                     gamePrice.setVisibility(View.VISIBLE);
                     break;

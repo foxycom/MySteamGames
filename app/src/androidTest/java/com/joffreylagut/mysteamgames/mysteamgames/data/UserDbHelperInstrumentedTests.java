@@ -11,6 +11,7 @@ import com.joffreylagut.mysteamgames.mysteamgames.models.Game;
 import com.joffreylagut.mysteamgames.mysteamgames.models.GameBundle;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.models.User;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.SampleGenerator;
 
 import org.junit.After;
 import org.junit.Before;
@@ -435,7 +436,7 @@ public class UserDbHelperInstrumentedTests {
             e.printStackTrace();
         }
         User user = new User();
-        user.setSteamID(Sample.DEFAULT_STEAM_ID);
+        user.setSteamID(SampleGenerator.DEFAULT_STEAM_ID);
         user.setAccountName("Slayde");
         user.setAccountPicture(url);
 

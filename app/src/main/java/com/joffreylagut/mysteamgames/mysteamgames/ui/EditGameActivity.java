@@ -29,12 +29,16 @@ import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.models.Game;
 import com.joffreylagut.mysteamgames.mysteamgames.models.GameBundle;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EditGameActivity extends AppCompatActivity {
+
+    static final String ARG_GAME_ID = "gameId";
+    static final String ARG_USER_ID = "userId";
 
     SharedPreferences sharedPreferences;
     // Variable that allow us to retrieve information from OwnedGames table
@@ -66,8 +70,8 @@ public class EditGameActivity extends AppCompatActivity {
 
         // We get the values from GameDetailsActivity
         Intent previousIntent = getIntent();
-        gameID = previousIntent.getIntExtra("gameID", 0);
-        userID = previousIntent.getIntExtra("userID", 0);
+        gameID = previousIntent.getIntExtra(ARG_GAME_ID, 0);
+        userID = previousIntent.getIntExtra(ARG_USER_ID, 0);
 
         // Preparing the database.
         userDbHelper = UserDbHelper.getInstance(this);
@@ -225,7 +229,7 @@ public class EditGameActivity extends AppCompatActivity {
      * @return String without currency
      */
     private String removeCurrency(String stringToClean) {
-        switch (sharedPreferences.getString("lp_currency", "$")) {
+        switch (sharedPreferences.getString(SharedPreferencesHelper.CURRENCY, "$")) {
             case "€":
                 return stringToClean.replaceAll("[€]", "");
             case "£":
@@ -424,7 +428,7 @@ public class EditGameActivity extends AppCompatActivity {
             editText.removeTextChangedListener(this);
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(editText.getContext());
             String cleanString;
-            switch (sharedPreferences.getString("lp_currency", "$")) {
+            switch (sharedPreferences.getString(SharedPreferencesHelper.CURRENCY, "$")) {
                 case "€":
                     cleanString = s.replaceAll("[€]", "");
                     break;
@@ -435,7 +439,7 @@ public class EditGameActivity extends AppCompatActivity {
                     cleanString = s.replaceAll("[$]", "");
                     break;
             }
-            String newText = sharedPreferences.getString("lp_currency", "$") + cleanString;
+            String newText = sharedPreferences.getString(SharedPreferencesHelper.CURRENCY, "$") + cleanString;
             editText.setText(newText);
             editText.setSelection(cleanString.length() + 1);
             editText.addTextChangedListener(this);

@@ -41,6 +41,7 @@ import com.joffreylagut.mysteamgames.mysteamgames.sync.ReminderUtilities;
 import com.joffreylagut.mysteamgames.mysteamgames.sync.RetrieveDataFromSteamIntentService;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.AnimatedTabHostListener;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.GameListSorter;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
 
@@ -253,7 +254,7 @@ public class GameListActivity extends AppCompatActivity implements NavigationVie
             return true;
 
         } else if (id == R.id.nav_logout) {
-            PreferenceManager.getDefaultSharedPreferences(this).edit().remove("etp_steamID").apply();
+            PreferenceManager.getDefaultSharedPreferences(this).edit().remove(SharedPreferencesHelper.STEAM_ID).apply();
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
@@ -372,7 +373,7 @@ public class GameListActivity extends AppCompatActivity implements NavigationVie
     private void refreshUserProfileInformationFromDb(boolean refreshRecyclerViews) {
 
         // If the user have already used the app, the saved information will be displayed.
-        Long steamID = sharedPreferences.getLong("etp_steamID", 0);
+        Long steamID = sharedPreferences.getLong(SharedPreferencesHelper.STEAM_ID, 0);
 
         currentUser = userDbHelper.getUserBySteamId(mDb, steamID, true);
 
@@ -404,9 +405,9 @@ public class GameListActivity extends AppCompatActivity implements NavigationVie
         Double totalPricePerHour = totalMoneySpent / nbHoursTotal;
         DecimalFormat df = new DecimalFormat("#.##");
         tvTotalPricePerHour.setText(String.valueOf(df.format(totalPricePerHour))
-                + sharedPreferences.getString("lp_currency", "$") + "/h");
+                + sharedPreferences.getString(SharedPreferencesHelper.CURRENCY, "$") + "/h");
         String moneySpentText = String.valueOf(df.format(totalMoneySpent))
-                + sharedPreferences.getString("lp_currency", "$");
+                + sharedPreferences.getString(SharedPreferencesHelper.CURRENCY, "$");
         tvMoneySpent.setText(moneySpentText);
 
         if (refreshRecyclerViews) {

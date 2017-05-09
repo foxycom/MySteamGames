@@ -23,6 +23,7 @@ import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.models.Game;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
 
@@ -31,6 +32,9 @@ import java.text.DecimalFormat;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 
 public class GameDetailsActivity extends AppCompatActivity {
+
+    static final String ARG_GAME_ID = "gameId";
+    static final String ARG_USER_ID = "userId";
 
     private static final String TAG = "GameDetailsActivity";
     SharedPreferences sharedPreferences;
@@ -72,8 +76,8 @@ public class GameDetailsActivity extends AppCompatActivity {
 
         // We retrieve the gameID to display the game details.
         Intent intent = getIntent();
-        gameID = intent.getIntExtra("gameID", 0);
-        userID = intent.getIntExtra("userID", 0);
+        gameID = intent.getIntExtra(ARG_GAME_ID, 0);
+        userID = intent.getIntExtra(ARG_USER_ID, 0);
         recyclerName = intent.getStringExtra("recyclerName");
         adapterPosition = intent.getIntExtra("adapterPosition", 0);
         displayGameInformation();
@@ -87,7 +91,7 @@ public class GameDetailsActivity extends AppCompatActivity {
 
         MenuItem itemFavorite = menu.findItem(R.id.menu_game_details_favorite);
         if (favorite) {
-            itemFavorite.setIcon(R.drawable.ic_star_white);
+            itemFavorite.setIcon(R.drawable.ic_star);
         } else {
             itemFavorite.setIcon(R.drawable.ic_star_border_white);
         }
@@ -152,9 +156,9 @@ public class GameDetailsActivity extends AppCompatActivity {
             String priceText;
             switch (String.valueOf(ownedGame.getGamePrice())) {
                 case "-1.0":
-                    priceText = "?" + sharedPreferences.getString("lp_currency", "$");
+                    priceText = "?" + sharedPreferences.getString(SharedPreferencesHelper.CURRENCY, "$");
                     tvGamePrice.setText(priceText);
-                    tvGamePricePerHour.setText("?" + sharedPreferences.getString("lp_currency", "$") + "/h");
+                    tvGamePricePerHour.setText("?" + sharedPreferences.getString(SharedPreferencesHelper.CURRENCY, "$") + "/h");
                     tvSpent.setVisibility(View.VISIBLE);
                     break;
                 // TODO Test the case of the free to play
@@ -164,12 +168,12 @@ public class GameDetailsActivity extends AppCompatActivity {
                     tvSpent.setVisibility(View.INVISIBLE);
                     break;
                 default:
-                    priceText = ownedGame.getGamePrice() + sharedPreferences.getString("lp_currency", "$");
+                    priceText = ownedGame.getGamePrice() + sharedPreferences.getString(SharedPreferencesHelper.CURRENCY, "$");
                     tvGamePrice.setText(priceText);
                     Double hours = (double) ownedGame.getTimePlayedForever() / 60;
                     Double pricePerHour = ownedGame.getGamePrice() / hours;
                     DecimalFormat df = new DecimalFormat("#.##");
-                    tvGamePricePerHour.setText(String.valueOf(df.format(pricePerHour)) + sharedPreferences.getString("lp_currency", "$") + "/h");
+                    tvGamePricePerHour.setText(String.valueOf(df.format(pricePerHour)) + sharedPreferences.getString(SharedPreferencesHelper.CURRENCY, "$") + "/h");
                     tvSpent.setVisibility(View.VISIBLE);
                     break;
             }
@@ -179,7 +183,7 @@ public class GameDetailsActivity extends AppCompatActivity {
 
             // We have to check is the game is included in a bundle
 
-            if (ownedGame.getGameBundle().getId() != 0) {
+            if (ownedGame.getGameBundle() != null && ownedGame.getGameBundle().getId() != 0) {
                     tvBundleName.setText(ownedGame.getGameBundle().getName());
                     LinearLayout llBundle = (LinearLayout) findViewById(R.id.ll_game_details_bundle);
                     llBundle.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;

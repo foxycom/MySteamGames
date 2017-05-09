@@ -17,12 +17,12 @@
     <item
         android:id="@+id/action_goals"
         android:title="@string/goals_action"
-        android:icon="@drawable/ic_goal_black"
+        android:icon="@drawable/ic_goal"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_success"
-        android:title="@string/success_action"
+        android:title="@string/finished_action"
         android:icon="@drawable/ic_success_black"
         app:showAsAction="ifRoom" />
 

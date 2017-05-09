@@ -23,6 +23,7 @@
     <dimen name="card_primary_title_top_padding">24sp</dimen>
     <dimen name="card_primary_title_bottom_padding">16dp</dimen>
     <dimen name="card_padding_left_and_right">16dp</dimen>
+    <dimen name="card_listview_width">0dp</dimen>
 
     <!-- Bottom navigation view Material design -->
     <dimen name="bnv_height">56dp</dimen>
@@ -33,7 +34,7 @@
 
     <!-- Home game rectangle display -->
     <dimen name="home_game_rectangle_width">0dp</dimen>
-    <dimen name="home_game_rectangle_margin_top">8dp</dimen>
+    <dimen name="home_game_rectangle_margin_vertical">8dp</dimen>
     <dimen name="home_game_rectangle_drawable_size">0dp</dimen>
     <dimen name="home_game_rectangle_drawable_margins">0dp</dimen>
     <dimen name="home_game_rectangle_title_margin_left_start">8dp</dimen>

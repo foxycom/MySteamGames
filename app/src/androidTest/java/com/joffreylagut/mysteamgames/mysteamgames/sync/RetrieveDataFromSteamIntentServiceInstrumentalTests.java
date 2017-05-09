@@ -7,11 +7,11 @@ import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.facebook.stetho.Stetho;
-import com.joffreylagut.mysteamgames.mysteamgames.data.Sample;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelperInstrumentedTests;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.models.User;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.SampleGenerator;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 
 import org.junit.After;
@@ -59,18 +59,18 @@ public class RetrieveDataFromSteamIntentServiceInstrumentalTests {
         mUserDbHelper.resetDb(mDb);
 
         // We execute the function
-        RetrieveDataFromSteamIntentService.InsertSteamJsonUserInformationInDb(InstrumentationRegistry.getTargetContext(), Sample.STEAM_USER_JSON_SAMPLE);
+        RetrieveDataFromSteamIntentService.InsertSteamJsonUserInformationInDb(InstrumentationRegistry.getTargetContext(), SampleGenerator.STEAM_USER_JSON_SAMPLE);
 
         // And check if the user have been created in db
-        User user = mUserDbHelper.getUserBySteamId(mDb, Sample.DEFAULT_STEAM_ID, false);
+        User user = mUserDbHelper.getUserBySteamId(mDb, SampleGenerator.DEFAULT_STEAM_ID, false);
         assertTrue(user.getUserID() != 0);
 
         // USE CASE 2 User update
         // We execute the function a second time
-        RetrieveDataFromSteamIntentService.InsertSteamJsonUserInformationInDb(InstrumentationRegistry.getTargetContext(), Sample.STEAM_USER_JSON_SAMPLE_UPDATED);
+        RetrieveDataFromSteamIntentService.InsertSteamJsonUserInformationInDb(InstrumentationRegistry.getTargetContext(), SampleGenerator.STEAM_USER_JSON_SAMPLE_UPDATED);
 
         // And check if the user have been created in db
-        user = mUserDbHelper.getUserBySteamId(mDb, Sample.DEFAULT_STEAM_ID, false);
+        user = mUserDbHelper.getUserBySteamId(mDb, SampleGenerator.DEFAULT_STEAM_ID, false);
         assertTrue(user.getAccountName().compareTo("SlaydeBTW") == 0);
     }
 
@@ -84,7 +84,7 @@ public class RetrieveDataFromSteamIntentServiceInstrumentalTests {
 
         // USE CASE 1 Add the games in db
         // We execute the function
-        RetrieveDataFromSteamIntentService.InsertSteamJsonUserGamesInDb(InstrumentationRegistry.getTargetContext(), Sample.STEAM_USER_GAMES_JSON_SAMPLE, user.getUserID());
+        RetrieveDataFromSteamIntentService.InsertSteamJsonUserGamesInDb(InstrumentationRegistry.getTargetContext(), SampleGenerator.STEAM_USER_GAMES_JSON_SAMPLE, user.getUserID());
 
         // We get the user games from db
         user = mUserDbHelper.getUserByID(mDb, user.getUserID(), true);
@@ -104,7 +104,7 @@ public class RetrieveDataFromSteamIntentServiceInstrumentalTests {
 
         // USE CASE 2 Update the games in db
         // We execute the function a second time
-        RetrieveDataFromSteamIntentService.InsertSteamJsonUserGamesInDb(InstrumentationRegistry.getTargetContext(), Sample.STEAM_USER_GAMES_JSON_SAMPLE_UPDATED, user.getUserID());
+        RetrieveDataFromSteamIntentService.InsertSteamJsonUserGamesInDb(InstrumentationRegistry.getTargetContext(), SampleGenerator.STEAM_USER_GAMES_JSON_SAMPLE_UPDATED, user.getUserID());
 
         // We get the updated user games from db
         User userUpdated = mUserDbHelper.getUserByID(mDb, user.getUserID(), true);
