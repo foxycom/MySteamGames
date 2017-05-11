@@ -160,19 +160,22 @@ public class SampleGenerator {
                 1,
                 context.getResources().getString(R.string.game_title_example_1),
                 context.getResources().getString(R.string.game_goals_progression_hours_1),
-                context.getResources().getString(R.string.game_goals_progression_percent_1)
+                context.getResources().getString(R.string.game_goals_progression_percent_1),
+                89
         ));
         gameTongues.add(new GameTongueAdapter.GameTongue(
                 1,
                 context.getResources().getString(R.string.game_title_example_2),
                 context.getResources().getString(R.string.game_goals_progression_hours_2),
-                context.getResources().getString(R.string.game_goals_progression_percent_2)
+                context.getResources().getString(R.string.game_goals_progression_percent_2),
+                25
         ));
         gameTongues.add(new GameTongueAdapter.GameTongue(
                 1,
                 context.getResources().getString(R.string.game_title_example_3),
                 context.getResources().getString(R.string.game_goals_progression_hours_3),
-                context.getResources().getString(R.string.game_goals_progression_percent_3)
+                context.getResources().getString(R.string.game_goals_progression_percent_3),
+                58
         ));
 
         return gameTongues;
@@ -191,19 +194,22 @@ public class SampleGenerator {
                 1,
                 context.getResources().getString(R.string.game_title_example_1),
                 context.getResources().getString(R.string.game_hours_played_1),
-                context.getResources().getString(R.string.game_price_per_hour_1)
+                context.getResources().getString(R.string.game_price_per_hour_1),
+                100
         ));
         gameTongues.add(new GameTongueAdapter.GameTongue(
                 1,
                 context.getResources().getString(R.string.game_title_example_2),
                 context.getResources().getString(R.string.game_hours_played_2),
-                context.getResources().getString(R.string.game_price_per_hour_2)
+                context.getResources().getString(R.string.game_price_per_hour_2),
+                100
         ));
         gameTongues.add(new GameTongueAdapter.GameTongue(
                 1,
                 context.getResources().getString(R.string.game_title_example_3),
                 context.getResources().getString(R.string.game_hours_played_2),
-                context.getResources().getString(R.string.game_price_per_hour_2)
+                context.getResources().getString(R.string.game_price_per_hour_2),
+                100
         ));
 
         return gameTongues;

@@ -77,8 +77,7 @@
     <style name="HomeGameRectangleLayout">
         <item name="android:layout_width">@dimen/home_game_rectangle_width</item>
         <item name="android:layout_height">wrap_content</item>
-
-        <item name="android:background">@drawable/main_view_selector</item>
+        <item name="android:foreground">@drawable/main_view_selector</item>
     </style>
 
     <style name="HomeGameRectangleDrawable">
@@ -122,6 +121,13 @@
         <item name="android:textSize">@dimen/home_game_rectangle_progression_percent_text_size
         </item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="HomeGameRank">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">@dimen/home_game_rectangle_progression_percent_margins
+        </item>
     </style>
 
     <style name="HomeListView">

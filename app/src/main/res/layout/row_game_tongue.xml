@@ -7,6 +7,27 @@
     style="@style/HomeGameRectangleLayout"
     android:layout_width="match_parent">
 
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintGuide_percent="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/game_layout_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimaryBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <!-- ContentDescription is ignored because already in the style.-->
     <ImageView
         android:id="@+id/square_game"
@@ -32,12 +53,24 @@
         app:layout_constraintTop_toBottomOf="@+id/game_title"
         tools:text="@string/game_goals_progression_hours_1" />
 
-    <TextView
-        android:id="@+id/game_progression_percents"
-        style="@style/HomeGameProgressionPercent"
+    <ImageView
+        android:id="@+id/game_rank"
+        style="@style/HomeGameRank"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/square_game"
         app:layout_constraintRight_toRightOf="@+id/square_game"
         app:layout_constraintTop_toTopOf="@+id/square_game"
         app:layout_constraintVertical_bias="0.5"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/game_progression_percents"
+        style="@style/HomeGameProgressionPercent"
+        app:layout_constraintBottom_toBottomOf="@+id/square_game"
+        app:layout_constraintRight_toLeftOf="@id/game_rank"
+        app:layout_constraintTop_toTopOf="@+id/square_game"
+        app:layout_constraintVertical_bias="0.5"
         tools:text="@string/game_goals_progression_percent_1" />
+
+
 </android.support.constraint.ConstraintLayout>

@@ -93,12 +93,13 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
     }
 
     /**
-     * This method fetch the most played games in DB and display them in the Favorite card.
+     * This method fetch the most played games in DB and display them in the Most played card.
      */
     private void fetchMostPlayed() {
 
-        List<OwnedGame> favoritesOwnedGames = mUserDbHelper.getUserMostPlayedOwnedGames(mDb, mUserId, 3);
-        List<GameTongueAdapter.GameTongue> mostPlayedGameTongues = convertOwnedGameToGameTongue(favoritesOwnedGames);
+        List<OwnedGame> mostPlayedOwnedGames = mUserDbHelper.getUserMostPlayedOwnedGames(mDb, mUserId, 3);
+        List<GameTongueAdapter.GameTongue> mostPlayedGameTongues = createMostPlayedGameTongues(mostPlayedOwnedGames);
+
         displayGameTongues(mCvMostPlayed, mLvMostPlayed, mostPlayedGameTongues);
     }
 
@@ -114,6 +115,33 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
     }
 
     /**
+     * Convert the list of OwnedGames in parameter into a a list of GameTongue objects respecting the format of
+     * Most played card items.
+     *
+     * @param mostPlayedOwnedGames list of the most played OwnedGames
+     * @return the list converted into a list of GameTongue
+     */
+    private List<GameTongueAdapter.GameTongue> createMostPlayedGameTongues(List<OwnedGame> mostPlayedOwnedGames) {
+
+        int rank = 0;
+        List<GameTongueAdapter.GameTongue> gameTongues = new ArrayList<>();
+
+        for (OwnedGame ownedGame : mostPlayedOwnedGames) {
+            rank++;
+            GameTongueAdapter.GameTongue currentGameTongue = new GameTongueAdapter.GameTongue(
+                    ownedGame.getGame().getGameID(),
+                    ownedGame.getGame().getGameName(),
+                    "",
+                    SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever()),
+                    100
+            );
+            currentGameTongue.setGameRank(rank);
+            gameTongues.add(currentGameTongue);
+        }
+        return gameTongues;
+    }
+
+    /**
      * Convert the list of OwnedGames in parameter into a a list of GameTongue objects.
      *
      * @param ownedGames List of OwnedGames to convert.
@@ -121,14 +149,15 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
      */
     private List<GameTongueAdapter.GameTongue> convertOwnedGameToGameTongue(List<OwnedGame> ownedGames) {
 
+
         String currency = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(SharedPreferencesHelper.CURRENCY, "$");
         List<GameTongueAdapter.GameTongue> gameTongues = new ArrayList<>();
 
         Double profitableThreshold = Double.parseDouble(PreferenceManager.getDefaultSharedPreferences(getContext()).getString(SharedPreferencesHelper.PROFITABLE_LIMIT, "1"));
 
-
         if (ownedGames != null) {
             for (OwnedGame ownedGame : ownedGames) {
+
 
                 // We have 5 type of GameTongue:
                 // 1-Games Never played without price
@@ -143,6 +172,8 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
 
                 Double nbHoursToReachThreshold;
                 Double nbHoursPlayed = (double) ownedGame.getTimePlayedForever() / 60;
+
+                int progressionPercentage = 100;
 
                 // Types 1 & 2
                 if (ownedGame.getTimePlayedForever() == 0) {
@@ -166,7 +197,9 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
                             nbHoursToReachThreshold = ownedGame.getGamePrice() / profitableThreshold;
                             gameCaption = nbHoursPlayed.intValue() + " / " + nbHoursToReachThreshold.intValue() + "h";
                             Double completion = (nbHoursPlayed / nbHoursToReachThreshold) * 100;
-                            gameProgression = String.valueOf(completion.intValue()) + "%";
+                            progressionPercentage = completion.intValue();
+                            gameProgression = String.valueOf(progressionPercentage) + "%";
+
                         } else {
                             // Type 5
                             gameCaption = SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever());
@@ -182,7 +215,8 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
                         ownedGame.getGame().getGameID(),
                         ownedGame.getGame().getGameName(),
                         gameCaption,
-                        gameProgression
+                        gameProgression,
+                        progressionPercentage
                 );
                 gameTongues.add(currentGameTongue);
             }
