@@ -64,7 +64,10 @@ public class EditGameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_game);
-        getSupportActionBar().setTitle(getResources().getString(R.string.activity_edit_game_title));
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(getResources().getString(R.string.activity_edit_game_title));
+        }
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -277,9 +280,11 @@ public class EditGameActivity extends AppCompatActivity {
         adapterBundle.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spBundleName.setAdapter(adapterBundle);
         // Select the game bundle if exist
-        if (ownedGame.getGameBundle().getName() != null) {
-            int bundleNamePosition = getIndex(spBundleName, ownedGame.getGameBundle().getName());
-            if (bundleNamePosition != -1) spBundleName.setSelection(bundleNamePosition);
+        if (ownedGame.getGameBundle() != null) {
+            if (ownedGame.getGameBundle().getName() != null) {
+                int bundleNamePosition = getIndex(spBundleName, ownedGame.getGameBundle().getName());
+                if (bundleNamePosition != -1) spBundleName.setSelection(bundleNamePosition);
+            }
         }
 
         spBundleName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -353,7 +358,7 @@ public class EditGameActivity extends AppCompatActivity {
         // We can now insert the values in views
         etGameName.setText(ownedGame.getGame().getGameName());
         etTimePlayed.setText(String.valueOf(ownedGame.getTimePlayedForever()));
-        if (ownedGame.getGameBundle().getId() == 0) {
+        if (ownedGame.getGameBundle() == null || ownedGame.getGameBundle().getId() == 0) {
             rdBoughtAlone.setChecked(true);
             rdBoughtBundle.setChecked(false);
             showViewsFromRadioButtonState(false);

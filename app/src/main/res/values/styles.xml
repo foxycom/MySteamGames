@@ -128,4 +128,21 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="FloatingActionButtonLabelStyle">
+        <item name="android:background">@drawable/fab_label_background</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="FloatingActionButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="fab_colorNormal">@color/colorPrimary</item>
+    </style>
+
+    <style name="RvGamesSubText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/rv_games_sub_text_margin</item>
+    </style>
+
 </resources>

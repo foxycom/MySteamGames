@@ -415,22 +415,22 @@ public class GameListActivity extends AppCompatActivity implements NavigationVie
 
             List<GameListItem> recentGamesList = createGameListItemList(
                     currentUser.getRecentlyPlayedGames());
-            GameListAdapter recentGamesListAdapter =
-                    new GameListAdapter(recentGamesList, this, rvRecentGamesName);
-            rvRecentGames.setAdapter(recentGamesListAdapter);
+            //GameListAdapter recentGamesListAdapter =
+            //new GameListAdapter(recentGamesList, this, rvRecentGamesName);
+            //rvRecentGames.setAdapter(recentGamesListAdapter);
             rvRecentGames.setLayoutManager(new GridLayoutManager(this, 2));
 
             List<GameListItem> favoriteGamesList = createGameListItemList(
                     currentUser.getFavoriteGames());
-            GameListAdapter favoriteGamesListAdapter =
-                    new GameListAdapter(favoriteGamesList, this, rvFavoriteGamesName);
-            rvFavoriteGames.setAdapter(favoriteGamesListAdapter);
+            //GameListAdapter favoriteGamesListAdapter =
+            //new GameListAdapter(favoriteGamesList, this, rvFavoriteGamesName);
+            //rvFavoriteGames.setAdapter(favoriteGamesListAdapter);
             rvFavoriteGames.setLayoutManager(new GridLayoutManager(this, 2));
 
             List<GameListItem> allGamesList = createGameListItemList(currentUser.getOwnedGames());
-            GameListAdapter allGamesListAdapter =
-                    new GameListAdapter(allGamesList, this, rvAllGamesName);
-            rvAllGames.setAdapter(allGamesListAdapter);
+            //GameListAdapter allGamesListAdapter =
+            //        new GameListAdapter(allGamesList, this, rvAllGamesName);
+            //rvAllGames.setAdapter(allGamesListAdapter);
             rvAllGames.setLayoutManager(new GridLayoutManager(this, 2));
 
         }
@@ -466,12 +466,12 @@ public class GameListActivity extends AppCompatActivity implements NavigationVie
                 gameListAdapter = (GameListAdapter) rvAllGames.getAdapter();
 
                 // We have to update the other RecyclerView
-                GameListAdapter newGameListAdapter =
-                        new GameListAdapter(newOwnedGamesList, this, rvRecentGamesName);
-                rvRecentGames.setAdapter(newGameListAdapter);
-                GameListAdapter newFavoriteGameListAdapter =
-                        new GameListAdapter(newFavoriteGamesList, this, rvFavoriteGamesName);
-                rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
+                //GameListAdapter newGameListAdapter =
+                //        new GameListAdapter(newOwnedGamesList, this, rvRecentGamesName);
+                //rvRecentGames.setAdapter(newGameListAdapter);
+                //GameListAdapter newFavoriteGameListAdapter =
+                //        new GameListAdapter(newFavoriteGamesList, this, rvFavoriteGamesName);
+                //rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
 
                 sortAndShowGameItemList(rvFavoriteGames);
                 sortAndShowGameItemList(rvRecentGames);
@@ -483,12 +483,12 @@ public class GameListActivity extends AppCompatActivity implements NavigationVie
                 gameListAdapter = (GameListAdapter) rvFavoriteGames.getAdapter();
 
                 // We have to update the other RecyclerView
-                GameListAdapter newGameListAdapter =
+                /*GameListAdapter newGameListAdapter =
                         new GameListAdapter(newOwnedGamesList, this, rvRecentGamesName);
                 rvAllGames.setAdapter(newGameListAdapter);
                 GameListAdapter newRecentGameListAdapter =
                         new GameListAdapter(newRecentGamesList, this, rvFavoriteGamesName);
-                rvRecentGames.setAdapter(newRecentGameListAdapter);
+                rvRecentGames.setAdapter(newRecentGameListAdapter);*/
 
                 sortAndShowGameItemList(rvAllGames);
                 sortAndShowGameItemList(rvRecentGames);
@@ -499,21 +499,21 @@ public class GameListActivity extends AppCompatActivity implements NavigationVie
                 gameListAdapter = (GameListAdapter) rvRecentGames.getAdapter();
 
                 // We have to update the other RecyclerView
-                GameListAdapter newGameListAdapter =
+/*                GameListAdapter newGameListAdapter =
                         new GameListAdapter(newOwnedGamesList, this, rvAllGamesName);
                 rvAllGames.setAdapter(newGameListAdapter);
                 GameListAdapter newFavoriteGameListAdapter =
                         new GameListAdapter(newFavoriteGamesList, this, rvFavoriteGamesName);
-                rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
+                rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);*/
                 sortAndShowGameItemList(rvAllGames);
                 sortAndShowGameItemList(rvFavoriteGames);
                 break;
             }
         }
         if (recyclerName.equals(rvFavoriteGamesName) && edited) {
-            GameListAdapter newFavoriteGameListAdapter =
-                    new GameListAdapter(newFavoriteGamesList, this, rvFavoriteGamesName);
-            rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
+//            GameListAdapter newFavoriteGameListAdapter =
+//                    new GameListAdapter(newFavoriteGamesList, this, rvFavoriteGamesName);
+//            rvFavoriteGames.setAdapter(newFavoriteGameListAdapter);
             sortAndShowGameItemList(rvFavoriteGames);
         } else {
             if (newPrice != null &&

@@ -92,33 +92,5 @@ public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue
         public int getGameId() {
             return gameId;
         }
-
-        public void setGameId(int gameId) {
-            this.gameId = gameId;
-        }
-
-        public String getGameTitle() {
-            return gameTitle;
-        }
-
-        public void setGameTitle(String gameTitle) {
-            this.gameTitle = gameTitle;
-        }
-
-        public String getGameProgression() {
-            return gameProgression;
-        }
-
-        public void setGameProgression(String gameProgression) {
-            this.gameProgression = gameProgression;
-        }
-
-        public String getGameCaption() {
-            return gameCaption;
-        }
-
-        public void setGameCaption(String gameCaption) {
-            this.gameCaption = gameCaption;
-        }
     }
 }

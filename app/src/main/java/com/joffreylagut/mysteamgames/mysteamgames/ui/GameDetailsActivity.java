@@ -105,8 +105,8 @@ public class GameDetailsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_game_details_edit:
                 Intent intentEdit = new Intent(this, EditGameActivity.class);
-                intentEdit.putExtra("gameID", gameID);
-                intentEdit.putExtra("userID", userID);
+                intentEdit.putExtra(EditGameActivity.ARG_GAME_ID, gameID);
+                intentEdit.putExtra(EditGameActivity.ARG_USER_ID, userID);
 
                 // If the user is running on SDK 16 or newer, display a transition.
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
@@ -145,7 +145,9 @@ public class GameDetailsActivity extends AppCompatActivity {
         // First, we have to get all the information about the owned game
         OwnedGame ownedGame = userDbHelper.getOwnedGame(db, userID, gameID);
         if(ownedGame.getGame().getGameID() != 0){
-            getSupportActionBar().setTitle(ownedGame.getGame().getGameName());
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(ownedGame.getGame().getGameName());
+            }
             if(ownedGame.getGame().getGameLogo() != null) {
                 Picasso.with(this).load(ownedGame.getGame().getGameLogo().toString()).into(ivGame);
                 Picasso.with(this).load(ownedGame.getGame().getGameLogo().toString()).transform(new BlurTransformation(this, 5)).into(ivGameBlurred);
@@ -183,11 +185,13 @@ public class GameDetailsActivity extends AppCompatActivity {
 
             // We have to check is the game is included in a bundle
 
-            if (ownedGame.getGameBundle() != null && ownedGame.getGameBundle().getId() != 0) {
+            if (ownedGame.getGameBundle() != null) {
+                if (ownedGame.getGameBundle().getId() != 0) {
                     tvBundleName.setText(ownedGame.getGameBundle().getName());
                     LinearLayout llBundle = (LinearLayout) findViewById(R.id.ll_game_details_bundle);
                     llBundle.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
                     llBundle.requestLayout();
+                }
             } else {
                 LinearLayout llBundle = (LinearLayout) findViewById(R.id.ll_game_details_bundle);
                 llBundle.getLayoutParams().height = 0;

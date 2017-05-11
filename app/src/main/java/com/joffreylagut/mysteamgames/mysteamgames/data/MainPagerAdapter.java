@@ -3,8 +3,7 @@ package com.joffreylagut.mysteamgames.mysteamgames.data;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-
-import java.util.HashMap;
+import android.util.SparseArray;
 
 /**
  * MainPagerAdapter.java
@@ -16,9 +15,9 @@ import java.util.HashMap;
 
 public class MainPagerAdapter extends FragmentPagerAdapter {
 
-    private final HashMap<Integer, Fragment> fragments;
+    private final SparseArray<Fragment> fragments;
 
-    public MainPagerAdapter(FragmentManager fm, HashMap<Integer, Fragment> fragments) {
+    public MainPagerAdapter(FragmentManager fm, SparseArray<Fragment> fragments) {
         super(fm);
         this.fragments = fragments;
     }

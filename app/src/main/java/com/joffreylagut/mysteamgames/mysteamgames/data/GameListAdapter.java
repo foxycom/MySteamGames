@@ -1,11 +1,7 @@
 package com.joffreylagut.mysteamgames.mysteamgames.data;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +12,6 @@ import android.widget.TextView;
 
 import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.models.GameListItem;
-import com.joffreylagut.mysteamgames.mysteamgames.ui.GameDetailsActivity;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.squareup.picasso.Picasso;
@@ -24,26 +19,27 @@ import com.squareup.picasso.Picasso;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
- * Created by Joffrey on 08/02/2017.
+ * GameListAdapter.java
+ * Purpose: Adapter used to specify the content of the RecyclerView items showed on the Games fragment.
+ *
+ * @author Joffrey LAGUT
+ * @version 1.1 2017-05-09
  */
 
 public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesListViewHolder> {
 
     private List<GameListItem> gameList;
     private Context context;
-    private String recyclerName;
+    private View.OnClickListener listener;
 
-    public GameListAdapter(List<GameListItem> gameList, Context context, String recyclerName) {
+    public GameListAdapter(List<GameListItem> gameList, Context context, View.OnClickListener listener) {
         this.gameList = gameList;
         this.context = context;
-        this.recyclerName = recyclerName;
-    }
-
-    @Override
-    public GamesListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_game_list, parent, false);
-        return new GamesListViewHolder(view);
+        this.listener = listener;
     }
 
     public List<GameListItem> getGameList() {
@@ -52,6 +48,13 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
 
     public void setGameList(List<GameListItem> gameList) {
         this.gameList = gameList;
+    }
+
+    @Override
+    public GamesListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_game_list, parent, false);
+        view.setOnClickListener(listener);
+        return new GamesListViewHolder(view);
     }
 
     @Override
@@ -65,27 +68,20 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
         return gameList.size();
     }
 
-    interface ListItemClickListener {
-        void ListItemClicked(String clickedItemName);
-    }
+    class GamesListViewHolder extends RecyclerView.ViewHolder {
 
-    class GamesListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
+        @BindView(R.id.iv_game_picture)
         ImageView image;
+        @BindView(R.id.tv_game_name)
         TextView name;
+        @BindView(R.id.tv_game_time_played)
         TextView timePlayed;
+        @BindView(R.id.tv_game_price_per_hour)
         TextView gamePrice;
-
 
         GamesListViewHolder(View itemView) {
             super(itemView);
-
-            image = (ImageView) itemView.findViewById(R.id.iv_game_picture);
-            name = (TextView) itemView.findViewById(R.id.tv_game_name);
-            timePlayed = (TextView) itemView.findViewById(R.id.tv_game_time_played);
-            gamePrice = (TextView)itemView.findViewById(R.id.tv_game_price_per_hour);
-
-            itemView.setOnClickListener(this);
+            ButterKnife.bind(this, itemView);
         }
 
         void bind(GameListItem gameItem) {
@@ -124,26 +120,6 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
                     }
                     gamePrice.setVisibility(View.VISIBLE);
                     break;
-            }
-
-        }
-
-        @Override
-        public void onClick(View v) {
-            int clickedPosition = getAdapterPosition();
-            Intent intent = new Intent(v.getContext(), GameDetailsActivity.class);
-            intent.putExtra("gameID", gameList.get(clickedPosition).getGameID());
-            intent.putExtra("userID", gameList.get(clickedPosition).getUserID());
-            intent.putExtra("recyclerName", recyclerName);
-            intent.putExtra("adapterPosition", clickedPosition);
-
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                Bundle bndlAnimation = ActivityOptions.makeCustomAnimation(v.getContext(),
-                        R.transition.right_to_left_incoming, R.transition.right_to_left_outgoing)
-                        .toBundle();
-                ((Activity) context).startActivityForResult(intent, 1, bndlAnimation);
-            } else {
-                ((Activity) context).startActivityForResult(intent, 1);
             }
 
         }

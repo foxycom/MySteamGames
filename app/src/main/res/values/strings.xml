@@ -69,6 +69,7 @@
     <string name="goals_action">Goals</string>
     <string name="finished_action">Finished</string>
     <string name="account_action">Account</string>
+    <string name="games_action">Games</string>
 
     <!-- Home Fragment-->
     <string name="home_card_goals_title">Goals almost achieved</string>
@@ -85,6 +86,12 @@
 
     <string name="home_rectangle_content_description">Rectangle around the game</string>
 
+    <!-- Games fragment -->
+    <string name="reverse_order">Reverse order</string>
+    <string name="order_alphabetic">Order alphabetic</string>
+    <string name="order_time_played">Order by time played</string>
+    <string name="order_price_per_hour">Order by price per hour</string>
+    <string name="game_picture_content_description">Game picture</string>
 
     <string name="game_details_statistics_title">Statistics</string>
     <string name="activity_edit_game_title">Edit game</string>

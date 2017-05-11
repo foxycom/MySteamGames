@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/game_fragment_horizontal_padding"
+    android:paddingRight="@dimen/game_fragment_horizontal_padding"
+    android:paddingTop="@dimen/game_fragment_vertical_padding">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_games"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="GridLayoutManager"
+        app:spanCount="2"
+        tools:listitem="@layout/row_game_list" />
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/action_open_fab_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        app:fab_addButtonColorNormal="@color/colorAccent"
+        app:fab_labelStyle="@style/FloatingActionButtonLabelStyle"
+        app:fab_labelsPosition="left">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_reverse_order"
+            style="@style/FloatingActionButton"
+            app:fab_icon="@drawable/ic_arrow_upward_white"
+            app:fab_title="@string/reverse_order" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_order_alphabetic"
+            style="@style/FloatingActionButton"
+            app:fab_icon="@drawable/ic_sort_by_alpha"
+            app:fab_title="@string/order_alphabetic" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_order_time_played"
+            style="@style/FloatingActionButton"
+            app:fab_icon="@drawable/ic_access_time_white"
+            app:fab_title="@string/order_time_played" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_order_price_per_hour"
+            style="@style/FloatingActionButton"
+            app:fab_icon="@drawable/ic_attach_money_white"
+            app:fab_title="@string/order_price_per_hour" />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+</RelativeLayout>

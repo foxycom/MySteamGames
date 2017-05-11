@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -42,7 +43,8 @@
                 style="@style/HomeListView"
                 app:layout_constraintTop_toBottomOf="@+id/favorite_goals_card_icon"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"></ListView>
+                app:layout_constraintRight_toRightOf="parent"
+                tools:ignore="NestedScrolling" />
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
@@ -79,7 +81,8 @@
                 style="@style/HomeListView"
                 app:layout_constraintTop_toBottomOf="@+id/goals_card_icon"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"></ListView>
+                app:layout_constraintRight_toRightOf="parent"
+                tools:ignore="NestedScrolling" />
 
         </android.support.constraint.ConstraintLayout>
 
@@ -97,7 +100,7 @@
                 <ImageView
                     android:id="@+id/most_played_card_icon"
                     style="@style/MaterialCardIcon"
-                    android:background="@drawable/ic_access_time"
+                    android:background="@drawable/ic_access_time_colorprimary"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:contentDescription="@string/home_most_played_card_icon_content_description" />
@@ -117,7 +120,8 @@
                     style="@style/HomeListView"
                     app:layout_constraintTop_toBottomOf="@+id/most_played_card_icon"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"></ListView>
+                    app:layout_constraintRight_toRightOf="parent"
+                    tools:ignore="NestedScrolling" />
 
 
             </android.support.constraint.ConstraintLayout>
@@ -136,7 +140,7 @@
                 <ImageView
                     android:id="@+id/most_profitable_card_icon"
                     style="@style/MaterialCardIcon"
-                    android:background="@drawable/ic_attach_money"
+                    android:background="@drawable/ic_attach_money_colorprimary"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:contentDescription="@string/home_most_profitable_card_icon_content_description" />
@@ -156,7 +160,8 @@
                     style="@style/HomeListView"
                     app:layout_constraintTop_toBottomOf="@+id/most_profitable_card_icon"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"></ListView>
+                    app:layout_constraintRight_toRightOf="parent"
+                    tools:ignore="NestedScrolling" />
 
 
         </android.support.constraint.ConstraintLayout>

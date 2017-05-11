@@ -47,7 +47,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
     @BindView(R.id.most_profitable_card_list_view)
     ListView mLvMostRentable;
 
-    public interface OnGameSelectedListener {
+    interface OnGameSelectedListener {
         void OnGameSelected(int gameId);
     }
 
@@ -60,8 +60,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
         try {
             mCallback = (OnGameSelectedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement OnGameSelectedListener");
+            throw new ClassCastException(context.toString() + " must implement OnGameSelectedListener");
         }
 
     }

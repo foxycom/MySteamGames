@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
+import android.util.SparseArray;
 import android.view.MenuItem;
 
 import com.facebook.stetho.Stetho;
@@ -18,8 +19,6 @@ import com.joffreylagut.mysteamgames.mysteamgames.data.MainPagerAdapter;
 import com.joffreylagut.mysteamgames.mysteamgames.sync.RetrieveDataFromSteamIntentService;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.UiUtilities;
-
-import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,12 +31,13 @@ import butterknife.ButterKnife;
  * @version 1.0 2017-05-03
  */
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, HomeFragment.OnGameSelectedListener {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, HomeFragment.OnGameSelectedListener, GamesFragment.OnGameSelectedListener {
 
     private final Integer HOME_FRAGMENT_CODE = 0;
     private final Integer GOALS_FRAGMENT_CODE = 1;
     private final Integer FINISHED_FRAGMENT_CODE = 2;
-    private final Integer ACCOUNT_FRAGMENT_CODE = 3;
+    private final Integer GAMES_FRAGMENT_CODE = 3;
+    private final Integer ACCOUNT_FRAGMENT_CODE = 4;
 
     @BindView(R.id.bottom_navigation_view)
     BottomNavigationView mBottomNavigationView;
@@ -64,10 +64,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         mBottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         // We create a new Hashmap and put our fragments inside
-        HashMap<Integer, Fragment> activityFragments = new HashMap<>();
+        SparseArray<Fragment> activityFragments = new SparseArray<>();
         activityFragments.put(HOME_FRAGMENT_CODE, new HomeFragment());
         activityFragments.put(GOALS_FRAGMENT_CODE, new GoalsFragment());
         activityFragments.put(FINISHED_FRAGMENT_CODE, new FinishedFragment());
+        activityFragments.put(GAMES_FRAGMENT_CODE, new GamesFragment());
         activityFragments.put(ACCOUNT_FRAGMENT_CODE, new AccountFragment());
 
         mAdapter = new MainPagerAdapter(super.getSupportFragmentManager(), activityFragments);
@@ -88,11 +89,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.action_goals:
                 mPager.setCurrentItem(GOALS_FRAGMENT_CODE);
                 break;
-            case R.id.action_success:
+            case R.id.action_finished:
                 mPager.setCurrentItem(FINISHED_FRAGMENT_CODE);
                 break;
             case R.id.action_account:
                 mPager.setCurrentItem(ACCOUNT_FRAGMENT_CODE);
+                break;
+            case R.id.action_games:
+                mPager.setCurrentItem(GAMES_FRAGMENT_CODE);
                 break;
             default:
                 mPager.setCurrentItem(HOME_FRAGMENT_CODE);
@@ -111,7 +115,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (position == GOALS_FRAGMENT_CODE) {
             mBottomNavigationView.setSelectedItemId(R.id.action_goals);
         } else if (position == FINISHED_FRAGMENT_CODE) {
-            mBottomNavigationView.setSelectedItemId(R.id.action_success);
+            mBottomNavigationView.setSelectedItemId(R.id.action_finished);
+        } else if (position == GAMES_FRAGMENT_CODE) {
+            mBottomNavigationView.setSelectedItemId(R.id.action_games);
         } else if (position == ACCOUNT_FRAGMENT_CODE) {
             mBottomNavigationView.setSelectedItemId(R.id.action_account);
         } else {

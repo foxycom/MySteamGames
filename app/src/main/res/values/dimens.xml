@@ -43,4 +43,15 @@
     <dimen name="home_game_rectangle_progression_padding_bottom">8dp</dimen>
     <dimen name="home_game_rectangle_progression_percent_margins">8dp</dimen>
     <dimen name="home_game_rectangle_progression_percent_text_size">18sp</dimen>
+
+    <!-- Games fragment -->
+    <dimen name="game_fragment_horizontal_padding">8dp</dimen>
+    <dimen name="game_fragment_vertical_padding">8dp</dimen>
+
+    <!-- Games RecyclerView -->
+    <dimen name="rv_games_picture_height">70dp</dimen>
+    <dimen name="rv_games_title_height">@dimen/rv_games_picture_height</dimen>
+    <dimen name="rv_games_title_text_size">30sp</dimen>
+    <dimen name="rv_games_sub_text_margin">8dp</dimen>
+
 </resources>
