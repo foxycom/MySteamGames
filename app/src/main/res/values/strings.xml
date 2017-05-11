@@ -93,6 +93,9 @@
     <string name="order_price_per_hour">Order by price per hour</string>
     <string name="game_picture_content_description">Game picture</string>
 
+    <!-- Account Fragment -->
+    <string name="action_preferences">Edit preferences</string>
+
     <string name="game_details_statistics_title">Statistics</string>
     <string name="activity_edit_game_title">Edit game</string>
     <string name="input_game_name">Name</string>

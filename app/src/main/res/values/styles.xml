@@ -77,7 +77,8 @@
     <style name="HomeGameRectangleLayout">
         <item name="android:layout_width">@dimen/home_game_rectangle_width</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingTop">@dimen/home_game_rectangle_margin_vertical</item>
+
+        <item name="android:background">@drawable/main_view_selector</item>
     </style>
 
     <style name="HomeGameRectangleDrawable">
@@ -126,6 +127,9 @@
     <style name="HomeListView">
         <item name="android:layout_width">@dimen/card_listview_width</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/home_page_list_view_margin_top</item>
+        <item name="android:divider">@android:color/transparent</item>
+        <item name="android:dividerHeight">@dimen/home_page_list_view_divider_height</item>
     </style>
 
     <style name="FloatingActionButtonLabelStyle">

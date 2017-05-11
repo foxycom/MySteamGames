@@ -6,7 +6,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="@drawable/recycler_view_selector">
+        android:foreground="@drawable/main_view_selector">
 
         <TextView
             android:id="@+id/tv_game_name"

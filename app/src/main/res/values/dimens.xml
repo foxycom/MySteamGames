@@ -34,7 +34,6 @@
 
     <!-- Home game rectangle display -->
     <dimen name="home_game_rectangle_width">0dp</dimen>
-    <dimen name="home_game_rectangle_margin_vertical">8dp</dimen>
     <dimen name="home_game_rectangle_drawable_size">0dp</dimen>
     <dimen name="home_game_rectangle_drawable_margins">0dp</dimen>
     <dimen name="home_game_rectangle_title_margin_left_start">8dp</dimen>
@@ -43,6 +42,8 @@
     <dimen name="home_game_rectangle_progression_padding_bottom">8dp</dimen>
     <dimen name="home_game_rectangle_progression_percent_margins">8dp</dimen>
     <dimen name="home_game_rectangle_progression_percent_text_size">18sp</dimen>
+    <dimen name="home_page_list_view_margin_top">8dp</dimen>
+    <dimen name="home_page_list_view_divider_height">@dimen/home_page_list_view_margin_top</dimen>
 
     <!-- Games fragment -->
     <dimen name="game_fragment_horizontal_padding">8dp</dimen>
