@@ -91,7 +91,7 @@ public class GameDetailsActivity extends AppCompatActivity {
 
         MenuItem itemFavorite = menu.findItem(R.id.menu_game_details_favorite);
         if (favorite) {
-            itemFavorite.setIcon(R.drawable.ic_star);
+            itemFavorite.setIcon(R.drawable.ic_star_white);
         } else {
             itemFavorite.setIcon(R.drawable.ic_star_border_white);
         }
