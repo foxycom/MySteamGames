@@ -33,11 +33,9 @@ public class UserDbHelper extends SQLiteOpenHelper {
     // Version of the database.
     // This var must be incremented every time we change the database schema.
     private static final int DATABASE_VERSION = 6;
-
+    static String TEST_DATABASE_NAME = "testMyGameTimePrice.db";
     // Name of the database.
     private static String DATABASE_NAME = "myGameTimePrice.db";
-    static String TEST_DATABASE_NAME = "testMyGameTimePrice.db";
-
     // Instance of the class. We wants to have a singleton to avoid conflicts
     private static UserDbHelper sInstance;
 
@@ -864,14 +862,46 @@ public class UserDbHelper extends SQLiteOpenHelper {
         return ownedGames;
     }
 
+    /**
+     * Return the most played OwnedGames of the User.
+     *
+     * @param db                    Database to query.
+     * @param userId                User that we want to find.
+     * @param numberOfGamesToReturn Number of games that we want to return.
+     * @return List of OwnedGames.
+     */
+    public List<OwnedGame> getUserMostPlayedOwnedGames(SQLiteDatabase db, int userId, int numberOfGamesToReturn) {
+        // List that we will return.
+        List<OwnedGame> ownedGames = new ArrayList<>();
 
+        // We prepare the request
+        String order = UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_FOREVER + " DESC";
+        String limit = String.valueOf(numberOfGamesToReturn);
+        String where = UserContract.OwnedGamesEntry.COLUMN_USER_ID + " =?";
+        String whereArgs[] = {String.valueOf(userId)};
+
+        // We have to do a query in DB to have all the rows.
+        Cursor cursorOwnedGames = selectOwnedGame(db, null, where, whereArgs,
+                null, null, order, limit);
+
+        // We have to check if there is results.
+        if (cursorOwnedGames.getCount() > 0) {
+            ownedGames = createOwnedGamesFromCursor(cursorOwnedGames, db);
+        } else {
+            // There is no bundle in database. We log debug message.
+            Log.d(TAG, "getUserMostPlayedOwnedGames: There is no Bundle in DB.");
+        }
+        cursorOwnedGames.close();
+
+        return ownedGames;
+    }
 
     /**
      * Function returning all of the OwnedGames of the user.
      *
      * @param db     Database to query.
-     * @param userID user that we want to find.
-     * @return Cursor containing the rows matching the request.
+     * @param userID User that we want to find.
+     * @return List of OwnedGames.
      */
     public List<OwnedGame> getOwnedGamesByUserID(SQLiteDatabase db, int userID) {
         // List that we will return.

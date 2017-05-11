@@ -54,13 +54,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
     ListView mLvMostPlayed;
     @BindView(R.id.most_profitable_card_list_view)
     ListView mLvMostProfitable;
-
-    interface OnGameSelectedListener {
-        void OnGameSelected(int gameId);
-    }
-
     private OnGameSelectedListener mCallback;
-
     private UserDbHelper mUserDbHelper;
     private SQLiteDatabase mDb;
     private int mUserId;
@@ -89,13 +83,23 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
 
 
         fetchFavorites();
+        fetchMostPlayed();
 
 
         displayGameTongues(mCvGoals, mLvGoals, SampleGenerator.generateListGameTongue(getContext()));
-        displayGameTongues(mCvMostPlayed, mLvMostPlayed, SampleGenerator.generateListGameTongue(getContext()));
         displayGameTongues(mCvMostProfitable, mLvMostProfitable, SampleGenerator.generateListMostProfitableGameTongue(getContext()));
 
         return viewRoot;
+    }
+
+    /**
+     * This method fetch the most played games in DB and display them in the Favorite card.
+     */
+    private void fetchMostPlayed() {
+
+        List<OwnedGame> favoritesOwnedGames = mUserDbHelper.getUserMostPlayedOwnedGames(mDb, mUserId, 3);
+        List<GameTongueAdapter.GameTongue> mostPlayedGameTongues = convertOwnedGameToGameTongue(favoritesOwnedGames);
+        displayGameTongues(mCvMostPlayed, mLvMostPlayed, mostPlayedGameTongues);
     }
 
     /**
@@ -217,5 +221,9 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
         GameTongueAdapter.GameTongue gameTongueClicked = (GameTongueAdapter.GameTongue) parent.getItemAtPosition(position);
 
         mCallback.OnGameSelected(gameTongueClicked.getGameId());
+    }
+
+    interface OnGameSelectedListener {
+        void OnGameSelected(int gameId);
     }
 }
