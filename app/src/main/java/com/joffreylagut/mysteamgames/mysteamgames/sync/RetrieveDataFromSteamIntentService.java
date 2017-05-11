@@ -49,9 +49,6 @@ public class RetrieveDataFromSteamIntentService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
 
-        // We are declaring a new UserDbHelper to access to the db.
-        UserDbHelper userDbHelper = UserDbHelper.getInstance(this);
-        SQLiteDatabase mDb = userDbHelper.getWritableDatabase();
         // We load the SharedPreferences
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -209,7 +206,7 @@ public class RetrieveDataFromSteamIntentService extends IntentService {
                     userDbHelper.addNewOwnedGame(db,ownedGame);
                 }else{
                     // We update the game
-                    userDbHelper.updateOwnedGame(db, ownedGame);
+                    userDbHelper.updateOwnedGame(db, ownedGame, false);
                 }
             }
         } catch (Exception e) {

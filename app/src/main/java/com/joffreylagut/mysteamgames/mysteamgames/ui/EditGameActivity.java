@@ -183,7 +183,7 @@ public class EditGameActivity extends AppCompatActivity {
             ownedGame.setGamePrice(gamePrice);
             // We have all of the information needed to update the game in DB
             userDbHelper.updateGameById(db, ownedGame.getGame());
-            userDbHelper.updateOwnedGame(db, ownedGame);
+            userDbHelper.updateOwnedGame(db, ownedGame, false);
         } else {
             // The game is in a bundle
             // We have to clean the currency
@@ -207,7 +207,7 @@ public class EditGameActivity extends AppCompatActivity {
                 }
                 // To finish, we update the ownedgame table
                 ownedGame.setGameBundle(gameBundle);
-                userDbHelper.updateOwnedGame(db, ownedGame);
+                userDbHelper.updateOwnedGame(db, ownedGame, false);
                 userDbHelper.updateOwnedGamePriceFromBundle(db, gameBundle.getId());
 
             } else {

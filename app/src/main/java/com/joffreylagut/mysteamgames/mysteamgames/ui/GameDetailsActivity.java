@@ -123,10 +123,10 @@ public class GameDetailsActivity extends AppCompatActivity {
                 OwnedGame ownedGame = new OwnedGame(userID, currentGame);
                 if (favorite) {
                     ownedGame.setFavorite(false);
-                    userDbHelper.updateOwnedGame(db, ownedGame);
+                    userDbHelper.updateOwnedGame(db, ownedGame, true);
                 } else {
                     ownedGame.setFavorite(true);
-                    userDbHelper.updateOwnedGame(db, ownedGame);
+                    userDbHelper.updateOwnedGame(db, ownedGame, true);
                 }
                 // We have to change the icon
                 favorite = !favorite;

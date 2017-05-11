@@ -1038,7 +1038,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
      * @param ownedGame         OwnedGame to insert in DB.
      * @return The number of rows updated.
      */
-    public long updateOwnedGame(SQLiteDatabase db, OwnedGame ownedGame) {
+    public long updateOwnedGame(SQLiteDatabase db, OwnedGame ownedGame, boolean updateFavorite) {
 
         ContentValues cvOwnedGame = new ContentValues();
         if(ownedGame.getUserId() != 0){
@@ -1061,12 +1061,15 @@ public class UserDbHelper extends SQLiteOpenHelper {
             cvOwnedGame.put(UserContract.OwnedGamesEntry.COLUMN_BUNDLE_ID,
                     ownedGame.getGameBundle().getId());
         }
-        cvOwnedGame.put(UserContract.OwnedGamesEntry.COLUMN_FAVORITE, ownedGame.isFavorite());
 
-        return db.update(UserContract.OwnedGamesEntry.TABLE_NAME, cvOwnedGame,
-                UserContract.OwnedGamesEntry.COLUMN_USER_ID + "=" + ownedGame.getUserId()
-                        + " AND " + UserContract.OwnedGamesEntry.COLUMN_GAME_ID + "=" +
-                        ownedGame.getGame().getGameID(), null);
+        if (updateFavorite) {
+            cvOwnedGame.put(UserContract.OwnedGamesEntry.COLUMN_FAVORITE, ownedGame.isFavorite());
+        }
+
+        return db.update(UserContract.OwnedGamesEntry.TABLE_NAME,
+                cvOwnedGame,
+                UserContract.OwnedGamesEntry.COLUMN_USER_ID + "=" + ownedGame.getUserId() + " AND " + UserContract.OwnedGamesEntry.COLUMN_GAME_ID + "=" + ownedGame.getGame().getGameID(),
+                null);
     }
 
     /**
