@@ -88,6 +88,7 @@
     <string name="bronze_trophy_content_description">Bronze trophy</string>
 
     <string name="home_rectangle_content_description">Rectangle around the game</string>
+    <string name="home_game_icon_content_description">Game icon</string>
 
     <!-- Games fragment -->
     <string name="reverse_order">Reverse order</string>

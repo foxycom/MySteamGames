@@ -39,17 +39,26 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
+    <ImageView
+        android:id="@+id/game_icon"
+        style="@style/HomeGameIcon"
+        app:layout_constraintBottom_toBottomOf="@id/square_game"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@id/square_game"
+        app:layout_constraintTop_toTopOf="@id/square_game"
+        tools:ignore="ContentDescription" />
+
     <TextView
         android:id="@+id/game_title"
         style="@style/HomeGameTitle"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/game_icon"
         app:layout_constraintTop_toTopOf="@+id/square_game"
         tools:text="@string/game_title_example_1" />
 
     <TextView
         android:id="@+id/game_progression"
         style="@style/HomeGameProgressionText"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/game_icon"
         app:layout_constraintTop_toBottomOf="@+id/game_title"
         tools:text="@string/game_goals_progression_hours_1" />
 

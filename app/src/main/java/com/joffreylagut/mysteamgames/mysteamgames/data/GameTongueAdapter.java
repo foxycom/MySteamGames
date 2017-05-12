@@ -16,12 +16,11 @@ import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.models.Goal;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
+import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.joffreylagut.mysteamgames.mysteamgames.R.id.guideline;
 
 /**
  * GameTongueAdapter.java
@@ -56,7 +55,8 @@ public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue
             gameTongueViewHolder.gameProgression = (TextView) convertView.findViewById(R.id.game_progression);
             gameTongueViewHolder.gameCaption = (TextView) convertView.findViewById(R.id.game_caption);
             gameTongueViewHolder.gameRank = (ImageView) convertView.findViewById(R.id.game_rank);
-            gameTongueViewHolder.guideline = (Guideline) convertView.findViewById(guideline);
+            gameTongueViewHolder.guideline = (Guideline) convertView.findViewById(R.id.guideline);
+            gameTongueViewHolder.gameIcon = (ImageView) convertView.findViewById(R.id.game_icon);
             convertView.setTag(gameTongueViewHolder);
         }
 
@@ -68,6 +68,7 @@ public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue
             gameTongueViewHolder.gameTitle.setText(gameTongueToDisplay.gameTitle);
             gameTongueViewHolder.gameProgression.setText(gameTongueToDisplay.gameProgression);
             gameTongueViewHolder.gameCaption.setText(gameTongueToDisplay.gameCaption);
+            Picasso.with(getContext()).load(gameTongueToDisplay.urlGameIcon).into(gameTongueViewHolder.gameIcon);
             switch (gameTongueToDisplay.gameRank) {
                 case 1:
                     gameTongueViewHolder.gameRank.setVisibility(View.VISIBLE);
@@ -104,6 +105,7 @@ public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue
         TextView gameCaption;
         ImageView gameRank;
         Guideline guideline;
+        ImageView gameIcon;
     }
 
     /**
@@ -116,13 +118,15 @@ public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue
         final String gameCaption;
         int gameRank;
         final int percentageBackground;
+        final String urlGameIcon;
 
-        public GameTongue(int gameId, String gameTitle, String gameProgression, String gameCaption, int percentageBackground) {
+        public GameTongue(int gameId, String gameTitle, String gameProgression, String gameCaption, int percentageBackground, String urlGameIcon) {
             this.gameId = gameId;
             this.gameTitle = gameTitle;
             this.gameProgression = gameProgression;
             this.gameCaption = gameCaption;
             this.percentageBackground = percentageBackground;
+            this.urlGameIcon = urlGameIcon;
         }
 
         public int getGameId() {
@@ -213,7 +217,8 @@ public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue
                         ownedGame.getGame().getGameName(),
                         gameCaption,
                         gameProgression,
-                        progressionPercentage
+                        progressionPercentage,
+                        ownedGame.getGame().getGameIcon().toString()
                 );
                 gameTongues.add(currentGameTongue);
             }

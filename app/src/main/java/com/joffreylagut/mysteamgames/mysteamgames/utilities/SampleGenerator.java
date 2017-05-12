@@ -160,7 +160,7 @@ public class SampleGenerator {
      * @param context Environment variables.
      * @return a list of GameTongue.
      */
-    public static List<GameTongueAdapter.GameTongue> generateListGameTongue(Context context) {
+    static List<GameTongueAdapter.GameTongue> generateListGameTongue(Context context) {
         List<GameTongueAdapter.GameTongue> gameTongues = new ArrayList<>();
 
         gameTongues.add(new GameTongueAdapter.GameTongue(
@@ -168,21 +168,24 @@ public class SampleGenerator {
                 context.getResources().getString(R.string.game_title_example_1),
                 context.getResources().getString(R.string.game_goals_progression_hours_1),
                 context.getResources().getString(R.string.game_goals_progression_percent_1),
-                89
+                89,
+                "http://media.steampowered.com/steamcommunity/public/images/apps/13210/de312a41b8a0b8fd6e1f0490ab0b44416c53cc61.jpg"
         ));
         gameTongues.add(new GameTongueAdapter.GameTongue(
                 1,
                 context.getResources().getString(R.string.game_title_example_2),
                 context.getResources().getString(R.string.game_goals_progression_hours_2),
                 context.getResources().getString(R.string.game_goals_progression_percent_2),
-                25
+                25,
+                "http://media.steampowered.com/steamcommunity/public/images/apps/13210/de312a41b8a0b8fd6e1f0490ab0b44416c53cc61.jpg"
         ));
         gameTongues.add(new GameTongueAdapter.GameTongue(
                 1,
                 context.getResources().getString(R.string.game_title_example_3),
                 context.getResources().getString(R.string.game_goals_progression_hours_3),
                 context.getResources().getString(R.string.game_goals_progression_percent_3),
-                58
+                58,
+                "http://media.steampowered.com/steamcommunity/public/images/apps/13210/de312a41b8a0b8fd6e1f0490ab0b44416c53cc61.jpg"
         ));
 
         return gameTongues;
@@ -194,7 +197,7 @@ public class SampleGenerator {
      * @param context Environment variables.
      * @return a list of GameTongue.
      */
-    public static List<GameTongueAdapter.GameTongue> generateListMostProfitableGameTongue(Context context) {
+    static List<GameTongueAdapter.GameTongue> generateListMostProfitableGameTongue(Context context) {
         List<GameTongueAdapter.GameTongue> gameTongues = new ArrayList<>();
 
         gameTongues.add(new GameTongueAdapter.GameTongue(
@@ -202,21 +205,24 @@ public class SampleGenerator {
                 context.getResources().getString(R.string.game_title_example_1),
                 context.getResources().getString(R.string.game_hours_played_1),
                 context.getResources().getString(R.string.game_price_per_hour_1),
-                100
+                100,
+                "http://media.steampowered.com/steamcommunity/public/images/apps/13210/de312a41b8a0b8fd6e1f0490ab0b44416c53cc61.jpg"
         ));
         gameTongues.add(new GameTongueAdapter.GameTongue(
                 1,
                 context.getResources().getString(R.string.game_title_example_2),
                 context.getResources().getString(R.string.game_hours_played_2),
                 context.getResources().getString(R.string.game_price_per_hour_2),
-                100
+                100,
+                "http://media.steampowered.com/steamcommunity/public/images/apps/13210/de312a41b8a0b8fd6e1f0490ab0b44416c53cc61.jpg"
         ));
         gameTongues.add(new GameTongueAdapter.GameTongue(
                 1,
                 context.getResources().getString(R.string.game_title_example_3),
                 context.getResources().getString(R.string.game_hours_played_2),
                 context.getResources().getString(R.string.game_price_per_hour_2),
-                100
+                100,
+                "http://media.steampowered.com/steamcommunity/public/images/apps/13210/de312a41b8a0b8fd6e1f0490ab0b44416c53cc61.jpg"
         ));
 
         return gameTongues;
@@ -232,7 +238,7 @@ public class SampleGenerator {
         game.setSteamID(11111111111111L);
         URL url = null;
         try {
-            url = new URL("https://www.google.fr");
+            url = new URL("http://media.steampowered.com/steamcommunity/public/images/apps/13210/de312a41b8a0b8fd6e1f0490ab0b44416c53cc61.jpg");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -305,8 +311,8 @@ public class SampleGenerator {
     /**
      * Generate a goal.
      *
-     * @param profitableThreshold
-     * @return
+     * @param profitableThreshold threshold corresponding at thet price per hour that define if a game is profitable or not.
+     * @return a Goal object.
      */
     public static Goal generateGoal(Double profitableThreshold) {
         OwnedGame ownedGame = generateOwnedGame(1);

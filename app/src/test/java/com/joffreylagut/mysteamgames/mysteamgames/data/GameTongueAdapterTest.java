@@ -26,6 +26,8 @@ public class GameTongueAdapterTest {
 
         double PROFITABLE_THRESHOLD = 1.00;
 
+        String expectedUrlGameIcon = "http://media.steampowered.com/steamcommunity/public/images/apps/13210/de312a41b8a0b8fd6e1f0490ab0b44416c53cc61.jpg";
+
         OwnedGame ownedGame = generateOwnedGame(1);
         ownedGame.setTimePlayedForever(600);
         ownedGame.setGamePrice(11.00);
@@ -62,32 +64,31 @@ public class GameTongueAdapterTest {
         GameTongueAdapter.GameTongue gameTongue2 = convertedList.get(1);
         GameTongueAdapter.GameTongue gameTongue3 = convertedList.get(2);
 
-        // Goal 1
-        assertTrue(gameTongue1.gameTitle.equals(goal1.getGame().getGameName()));
-        assertTrue(gameTongue1.gameId == goal1.getGame().getGameID());
-        assertTrue(gameTongue1.gameProgression.equals(expectedProgression1));
-        assertTrue(gameTongue1.gameCaption.equals(expectedCaption1));
-        assertTrue(gameTongue1.percentageBackground == goal1.getCompletionPercentage());
+        testEquality(gameTongue1, goal1, expectedProgression1, expectedCaption1, expectedUrlGameIcon, 0);
+        testEquality(gameTongue2, goal2, expectedProgression2, expectedCaption2, expectedUrlGameIcon, 0);
+        testEquality(gameTongue3, goal3, expectedProgression3, expectedCaption3, expectedUrlGameIcon, 0);
 
-        // Goal 2
-        assertTrue(gameTongue2.gameTitle.equals(goal2.getGame().getGameName()));
-        assertTrue(gameTongue2.gameId == goal2.getGame().getGameID());
-        assertTrue(gameTongue2.gameProgression.equals(expectedProgression2));
-        assertTrue(gameTongue2.gameCaption.equals(expectedCaption2));
-        assertTrue(gameTongue2.percentageBackground == goal2.getCompletionPercentage());
+    }
 
-        // Goal 3
-        assertTrue(gameTongue3.gameTitle.equals(goal3.getGame().getGameName()));
-        assertTrue(gameTongue3.gameId == goal3.getGame().getGameID());
-        assertTrue(gameTongue3.gameProgression.equals(expectedProgression3));
-        assertTrue(gameTongue3.gameCaption.equals(expectedCaption3));
-        assertTrue(gameTongue3.percentageBackground == goal3.getCompletionPercentage());
+    private void testEquality(GameTongueAdapter.GameTongue gameTongue, OwnedGame ownedGame, String expectedProgression, String expectedCaption, String expectedUrlGameIcon, int expectedPercentageBackground) {
+        assertTrue(gameTongue.gameTitle.equals(ownedGame.getGame().getGameName()));
+        assertTrue(gameTongue.gameId == ownedGame.getGame().getGameID());
+        assertTrue(gameTongue.gameProgression.equals(expectedProgression));
+        assertTrue(gameTongue.gameCaption.equals(expectedCaption));
+        assertTrue(gameTongue.urlGameIcon.equals(expectedUrlGameIcon));
+        if (ownedGame.getClass() == Goal.class) {
+            assertTrue(gameTongue.percentageBackground == ((Goal) ownedGame).getCompletionPercentage());
+        } else {
+            assertTrue(gameTongue.percentageBackground == expectedPercentageBackground);
+        }
+
     }
 
     @Test
     public void convertOwnedGameListToGameTongueList_goalsOwnedGamesClass() {
 
         double PROFITABLE_THRESHOLD = 1.00;
+        String expectedUrlGameIcon = "http://media.steampowered.com/steamcommunity/public/images/apps/13210/de312a41b8a0b8fd6e1f0490ab0b44416c53cc61.jpg";
 
         List<OwnedGame> ownedGameListToConvert = new ArrayList<>();
 
@@ -127,27 +128,9 @@ public class GameTongueAdapterTest {
         GameTongueAdapter.GameTongue gameTongue2 = convertedList.get(1);
         GameTongueAdapter.GameTongue gameTongue3 = convertedList.get(2);
 
-        // Goal 1
-        assertTrue(gameTongue1.gameTitle.equals(ownedGame1.getGame().getGameName()));
-        assertTrue(gameTongue1.gameId == ownedGame1.getGame().getGameID());
-        assertTrue(gameTongue1.gameProgression.equals(expectedProgression1));
-        assertTrue(gameTongue1.gameCaption.equals(expectedCaption1));
-        assertTrue(gameTongue1.percentageBackground == expectedPercentageBackground1);
-
-        // Goal 2
-        assertTrue(gameTongue2.gameTitle.equals(ownedGame2.getGame().getGameName()));
-        assertTrue(gameTongue2.gameId == ownedGame2.getGame().getGameID());
-        assertTrue(gameTongue2.gameProgression.equals(expectedProgression2));
-        assertTrue(gameTongue2.gameCaption.equals(expectedCaption2));
-        assertTrue(gameTongue2.percentageBackground == expectedPercentageBackground2);
-
-        // Goal 3
-        assertTrue(gameTongue3.gameTitle.equals(ownedGame3.getGame().getGameName()));
-        assertTrue(gameTongue3.gameId == ownedGame3.getGame().getGameID());
-        assertTrue(gameTongue3.gameProgression.equals(expectedProgression3));
-        assertTrue(gameTongue3.gameCaption.equals(expectedCaption3));
-        assertTrue(gameTongue3.percentageBackground == expectedPercentageBackground3);
-
+        testEquality(gameTongue1, ownedGame1, expectedProgression1, expectedCaption1, expectedUrlGameIcon, expectedPercentageBackground1);
+        testEquality(gameTongue2, ownedGame2, expectedProgression2, expectedCaption2, expectedUrlGameIcon, expectedPercentageBackground2);
+        testEquality(gameTongue3, ownedGame3, expectedProgression3, expectedCaption3, expectedUrlGameIcon, expectedPercentageBackground3);
     }
 
     @Test
@@ -155,6 +138,7 @@ public class GameTongueAdapterTest {
 
         double PROFITABLE_THRESHOLD = 1.00;
         int expectedPercentageBackground = 100;
+        String expectedUrlGameIcon = "http://media.steampowered.com/steamcommunity/public/images/apps/13210/de312a41b8a0b8fd6e1f0490ab0b44416c53cc61.jpg";
 
         List<OwnedGame> ownedGameListToConvert = new ArrayList<>();
 
@@ -191,26 +175,9 @@ public class GameTongueAdapterTest {
         GameTongueAdapter.GameTongue gameTongue2 = convertedList.get(1);
         GameTongueAdapter.GameTongue gameTongue3 = convertedList.get(2);
 
-        // Goal 1
-        assertTrue(gameTongue1.gameTitle.equals(ownedGame1.getGame().getGameName()));
-        assertTrue(gameTongue1.gameId == ownedGame1.getGame().getGameID());
-        assertTrue(gameTongue1.gameProgression.equals(expectedProgression1));
-        assertTrue(gameTongue1.gameCaption.equals(expectedCaption1));
-        assertTrue(gameTongue1.percentageBackground == expectedPercentageBackground);
-
-        // Goal 2
-        assertTrue(gameTongue2.gameTitle.equals(ownedGame2.getGame().getGameName()));
-        assertTrue(gameTongue2.gameId == ownedGame2.getGame().getGameID());
-        assertTrue(gameTongue2.gameProgression.equals(expectedProgression2));
-        assertTrue(gameTongue2.gameCaption.equals(expectedCaption2));
-        assertTrue(gameTongue2.percentageBackground == expectedPercentageBackground);
-
-        // Goal 3
-        assertTrue(gameTongue3.gameTitle.equals(ownedGame3.getGame().getGameName()));
-        assertTrue(gameTongue3.gameId == ownedGame3.getGame().getGameID());
-        assertTrue(gameTongue3.gameProgression.equals(expectedProgression3));
-        assertTrue(gameTongue3.gameCaption.equals(expectedCaption3));
-        assertTrue(gameTongue3.percentageBackground == expectedPercentageBackground);
+        testEquality(gameTongue1, ownedGame1, expectedProgression1, expectedCaption1, expectedUrlGameIcon, expectedPercentageBackground);
+        testEquality(gameTongue2, ownedGame2, expectedProgression2, expectedCaption2, expectedUrlGameIcon, expectedPercentageBackground);
+        testEquality(gameTongue3, ownedGame3, expectedProgression3, expectedCaption3, expectedUrlGameIcon, expectedPercentageBackground);
 
     }
 
@@ -220,6 +187,7 @@ public class GameTongueAdapterTest {
         double PROFITABLE_THRESHOLD = 1.00;
         int expectedPercentageBackground = 100;
         String expectedCaption = "";
+        String expectedUrlGameIcon = "http://media.steampowered.com/steamcommunity/public/images/apps/13210/de312a41b8a0b8fd6e1f0490ab0b44416c53cc61.jpg";
 
         List<OwnedGame> ownedGameListToConvert = new ArrayList<>();
 
@@ -253,26 +221,9 @@ public class GameTongueAdapterTest {
         GameTongueAdapter.GameTongue gameTongue2 = convertedList.get(1);
         GameTongueAdapter.GameTongue gameTongue3 = convertedList.get(2);
 
-        // Goal 1
-        assertTrue(gameTongue1.gameTitle.equals(ownedGame1.getGame().getGameName()));
-        assertTrue(gameTongue1.gameId == ownedGame1.getGame().getGameID());
-        assertTrue(gameTongue1.gameProgression.equals(expectedProgression1));
-        assertTrue(gameTongue1.gameCaption.equals(expectedCaption));
-        assertTrue(gameTongue1.percentageBackground == expectedPercentageBackground);
-
-        // Goal 2
-        assertTrue(gameTongue2.gameTitle.equals(ownedGame2.getGame().getGameName()));
-        assertTrue(gameTongue2.gameId == ownedGame2.getGame().getGameID());
-        assertTrue(gameTongue2.gameProgression.equals(expectedProgression2));
-        assertTrue(gameTongue2.gameCaption.equals(expectedCaption));
-        assertTrue(gameTongue2.percentageBackground == expectedPercentageBackground);
-
-        // Goal 3
-        assertTrue(gameTongue3.gameTitle.equals(ownedGame3.getGame().getGameName()));
-        assertTrue(gameTongue3.gameId == ownedGame3.getGame().getGameID());
-        assertTrue(gameTongue3.gameProgression.equals(expectedProgression3));
-        assertTrue(gameTongue3.gameCaption.equals(expectedCaption));
-        assertTrue(gameTongue3.percentageBackground == expectedPercentageBackground);
+        testEquality(gameTongue1, ownedGame1, expectedProgression1, expectedCaption, expectedUrlGameIcon, expectedPercentageBackground);
+        testEquality(gameTongue2, ownedGame2, expectedProgression2, expectedCaption, expectedUrlGameIcon, expectedPercentageBackground);
+        testEquality(gameTongue3, ownedGame3, expectedProgression3, expectedCaption, expectedUrlGameIcon, expectedPercentageBackground);
 
     }
 
@@ -283,6 +234,7 @@ public class GameTongueAdapterTest {
         int expectedPercentageBackground = 100;
         String expectedCaption = "";
         String expectedProgression = "0h";
+        String expectedUrlGameIcon = "http://media.steampowered.com/steamcommunity/public/images/apps/13210/de312a41b8a0b8fd6e1f0490ab0b44416c53cc61.jpg";
 
         List<OwnedGame> ownedGameListToConvert = new ArrayList<>();
 
@@ -313,26 +265,9 @@ public class GameTongueAdapterTest {
         GameTongueAdapter.GameTongue gameTongue2 = convertedList.get(1);
         GameTongueAdapter.GameTongue gameTongue3 = convertedList.get(2);
 
-        // Goal 1
-        assertTrue(gameTongue1.gameTitle.equals(ownedGame1.getGame().getGameName()));
-        assertTrue(gameTongue1.gameId == ownedGame1.getGame().getGameID());
-        assertTrue(gameTongue1.gameProgression.equals(expectedProgression));
-        assertTrue(gameTongue1.gameCaption.equals(expectedCaption));
-        assertTrue(gameTongue1.percentageBackground == expectedPercentageBackground);
-
-        // Goal 2
-        assertTrue(gameTongue2.gameTitle.equals(ownedGame2.getGame().getGameName()));
-        assertTrue(gameTongue2.gameId == ownedGame2.getGame().getGameID());
-        assertTrue(gameTongue2.gameProgression.equals(expectedProgression));
-        assertTrue(gameTongue2.gameCaption.equals(expectedCaption));
-        assertTrue(gameTongue2.percentageBackground == expectedPercentageBackground);
-
-        // Goal 3
-        assertTrue(gameTongue3.gameTitle.equals(ownedGame3.getGame().getGameName()));
-        assertTrue(gameTongue3.gameId == ownedGame3.getGame().getGameID());
-        assertTrue(gameTongue3.gameProgression.equals(expectedProgression));
-        assertTrue(gameTongue3.gameCaption.equals(expectedCaption));
-        assertTrue(gameTongue3.percentageBackground == expectedPercentageBackground);
+        testEquality(gameTongue1, ownedGame1, expectedProgression, expectedCaption, expectedUrlGameIcon, expectedPercentageBackground);
+        testEquality(gameTongue2, ownedGame2, expectedProgression, expectedCaption, expectedUrlGameIcon, expectedPercentageBackground);
+        testEquality(gameTongue3, ownedGame3, expectedProgression, expectedCaption, expectedUrlGameIcon, expectedPercentageBackground);
 
     }
 
@@ -342,6 +277,7 @@ public class GameTongueAdapterTest {
         double PROFITABLE_THRESHOLD = 1.00;
         int expectedPercentageBackground = 0;
         String expectedCaption = "0%";
+        String expectedUrlGameIcon = "http://media.steampowered.com/steamcommunity/public/images/apps/13210/de312a41b8a0b8fd6e1f0490ab0b44416c53cc61.jpg";
 
         List<OwnedGame> ownedGameListToConvert = new ArrayList<>();
 
@@ -375,26 +311,10 @@ public class GameTongueAdapterTest {
         GameTongueAdapter.GameTongue gameTongue2 = convertedList.get(1);
         GameTongueAdapter.GameTongue gameTongue3 = convertedList.get(2);
 
-        // Goal 1
-        assertTrue(gameTongue1.gameTitle.equals(ownedGame1.getGame().getGameName()));
-        assertTrue(gameTongue1.gameId == ownedGame1.getGame().getGameID());
-        assertTrue(gameTongue1.gameProgression.equals(expectedProgression1));
-        assertTrue(gameTongue1.gameCaption.equals(expectedCaption));
-        assertTrue(gameTongue1.percentageBackground == expectedPercentageBackground);
 
-        // Goal 2
-        assertTrue(gameTongue2.gameTitle.equals(ownedGame2.getGame().getGameName()));
-        assertTrue(gameTongue2.gameId == ownedGame2.getGame().getGameID());
-        assertTrue(gameTongue2.gameProgression.equals(expectedProgression2));
-        assertTrue(gameTongue2.gameCaption.equals(expectedCaption));
-        assertTrue(gameTongue2.percentageBackground == expectedPercentageBackground);
-
-        // Goal 3
-        assertTrue(gameTongue3.gameTitle.equals(ownedGame3.getGame().getGameName()));
-        assertTrue(gameTongue3.gameId == ownedGame3.getGame().getGameID());
-        assertTrue(gameTongue3.gameProgression.equals(expectedProgression3));
-        assertTrue(gameTongue3.gameCaption.equals(expectedCaption));
-        assertTrue(gameTongue3.percentageBackground == expectedPercentageBackground);
+        testEquality(gameTongue1, ownedGame1, expectedProgression1, expectedCaption, expectedUrlGameIcon, expectedPercentageBackground);
+        testEquality(gameTongue2, ownedGame2, expectedProgression2, expectedCaption, expectedUrlGameIcon, expectedPercentageBackground);
+        testEquality(gameTongue3, ownedGame3, expectedProgression3, expectedCaption, expectedUrlGameIcon, expectedPercentageBackground);
 
     }
 

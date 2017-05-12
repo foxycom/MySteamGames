@@ -44,6 +44,7 @@
     <dimen name="home_game_rectangle_progression_percent_text_size">18sp</dimen>
     <dimen name="home_page_list_view_margin_top">8dp</dimen>
     <dimen name="home_page_list_view_divider_height">@dimen/home_page_list_view_margin_top</dimen>
+    <dimen name="home_game_icon">40dp</dimen>
 
     <!-- Games fragment -->
     <dimen name="game_fragment_horizontal_padding">8dp</dimen>

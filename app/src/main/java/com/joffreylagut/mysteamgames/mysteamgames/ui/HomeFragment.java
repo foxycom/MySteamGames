@@ -207,7 +207,8 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
                     ownedGame.getGame().getGameName(),
                     SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever()),
                     ownedGame.getPricePerHour() + mCurrency + "/h",
-                    100
+                    100,
+                    ownedGame.getGame().getGameIcon().toString()
             );
             currentGameTongue.setGameRank(rank);
             gameTongues.add(currentGameTongue);
@@ -240,7 +241,8 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
                     ownedGame.getGame().getGameName(),
                     pricePerHour,
                     SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever()),
-                    100
+                    100,
+                    ownedGame.getGame().getGameIcon().toString()
             );
             currentGameTongue.setGameRank(rank);
             gameTongues.add(currentGameTongue);
