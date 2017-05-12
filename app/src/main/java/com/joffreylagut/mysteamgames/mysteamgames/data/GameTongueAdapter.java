@@ -13,19 +13,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.joffreylagut.mysteamgames.mysteamgames.R;
+import com.joffreylagut.mysteamgames.mysteamgames.models.Goal;
+import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.joffreylagut.mysteamgames.mysteamgames.R.id.guideline;
 
 /**
  * GameTongueAdapter.java
  * Purpose: Adapter used to specify the content of the ListView showed on the Home fragment.
  *
  * @author Joffrey LAGUT
- * @version 1.0 2017-05-03
+ * @version 1.1 2017-05-12
  */
 
 public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue> {
-
 
     public GameTongueAdapter(Context context, List<GameTongue> gameTongues) {
         super(context, 0, gameTongues);
@@ -47,10 +53,10 @@ public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue
             // No tag are set in the view, we have to set it now.
             gameTongueViewHolder = new GameTongueViewHolder();
             gameTongueViewHolder.gameTitle = (TextView) convertView.findViewById(R.id.game_title);
-            gameTongueViewHolder.gameProgression = (TextView) convertView.findViewById(R.id.game_progression_hours);
-            gameTongueViewHolder.gameCaption = (TextView) convertView.findViewById(R.id.game_progression_percents);
+            gameTongueViewHolder.gameProgression = (TextView) convertView.findViewById(R.id.game_progression);
+            gameTongueViewHolder.gameCaption = (TextView) convertView.findViewById(R.id.game_caption);
             gameTongueViewHolder.gameRank = (ImageView) convertView.findViewById(R.id.game_rank);
-            gameTongueViewHolder.background = convertView.findViewById(R.id.game_layout_background);
+            gameTongueViewHolder.guideline = (Guideline) convertView.findViewById(guideline);
             convertView.setTag(gameTongueViewHolder);
         }
 
@@ -81,17 +87,12 @@ public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue
             }
 
             // Now we change the width of the background view depending of the completion %
-            //ViewGroup.LayoutParams backgroundViewLayoutParams = gameTongueViewHolder.background.getLayoutParams();
-            Guideline guideline = (Guideline) convertView.findViewById(R.id.guideline);
-            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) guideline.getLayoutParams();
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) gameTongueViewHolder.guideline.getLayoutParams();
             layoutParams.guidePercent = (float) gameTongueToDisplay.percentageBackground / 100;
-            guideline.setLayoutParams(layoutParams);
+            gameTongueViewHolder.guideline.setLayoutParams(layoutParams);
         }
-
-
         // And return the view
         return convertView;
-
     }
 
     /**
@@ -102,19 +103,19 @@ public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue
         TextView gameProgression;
         TextView gameCaption;
         ImageView gameRank;
-        View background;
+        Guideline guideline;
     }
 
     /**
      * Class that define the structure of the data that we wants to use with our adapter.
      */
     public static class GameTongue {
-        int gameId;
-        String gameTitle;
-        String gameProgression;
-        String gameCaption;
+        final int gameId;
+        final String gameTitle;
+        final String gameProgression;
+        final String gameCaption;
         int gameRank;
-        int percentageBackground;
+        final int percentageBackground;
 
         public GameTongue(int gameId, String gameTitle, String gameProgression, String gameCaption, int percentageBackground) {
             this.gameId = gameId;
@@ -131,21 +132,92 @@ public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue
         public void setGameRank(int gameRank) {
             this.gameRank = gameRank;
         }
+    }
 
-        public String getGameProgression() {
-            return gameProgression;
-        }
+    /**
+     * Convert the list of OwnedGames in parameter into a a list of GameTongue objects.
+     *
+     * @param ownedGames List of OwnedGames to convert.
+     * @return a list of GameTongue containing the OwnedGames that were in parameter.
+     */
+    public static List<GameTongue> convertOwnedGameListToGameTongueList(List<OwnedGame> ownedGames, String currency, Double profitableThreshold) {
 
-        public void setGameProgression(String gameProgression) {
-            this.gameProgression = gameProgression;
-        }
+        List<GameTongue> gameTongues = new ArrayList<>();
 
-        public String getGameCaption() {
-            return gameCaption;
-        }
+        if (ownedGames != null) {
+            for (OwnedGame ownedGame : ownedGames) {
 
-        public void setGameCaption(String gameCaption) {
-            this.gameCaption = gameCaption;
+                // We could have 5 type of GameTongue:
+                // 1-Games Never played without price
+                // 2-Games Never played with price                      => Goal
+                // 3-Game played without price
+                // 4-Game played with price per hour over threshold     => Goal
+                // 5-Game played with price per hour under threshold    => Goal
+
+
+                // By default, the caption and the progression are empty
+                String gameCaption;
+                String gameProgression = "";
+
+                Double nbHoursToReachThreshold;
+                Double nbHoursPlayed = (double) ownedGame.getTimePlayedForever() / 60;
+
+                int progressionPercentage = 100;
+
+                // Types 1 & 2
+                if (ownedGame.getTimePlayedForever() == 0) {
+                    if (ownedGame.getGamePrice() <= 0) {
+                        // Type 1
+                        gameCaption = "0h";
+                    } else {
+                        // Type 2
+                        nbHoursToReachThreshold = ownedGame.getGamePrice() / profitableThreshold;
+                        gameCaption = nbHoursPlayed.intValue() + " / " + nbHoursToReachThreshold.intValue() + "h";
+                        gameProgression = "0%";
+                        progressionPercentage = 0;
+                    }
+                } else {
+                    if (ownedGame.getGamePrice() <= 0) {
+                        // Type 3
+                        gameCaption = SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever());
+                    } else {
+                        if (ownedGame.getPricePerHour() > profitableThreshold) {
+                            // Type 4
+                            // When we are fetching goals, it's possible that the ownedGame is, in fact, a Goal object.
+                            // If it's the case, we already have all the information to display and don"t have to do extra calculation.
+                            if (ownedGame.getClass() == Goal.class) {
+                                progressionPercentage = ((Goal) ownedGame).getCompletionPercentage();
+                                gameCaption = nbHoursPlayed.intValue() + " / " + ((Double) ((Goal) ownedGame).getNbHoursToComplete()).intValue() + "h";
+                            } else {
+                                nbHoursToReachThreshold = ownedGame.getGamePrice() / profitableThreshold;
+                                gameCaption = nbHoursPlayed.intValue() + " / " + nbHoursToReachThreshold.intValue() + "h";
+                                Double completion = (nbHoursPlayed / nbHoursToReachThreshold) * 100;
+                                progressionPercentage = completion.intValue();
+                            }
+                            gameProgression = String.valueOf(progressionPercentage) + "%";
+
+
+                        } else {
+                            // Type 5
+                            gameCaption = SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever());
+
+                            DecimalFormat df = new DecimalFormat("#.##");
+                            gameProgression = df.format(ownedGame.getPricePerHour()) + currency + "/h";
+
+                        }
+                    }
+                }
+
+                GameTongue currentGameTongue = new GameTongue(
+                        ownedGame.getGame().getGameID(),
+                        ownedGame.getGame().getGameName(),
+                        gameCaption,
+                        gameProgression,
+                        progressionPercentage
+                );
+                gameTongues.add(currentGameTongue);
+            }
         }
+        return gameTongues;
     }
 }

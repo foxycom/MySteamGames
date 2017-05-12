@@ -11,7 +11,6 @@ import com.joffreylagut.mysteamgames.mysteamgames.models.Game;
 import com.joffreylagut.mysteamgames.mysteamgames.models.GameBundle;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.models.User;
-import com.joffreylagut.mysteamgames.mysteamgames.utilities.SampleGenerator;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,6 +22,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.joffreylagut.mysteamgames.mysteamgames.utilities.SampleGenerator.generateGameBundleWithoutId;
+import static com.joffreylagut.mysteamgames.mysteamgames.utilities.SampleGenerator.generateGameWithoutId;
+import static com.joffreylagut.mysteamgames.mysteamgames.utilities.SampleGenerator.generateUserWithoutIdAndWithoutGames;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
@@ -58,7 +60,7 @@ public class UserDbHelperInstrumentedTests {
     @Test
     public void addBundleAndGetBundleById() {
 
-        GameBundle gameBundle = createGameBundleWithoutId();
+        GameBundle gameBundle = generateGameBundleWithoutId();
         gameBundle = mUserDbHelper.addNewGameBundle(mDb, gameBundle);
 
         assertTrue(gameBundle.getId() != 0);
@@ -74,7 +76,7 @@ public class UserDbHelperInstrumentedTests {
     @Test
     public void getAllBundles_WithBundlesInDb(){
 
-        GameBundle gameBundle = createGameBundleWithoutId();
+        GameBundle gameBundle = generateGameBundleWithoutId();
         mUserDbHelper.addNewGameBundle(mDb, gameBundle);
 
         List<GameBundle> gameBundles = mUserDbHelper.getAllGameBundles(mDb);
@@ -94,7 +96,7 @@ public class UserDbHelperInstrumentedTests {
     @Test
     public void updateBundle(){
 
-        GameBundle gameBundle = createGameBundleWithoutId();
+        GameBundle gameBundle = generateGameBundleWithoutId();
         gameBundle = mUserDbHelper.addNewGameBundle(mDb, gameBundle);
 
         assertTrue(gameBundle.getId() != 0);
@@ -115,7 +117,7 @@ public class UserDbHelperInstrumentedTests {
 
     @Test
     public void removeBundle_bundleFound(){
-        GameBundle gameBundle = createGameBundleWithoutId();
+        GameBundle gameBundle = generateGameBundleWithoutId();
 
         gameBundle = mUserDbHelper.addNewGameBundle(mDb, gameBundle);
 
@@ -125,7 +127,7 @@ public class UserDbHelperInstrumentedTests {
 
     @Test
     public void removeBundle_bundleNotFound(){
-        GameBundle gameBundle = createGameBundleWithoutId();
+        GameBundle gameBundle = generateGameBundleWithoutId();
         gameBundle.setId(-1);
 
         assertFalse(mUserDbHelper.removeGameBundle(mDb, gameBundle));
@@ -137,7 +139,7 @@ public class UserDbHelperInstrumentedTests {
 
     @Test
     public void addUserAndGetUserByIdWithoutGames(){
-        User newUser = createUserWithoutIdAndWithoutGames();
+        User newUser = generateUserWithoutIdAndWithoutGames();
         newUser = mUserDbHelper.addNewUser(mDb, newUser);
 
         assertTrue(newUser.getUserID() != 0);
@@ -150,7 +152,7 @@ public class UserDbHelperInstrumentedTests {
 
     @Test
     public void getUserByIdWithGames(){
-        User newUser = createUserWithoutIdAndWithoutGames();
+        User newUser = generateUserWithoutIdAndWithoutGames();
         newUser = mUserDbHelper.addNewUser(mDb, newUser);
         assertTrue(newUser.getUserID() != 0);
 
@@ -208,7 +210,7 @@ public class UserDbHelperInstrumentedTests {
 
     @Test
     public void addGameAndGetGameById() {
-        Game game = createGameWithoutId();
+        Game game = generateGameWithoutId();
         game = mUserDbHelper.addNewGame(mDb, game);
 
         assertTrue(game.getGameID()>0);
@@ -225,7 +227,7 @@ public class UserDbHelperInstrumentedTests {
 
     @Test
     public void getAllGames_WithGamesInDb(){
-        Game game = createGameWithoutId();
+        Game game = generateGameWithoutId();
         mUserDbHelper.addNewGame(mDb, game);
 
         List<Game> games = mUserDbHelper.getAllGames(mDb);
@@ -257,7 +259,7 @@ public class UserDbHelperInstrumentedTests {
      * @param updateBySteamId update via steamId if true, otherwise via gameId.
      */
     private void updateGame(Boolean updateBySteamId){
-        Game game = createGameWithoutId();
+        Game game = generateGameWithoutId();
         game = mUserDbHelper.addNewGame(mDb, game);
 
         assertTrue(game.getGameID() > 0);
@@ -294,7 +296,7 @@ public class UserDbHelperInstrumentedTests {
 
     @Test
     public void removeGame_gameFound(){
-        Game game = createGameWithoutId();
+        Game game = generateGameWithoutId();
         game = mUserDbHelper.addNewGame(mDb, game);
 
         assertTrue(mUserDbHelper.removeGame(mDb, game));
@@ -304,7 +306,7 @@ public class UserDbHelperInstrumentedTests {
 
     @Test
     public void removeGame_gameNotFound(){
-        Game game = createGameWithoutId();
+        Game game = generateGameWithoutId();
         game.setGameID(-1);
 
         assertTrue(mUserDbHelper.getGameById(mDb, game.getGameID()).getGameID() == 0);
@@ -361,42 +363,6 @@ public class UserDbHelperInstrumentedTests {
         // TODO
     }
 
-
-    /**
-     * Function that create a new GameBundle.
-     *
-     * @return a GameBundle without id.
-     */
-    public static GameBundle createGameBundleWithoutId(){
-        GameBundle gameBundle = new GameBundle();
-        gameBundle.setName("Test Bundle 1");
-        gameBundle.setPrice(1.00);
-
-        return gameBundle;
-    }
-
-    /**
-     * Function that create a new Game.
-     *
-     * @return a Game without id.
-     */
-    public static Game createGameWithoutId(){
-        Game game = new Game();
-        game.setSteamID(11111111111111L);
-        URL url = null;
-        try {
-            url = new URL("https://www.google.fr");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        game.setGameIcon(url);
-        game.setGameLogo(url);
-        game.setMarketplace("Steam");
-        game.setGameName("Instrumental test 1");
-
-        return game;
-    }
-
     /**
      * Function that create a new OwnedGame.
      * Include a new game inserted in db.
@@ -405,12 +371,12 @@ public class UserDbHelperInstrumentedTests {
      */
     public static OwnedGame createOwnedGameWithoutId(int userId){
 
-        Game game = createGameWithoutId();
+        Game game = generateGameWithoutId();
         UserDbHelper userDbHelper = UserDbHelper.getInstance(InstrumentationRegistry.getTargetContext());
         SQLiteDatabase mDb = userDbHelper.getWritableDatabase();
         game = userDbHelper.addNewGame(mDb, game);
 
-        GameBundle gameBundle = createGameBundleWithoutId();
+        GameBundle gameBundle = generateGameBundleWithoutId();
         gameBundle = userDbHelper.addNewGameBundle(mDb, gameBundle);
 
         OwnedGame ownedGame = new OwnedGame(userId, game);
@@ -422,25 +388,6 @@ public class UserDbHelperInstrumentedTests {
 
         return ownedGame;
 
-    }
-
-    /**
-     * Return a user object withoutGames
-     * @return a user without games.
-     */
-    public static User createUserWithoutIdAndWithoutGames(){
-        URL url = null;
-        try {
-            url = new URL("https://www.google.fr");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        User user = new User();
-        user.setSteamID(SampleGenerator.DEFAULT_STEAM_ID);
-        user.setAccountName("Slayde");
-        user.setAccountPicture(url);
-
-        return user;
     }
 
     /**

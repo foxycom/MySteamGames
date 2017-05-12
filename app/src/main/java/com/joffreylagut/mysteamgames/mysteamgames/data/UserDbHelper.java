@@ -25,7 +25,7 @@ import static android.content.ContentValues.TAG;
  * Purpose: This class manage all the interactions with the database.
  *
  * @author Joffrey LAGUT
- * @version 1.5 2017-04-02
+ * @version 1.6 2017-05-12
  */
 
 public class UserDbHelper extends SQLiteOpenHelper {
@@ -33,7 +33,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
     // Version of the database.
     // This var must be incremented every time we change the database schema.
     private static final int DATABASE_VERSION = 6;
-    static String TEST_DATABASE_NAME = "testMyGameTimePrice.db";
+    static final String TEST_DATABASE_NAME = "testMyGameTimePrice.db";
     // Name of the database.
     private static String DATABASE_NAME = "myGameTimePrice.db";
     // Instance of the class. We wants to have a singleton to avoid conflicts
@@ -427,7 +427,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
         }
     }
 
-    /********************************************************************************************
+    /* *******************************************************************************************
      * GAME TABLE
      ********************************************************************************************/
 
@@ -735,7 +735,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
         }
     }
 
-    /********************************************************************************************
+    /* ******************************************************************************************
      * OWNEDGAMES TABLE
      ********************************************************************************************/
 
@@ -845,7 +845,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
     public List<OwnedGame> getAllOwnedGames(SQLiteDatabase db) {
 
         // List that we will return.
-        List<OwnedGame> ownedGames = new ArrayList<OwnedGame>();
+        List<OwnedGame> ownedGames = new ArrayList<>();
 
         // We have to do a query in DB to have all the rows.
         Cursor cursorOwnedGames = selectOwnedGame(db, null, null, null, null, null, null, null);
@@ -890,6 +890,37 @@ public class UserDbHelper extends SQLiteOpenHelper {
         } else {
             // There is no bundle in database. We log debug message.
             Log.d(TAG, "getUserMostPlayedOwnedGames: There is no Bundle in DB.");
+        }
+        cursorOwnedGames.close();
+
+        return ownedGames;
+    }
+
+    /**
+     * Return the OwnedGames of the User with a price > 0.
+     *
+     * @param db                    Database to query.
+     * @param userId                User that we want to find.
+     * @return List of OwnedGames.
+     */
+    public List<OwnedGame> getUserOwnedGamesWithPrice(SQLiteDatabase db, int userId) {
+        // List that we will return.
+        List<OwnedGame> ownedGames = new ArrayList<>();
+
+        // We prepare the request
+        String where = UserContract.OwnedGamesEntry.COLUMN_USER_ID + " =? AND " + UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE + " >?";
+        String[] whereArgs = new String[]{String.valueOf(userId), "0"};
+
+        // We have to do a query in DB to have all the rows.
+        Cursor cursorOwnedGames = selectOwnedGame(db, null, where, whereArgs,
+                null, null, null, null);
+
+        // We have to check if there is results.
+        if (cursorOwnedGames.getCount() > 0) {
+            ownedGames = createOwnedGamesFromCursor(cursorOwnedGames, db);
+        } else {
+            // There is no bundle in database. We log debug message.
+            Log.d(TAG, "getUserOwnedGamesWithPrice: There is no Bundle in DB.");
         }
         cursorOwnedGames.close();
 
@@ -1204,6 +1235,18 @@ public class UserDbHelper extends SQLiteOpenHelper {
                         gameBundle
                         );
 
+                // We calculate the price per hour only if there is a price and if the user have played the game
+                if (currentOwnedGame.getGamePrice() > 0) {
+                    double nbHoursPlayed = currentOwnedGame.getTimePlayedForever() / 60;
+                    Double pricePerHour = currentOwnedGame.getGamePrice() / nbHoursPlayed;
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    if (!pricePerHour.isInfinite()) {
+                        pricePerHour = Double.parseDouble(df.format(pricePerHour));
+                        currentOwnedGame.setPricePerHour(pricePerHour);
+                    } else {
+                        currentOwnedGame.setPricePerHour(Double.POSITIVE_INFINITY);
+                    }
+                }
 
                 // We add the OwnedGame in the list
                 OwnedGames.add(currentOwnedGame);
@@ -1221,7 +1264,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
         }
     }
 
-    /********************************************************************************************
+    /* *******************************************************************************************
      * BUNDLE TABLE
      ********************************************************************************************/
 

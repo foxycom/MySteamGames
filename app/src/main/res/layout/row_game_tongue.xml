@@ -47,7 +47,7 @@
         tools:text="@string/game_title_example_1" />
 
     <TextView
-        android:id="@+id/game_progression_hours"
+        android:id="@+id/game_progression"
         style="@style/HomeGameProgressionText"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/game_title"
@@ -64,7 +64,7 @@
         tools:ignore="ContentDescription" />
 
     <TextView
-        android:id="@+id/game_progression_percents"
+        android:id="@+id/game_caption"
         style="@style/HomeGameProgressionPercent"
         app:layout_constraintBottom_toBottomOf="@+id/square_game"
         app:layout_constraintRight_toLeftOf="@id/game_rank"

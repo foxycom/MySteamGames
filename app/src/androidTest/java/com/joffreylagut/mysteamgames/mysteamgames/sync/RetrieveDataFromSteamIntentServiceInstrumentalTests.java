@@ -8,7 +8,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.facebook.stetho.Stetho;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
-import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelperInstrumentedTests;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.models.User;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SampleGenerator;
@@ -19,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static com.joffreylagut.mysteamgames.mysteamgames.utilities.SampleGenerator.generateUserWithoutIdAndWithoutGames;
 import static junit.framework.Assert.assertTrue;
 
 /**
@@ -79,7 +79,7 @@ public class RetrieveDataFromSteamIntentServiceInstrumentalTests {
 
         // We create a user in DB to assign the games that we will create
         mUserDbHelper.resetDb(mDb);
-        User user = UserDbHelperInstrumentedTests.createUserWithoutIdAndWithoutGames();
+        User user = generateUserWithoutIdAndWithoutGames();
         user = mUserDbHelper.addNewUser(mDb, user);
 
         // USE CASE 1 Add the games in db

@@ -4,7 +4,14 @@ import android.content.Context;
 
 import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.data.GameTongueAdapter;
+import com.joffreylagut.mysteamgames.mysteamgames.models.Game;
+import com.joffreylagut.mysteamgames.mysteamgames.models.GameBundle;
+import com.joffreylagut.mysteamgames.mysteamgames.models.Goal;
+import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
+import com.joffreylagut.mysteamgames.mysteamgames.models.User;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -213,5 +220,96 @@ public class SampleGenerator {
         ));
 
         return gameTongues;
+    }
+
+    /**
+     * Function that create a new Game.
+     *
+     * @return a Game without id.
+     */
+    public static Game generateGameWithoutId() {
+        Game game = new Game();
+        game.setSteamID(11111111111111L);
+        URL url = null;
+        try {
+            url = new URL("https://www.google.fr");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        game.setGameIcon(url);
+        game.setGameLogo(url);
+        game.setMarketplace("Steam");
+        game.setGameName("Instrumental test 1");
+
+        return game;
+    }
+
+    /**
+     * Function that create a new GameBundle.
+     *
+     * @return a GameBundle without id.
+     */
+    public static GameBundle generateGameBundleWithoutId() {
+        GameBundle gameBundle = new GameBundle();
+        gameBundle.setName("Test Bundle 1");
+        gameBundle.setPrice(1.00);
+
+        return gameBundle;
+    }
+
+    /**
+     * Return a user object withoutGames
+     *
+     * @return a user without games.
+     */
+    public static User generateUserWithoutIdAndWithoutGames() {
+        URL url = null;
+        try {
+            url = new URL("https://www.google.fr");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        User user = new User();
+        user.setSteamID(SampleGenerator.DEFAULT_STEAM_ID);
+        user.setAccountName("Slayde");
+        user.setAccountPicture(url);
+
+        return user;
+    }
+
+    /**
+     * Function that create a new OwnedGame.
+     * Include a new game inserted in db.
+     *
+     * @return an OwnedGame
+     */
+    public static OwnedGame generateOwnedGame(int userId) {
+
+        Game game = generateGameWithoutId();
+        game.setGameID(1);
+
+        GameBundle gameBundle = generateGameBundleWithoutId();
+        gameBundle.setId(1);
+
+        OwnedGame ownedGame = new OwnedGame(userId, game);
+        ownedGame.setTimePlayedForever(600);
+        ownedGame.setTimePlayed2Weeks(120);
+        ownedGame.setGamePrice(25.00);
+        ownedGame.setFavorite(true);
+        ownedGame.setGameBundle(gameBundle);
+
+        return ownedGame;
+
+    }
+
+    /**
+     * Generate a goal.
+     *
+     * @param profitableThreshold
+     * @return
+     */
+    public static Goal generateGoal(Double profitableThreshold) {
+        OwnedGame ownedGame = generateOwnedGame(1);
+        return new Goal(profitableThreshold, ownedGame);
     }
 }

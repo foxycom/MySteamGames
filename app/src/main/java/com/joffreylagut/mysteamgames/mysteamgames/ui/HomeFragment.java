@@ -14,28 +14,35 @@ import android.widget.ListView;
 import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.data.GameTongueAdapter;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
+import com.joffreylagut.mysteamgames.mysteamgames.models.Goal;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
-import com.joffreylagut.mysteamgames.mysteamgames.utilities.SampleGenerator;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.UiUtilities;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.joffreylagut.mysteamgames.mysteamgames.data.GameTongueAdapter.convertOwnedGameListToGameTongueList;
 
 /**
  * HomeFragment.java
  * Purpose: Inflate and manage fragment_home layout.
  *
  * @author Joffrey LAGUT
- * @version 1.0 2017-05-03
+ * @version 1.1 2017-05-12
  */
 
 public class HomeFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemClickListener {
+
+    private static final int NUMBER_OF_GOALS_ALMOST_ACHIEVED = 3;
+    private static final int NUMBER_OF_MOST_PROFITABLE = NUMBER_OF_GOALS_ALMOST_ACHIEVED;
+    private static final int NUMBER_OF_MOST_PLAYED = NUMBER_OF_GOALS_ALMOST_ACHIEVED;
 
     @BindView(R.id.home_favorite_goals_card)
     CardView mCvFavorites;
@@ -54,10 +61,17 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
     ListView mLvMostPlayed;
     @BindView(R.id.most_profitable_card_list_view)
     ListView mLvMostProfitable;
+
     private OnGameSelectedListener mCallback;
     private UserDbHelper mUserDbHelper;
     private SQLiteDatabase mDb;
     private int mUserId;
+    private String mCurrency;
+    private Double mProfitableThreshold;
+
+    interface OnGameSelectedListener {
+        void OnGameSelected(int gameId);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -80,16 +94,54 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
         mUserDbHelper = UserDbHelper.getInstance(getContext());
         mDb = mUserDbHelper.getWritableDatabase();
         mUserId = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(SharedPreferencesHelper.USER_ID, 0);
-
-
-        fetchFavorites();
-        fetchMostPlayed();
-
-
-        displayGameTongues(mCvGoals, mLvGoals, SampleGenerator.generateListGameTongue(getContext()));
-        displayGameTongues(mCvMostProfitable, mLvMostProfitable, SampleGenerator.generateListMostProfitableGameTongue(getContext()));
+        mCurrency = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(SharedPreferencesHelper.CURRENCY, "$");
+        mProfitableThreshold = Double.parseDouble(PreferenceManager.getDefaultSharedPreferences(getContext()).getString(SharedPreferencesHelper.PROFITABLE_LIMIT, "1"));
 
         return viewRoot;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // We display the information in the cards
+        fetchFavorites();
+        fetchMostPlayed();
+        fetchMostProfitable();
+        fetchGoalsAlmostAchieved();
+    }
+
+    /**
+     * This method display the almost achieved goals.
+     */
+    private void fetchGoalsAlmostAchieved() {
+
+        List<OwnedGame> ownedGamesWithPrice = mUserDbHelper.getUserOwnedGamesWithPrice(mDb, mUserId);
+        List<Goal> goals = new ArrayList<>();
+
+        for (OwnedGame currentOwnedGame : ownedGamesWithPrice) {
+            if (currentOwnedGame.getPricePerHour() > mProfitableThreshold) {
+                Goal currentGoal = new Goal(getContext(), currentOwnedGame);
+                goals.add(currentGoal);
+            }
+        }
+
+        Collections.sort(goals, new Goal.GoalCompletionComparator());
+        Collections.reverse(goals);
+
+        List<OwnedGame> ownedGamesAlmostAchieved = new ArrayList<>();
+        int nbIterationMax = NUMBER_OF_GOALS_ALMOST_ACHIEVED;
+        if (goals.size() < nbIterationMax) {
+            nbIterationMax = goals.size();
+        }
+        for (int i = 0; i < nbIterationMax; i++) {
+            //ownedGamesAlmostAchieved.add(goals.get(i).extractOwnedGame());
+            ownedGamesAlmostAchieved.add(goals.get(i));
+        }
+
+        List<GameTongueAdapter.GameTongue> almostAchievedGameTongues = convertOwnedGameListToGameTongueList(ownedGamesAlmostAchieved, mCurrency, mProfitableThreshold);
+        displayGameTongues(mCvGoals, mLvGoals, almostAchievedGameTongues);
+
     }
 
     /**
@@ -97,7 +149,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
      */
     private void fetchMostPlayed() {
 
-        List<OwnedGame> mostPlayedOwnedGames = mUserDbHelper.getUserMostPlayedOwnedGames(mDb, mUserId, 3);
+        List<OwnedGame> mostPlayedOwnedGames = mUserDbHelper.getUserMostPlayedOwnedGames(mDb, mUserId, NUMBER_OF_MOST_PLAYED);
         List<GameTongueAdapter.GameTongue> mostPlayedGameTongues = createMostPlayedGameTongues(mostPlayedOwnedGames);
 
         displayGameTongues(mCvMostPlayed, mLvMostPlayed, mostPlayedGameTongues);
@@ -109,9 +161,58 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
     private void fetchFavorites() {
 
         List<OwnedGame> favoritesOwnedGames = mUserDbHelper.getFavoritesOwnedGamesByUserID(mDb, mUserId);
-        List<GameTongueAdapter.GameTongue> favoritesGameTongues = convertOwnedGameToGameTongue(favoritesOwnedGames);
+        List<GameTongueAdapter.GameTongue> favoritesGameTongues = convertOwnedGameListToGameTongueList(favoritesOwnedGames, mCurrency, mProfitableThreshold);
         displayGameTongues(mCvFavorites, mLvFavorites, favoritesGameTongues);
 
+    }
+
+    /**
+     * This method fetch the favorites games in DB and display them in the Favorite card.
+     */
+    private void fetchMostProfitable() {
+
+        List<OwnedGame> ownedGamesWithPrice = mUserDbHelper.getUserOwnedGamesWithPrice(mDb, mUserId);
+        Collections.sort(ownedGamesWithPrice, new OwnedGamePricePerHourComparatorDesc());
+
+        List<OwnedGame> ownedGamesMostProfitable = new ArrayList<>();
+        int nbIterationMax = NUMBER_OF_MOST_PROFITABLE;
+        if (ownedGamesWithPrice.size() < nbIterationMax) {
+            nbIterationMax = ownedGamesMostProfitable.size();
+        }
+        for (int i = 0; i < nbIterationMax; i++) {
+            ownedGamesMostProfitable.add(ownedGamesWithPrice.get(i));
+        }
+
+        List<GameTongueAdapter.GameTongue> mostProfitableGameTongues = createMostProfitableGameTongues(ownedGamesMostProfitable);
+        displayGameTongues(mCvMostProfitable, mLvMostProfitable, mostProfitableGameTongues);
+
+    }
+
+    /**
+     * Convert the list of OwnedGames in parameter into a a list of GameTongue objects respecting the format of
+     * Most profitable card items.
+     *
+     * @param mostProfitableOwnedGames list of the most played OwnedGames
+     * @return the list converted into a list of GameTongue
+     */
+    private List<GameTongueAdapter.GameTongue> createMostProfitableGameTongues(List<OwnedGame> mostProfitableOwnedGames) {
+
+        int rank = 0;
+        List<GameTongueAdapter.GameTongue> gameTongues = new ArrayList<>();
+
+        for (OwnedGame ownedGame : mostProfitableOwnedGames) {
+            rank++;
+            GameTongueAdapter.GameTongue currentGameTongue = new GameTongueAdapter.GameTongue(
+                    ownedGame.getGame().getGameID(),
+                    ownedGame.getGame().getGameName(),
+                    SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever()),
+                    ownedGame.getPricePerHour() + mCurrency + "/h",
+                    100
+            );
+            currentGameTongue.setGameRank(rank);
+            gameTongues.add(currentGameTongue);
+        }
+        return gameTongues;
     }
 
     /**
@@ -125,101 +226,24 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
 
         int rank = 0;
         List<GameTongueAdapter.GameTongue> gameTongues = new ArrayList<>();
+        String pricePerHour;
 
         for (OwnedGame ownedGame : mostPlayedOwnedGames) {
             rank++;
+            if (ownedGame.getPricePerHour() != -1.0) {
+                pricePerHour = String.valueOf(ownedGame.getPricePerHour()) + mCurrency + "/h";
+            } else {
+                pricePerHour = "";
+            }
             GameTongueAdapter.GameTongue currentGameTongue = new GameTongueAdapter.GameTongue(
                     ownedGame.getGame().getGameID(),
                     ownedGame.getGame().getGameName(),
-                    "",
+                    pricePerHour,
                     SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever()),
                     100
             );
             currentGameTongue.setGameRank(rank);
             gameTongues.add(currentGameTongue);
-        }
-        return gameTongues;
-    }
-
-    /**
-     * Convert the list of OwnedGames in parameter into a a list of GameTongue objects.
-     *
-     * @param ownedGames List of OwnedGames to convert.
-     * @return a list of GameTongue containing the OwnedGames that were in parameter.
-     */
-    private List<GameTongueAdapter.GameTongue> convertOwnedGameToGameTongue(List<OwnedGame> ownedGames) {
-
-
-        String currency = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(SharedPreferencesHelper.CURRENCY, "$");
-        List<GameTongueAdapter.GameTongue> gameTongues = new ArrayList<>();
-
-        Double profitableThreshold = Double.parseDouble(PreferenceManager.getDefaultSharedPreferences(getContext()).getString(SharedPreferencesHelper.PROFITABLE_LIMIT, "1"));
-
-        if (ownedGames != null) {
-            for (OwnedGame ownedGame : ownedGames) {
-
-
-                // We have 5 type of GameTongue:
-                // 1-Games Never played without price
-                // 2-Games Never played with price
-                // 3-Game played without price
-                // 4-Game played with price per hour over threshold
-                // 5-Game played with price per hour under threshold
-
-                // By default, the caption and the progression are empty
-                String gameCaption;
-                String gameProgression = "";
-
-                Double nbHoursToReachThreshold;
-                Double nbHoursPlayed = (double) ownedGame.getTimePlayedForever() / 60;
-
-                int progressionPercentage = 100;
-
-                // Types 1 & 2
-                if (ownedGame.getTimePlayedForever() == 0) {
-                    if (ownedGame.getGamePrice() <= 0) {
-                        // Type 1
-                        gameCaption = "0h";
-                    } else {
-                        // Type 2
-                        nbHoursToReachThreshold = ownedGame.getGamePrice() / profitableThreshold;
-                        gameCaption = nbHoursPlayed.intValue() + " / " + nbHoursToReachThreshold.intValue() + "h";
-                        gameProgression = "0%";
-                    }
-                } else {
-                    if (ownedGame.getGamePrice() <= 0) {
-                        // Type 3
-                        gameCaption = SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever());
-                    } else {
-                        Double pricePerHour = ownedGame.getGamePrice() / nbHoursPlayed;
-                        if (pricePerHour > profitableThreshold) {
-                            // Type 4
-                            nbHoursToReachThreshold = ownedGame.getGamePrice() / profitableThreshold;
-                            gameCaption = nbHoursPlayed.intValue() + " / " + nbHoursToReachThreshold.intValue() + "h";
-                            Double completion = (nbHoursPlayed / nbHoursToReachThreshold) * 100;
-                            progressionPercentage = completion.intValue();
-                            gameProgression = String.valueOf(progressionPercentage) + "%";
-
-                        } else {
-                            // Type 5
-                            gameCaption = SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever());
-
-                            DecimalFormat df = new DecimalFormat("#.##");
-                            gameProgression = df.format(pricePerHour) + currency + "/h";
-
-                        }
-                    }
-                }
-
-                GameTongueAdapter.GameTongue currentGameTongue = new GameTongueAdapter.GameTongue(
-                        ownedGame.getGame().getGameID(),
-                        ownedGame.getGame().getGameName(),
-                        gameCaption,
-                        gameProgression,
-                        progressionPercentage
-                );
-                gameTongues.add(currentGameTongue);
-            }
         }
         return gameTongues;
     }
@@ -257,7 +281,16 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
         mCallback.OnGameSelected(gameTongueClicked.getGameId());
     }
 
-    interface OnGameSelectedListener {
-        void OnGameSelected(int gameId);
+    /**
+     * Class created to do the comparison.
+     */
+    private static class OwnedGamePricePerHourComparatorDesc implements Comparator<OwnedGame> {
+
+        @Override
+        public int compare(OwnedGame o1, OwnedGame o2) {
+            Double pricePerHour1 = o1.getPricePerHour();
+            Double pricePerHour2 = o2.getPricePerHour();
+            return pricePerHour1.compareTo(pricePerHour2);
+        }
     }
 }
