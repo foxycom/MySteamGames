@@ -12,6 +12,10 @@ import com.joffreylagut.mysteamgames.mysteamgames.models.GameBundle;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.models.User;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -33,13 +37,13 @@ public class UserDbHelper extends SQLiteOpenHelper {
     // Version of the database.
     // This var must be incremented every time we change the database schema.
     private static final int DATABASE_VERSION = 6;
-    static final String TEST_DATABASE_NAME = "testMyGameTimePrice.db";
     // Name of the database.
     private static String DATABASE_NAME = "myGameTimePrice.db";
     // Instance of the class. We wants to have a singleton to avoid conflicts
     private static UserDbHelper sInstance;
 
-    private static SQLiteDatabase mDb;
+    private static final String DATABASE_NAME_TO_IMPORT_FROM_ASSETS = "myGameTimePrice.db";
+    static final String TEST_DATABASE_NAME = "testMyGameTimePrice.db";
 
     /**
      * Constructor of UserDbHelper.
@@ -1617,5 +1621,34 @@ public class UserDbHelper extends SQLiteOpenHelper {
         cursor.close();
         // No that we have all the GameBundles, we return the list
         return gameBundles;
+    }
+
+    /**
+     * Copy the content of the database in the assets folder to the current database.
+     * All the current data are destroyed.
+     */
+    public void copyDataBase(Context context) throws IOException {
+
+        // Open the DB from the assets
+        InputStream myInput = context.getAssets().open(DATABASE_NAME_TO_IMPORT_FROM_ASSETS);
+
+        // Path to the curent db
+        String outFileName = context.getDatabasePath(DATABASE_NAME).toString();
+
+        //Open the curent db as the output stream
+        OutputStream myOutput = new FileOutputStream(outFileName);
+
+        //transfer bytes from the inputfile to the outputfile
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = myInput.read(buffer)) > 0) {
+            myOutput.write(buffer, 0, length);
+        }
+
+        //Close the streams
+        myOutput.flush();
+        myOutput.close();
+        myInput.close();
+
     }
 }

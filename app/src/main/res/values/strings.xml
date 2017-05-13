@@ -99,6 +99,7 @@
 
     <!-- Account Fragment -->
     <string name="action_preferences">Edit preferences</string>
+    <string name="import_db_example">Import DB example</string>
 
     <string name="game_details_statistics_title">Statistics</string>
     <string name="activity_edit_game_title">Edit game</string>

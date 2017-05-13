@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.joffreylagut.mysteamgames.mysteamgames.R;
+import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,6 +31,9 @@ public class AccountFragment extends Fragment {
     @BindView(R.id.action_preference)
     Button mBtnPreferences;
 
+    @BindView(R.id.action_import_db)
+    Button mBtnImportDb;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -43,4 +49,17 @@ public class AccountFragment extends Fragment {
         Intent intent = new Intent(getContext(), SettingsActivity.class);
         startActivity(intent);
     }
+
+    @OnClick(R.id.action_import_db)
+    public void importDb() {
+        UserDbHelper userDbHelper = UserDbHelper.getInstance(getContext());
+
+        try {
+            userDbHelper.copyDataBase(getContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
