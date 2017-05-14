@@ -2,10 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:id="@+id/game_layout"
-    style="@style/HomeGameRectangleLayout"
-    android:layout_width="match_parent">
+    style="@style/HomeGameRectangleLayout">
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -37,7 +35,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/game_icon"
@@ -46,21 +45,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@id/square_game"
         app:layout_constraintTop_toTopOf="@id/square_game"
-        tools:ignore="ContentDescription" />
-
-    <TextView
-        android:id="@+id/game_title"
-        style="@style/HomeGameTitle"
-        app:layout_constraintLeft_toRightOf="@id/game_icon"
-        app:layout_constraintTop_toTopOf="@+id/square_game"
-        tools:text="@string/game_title_example_1" />
-
-    <TextView
-        android:id="@+id/game_progression"
-        style="@style/HomeGameProgressionText"
-        app:layout_constraintLeft_toRightOf="@id/game_icon"
-        app:layout_constraintTop_toBottomOf="@+id/game_title"
-        tools:text="@string/game_goals_progression_hours_1" />
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/game_icon_sample" />
 
     <ImageView
         android:id="@+id/game_rank"
@@ -70,7 +56,9 @@
         app:layout_constraintRight_toRightOf="@+id/square_game"
         app:layout_constraintTop_toTopOf="@+id/square_game"
         app:layout_constraintVertical_bias="0.5"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        tools:visibility="visible"
+        tools:src="@drawable/ic_trophy_gold" />
 
     <TextView
         android:id="@+id/game_caption"
@@ -80,6 +68,24 @@
         app:layout_constraintTop_toTopOf="@+id/square_game"
         app:layout_constraintVertical_bias="0.5"
         tools:text="@string/game_goals_progression_percent_1" />
+
+    <TextView
+        android:id="@+id/game_title"
+        style="@style/HomeGameTitle"
+        android:layout_width="0dp"
+        android:lines="1"
+        app:layout_constraintLeft_toRightOf="@id/game_icon"
+        app:layout_constraintTop_toTopOf="@+id/square_game"
+        app:layout_constraintRight_toLeftOf="@+id/game_caption"
+        tools:text="@string/game_title_example_1"
+        app:layout_constraintHorizontal_bias="1.0" />
+
+    <TextView
+        android:id="@+id/game_progression"
+        style="@style/HomeGameProgressionText"
+        app:layout_constraintLeft_toRightOf="@id/game_icon"
+        app:layout_constraintTop_toBottomOf="@+id/game_title"
+        tools:text="@string/game_goals_progression_hours_1" />
 
 
 </android.support.constraint.ConstraintLayout>

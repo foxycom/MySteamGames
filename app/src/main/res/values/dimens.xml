@@ -36,7 +36,8 @@
     <dimen name="home_game_rectangle_width">0dp</dimen>
     <dimen name="home_game_rectangle_drawable_size">0dp</dimen>
     <dimen name="home_game_rectangle_drawable_margins">0dp</dimen>
-    <dimen name="home_game_rectangle_title_margin_left_start">8dp</dimen>
+    <dimen name="home_game_title_width">0dp</dimen>
+    <dimen name="home_game_rectangle_title_horizontal_margin">8dp</dimen>
     <dimen name="home_game_rectangle_title_margin_top">8dp</dimen>
     <dimen name="home_game_rectangle_progression_margin_left_start">8dp</dimen>
     <dimen name="home_game_rectangle_progression_padding_bottom">8dp</dimen>

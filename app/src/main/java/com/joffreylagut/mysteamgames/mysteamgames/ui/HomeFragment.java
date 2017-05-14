@@ -135,7 +135,6 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
             nbIterationMax = goals.size();
         }
         for (int i = 0; i < nbIterationMax; i++) {
-            //ownedGamesAlmostAchieved.add(goals.get(i).extractOwnedGame());
             ownedGamesAlmostAchieved.add(goals.get(i));
         }
 

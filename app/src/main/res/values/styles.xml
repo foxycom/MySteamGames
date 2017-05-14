@@ -53,6 +53,12 @@
         <item name="cardCornerRadius">@dimen/card_corner_radius</item>
     </style>
 
+    <style name="CardViewConstraintLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/card_content_margin</item>
+    </style>
+
     <style name="MaterialCardIcon">
         <item name="android:layout_width">@dimen/card_icon_dimensions</item>
         <item name="android:layout_height">@dimen/card_icon_dimensions</item>
@@ -75,7 +81,7 @@
     </style>
 
     <style name="HomeGameRectangleLayout">
-        <item name="android:layout_width">@dimen/home_game_rectangle_width</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:foreground">@drawable/main_view_selector</item>
     </style>
@@ -89,12 +95,17 @@
     </style>
 
     <style name="HomeGameTitle">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">@dimen/home_game_title_width</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/home_game_rectangle_title_margin_left_start
+        <item name="android:layout_marginRight">@dimen/home_game_rectangle_title_horizontal_margin
+        </item>
+        <item name="android:layout_marginEnd" tools:targetApi="jelly_bean_mr1">
+            @dimen/home_game_rectangle_title_horizontal_margin
+        </item>
+        <item name="android:layout_marginLeft">@dimen/home_game_rectangle_title_horizontal_margin
         </item>
         <item name="android:layout_marginStart" tools:targetApi="jelly_bean_mr1">
-            @dimen/home_game_rectangle_title_margin_left_start
+            @dimen/home_game_rectangle_title_horizontal_margin
         </item>
         <item name="android:layout_marginTop">@dimen/home_game_rectangle_title_margin_top</item>
         <item name="android:textColor">@android:color/black</item>
