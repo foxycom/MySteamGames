@@ -16,9 +16,8 @@ import com.joffreylagut.mysteamgames.mysteamgames.data.GameTongueAdapter;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.models.Goal;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.GameTongueHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
-import com.joffreylagut.mysteamgames.mysteamgames.utilities.UiUtilities;
-import com.joffreylagut.mysteamgames.mysteamgames.utilities.UnitsConverterHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -138,7 +137,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
         }
 
         List<GameTongueAdapter.GameTongue> almostAchievedGameTongues = convertOwnedGameListToGameTongueList(ownedGamesAlmostAchieved, mCurrency, mProfitableThreshold);
-        displayGameTongues(mCvGoals, mLvGoals, almostAchievedGameTongues);
+        GameTongueHelper.displayGameTongues(getContext(), mCvGoals, mLvGoals, almostAchievedGameTongues, this, true);
 
     }
 
@@ -148,9 +147,9 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
     private void fetchMostPlayed() {
 
         List<OwnedGame> mostPlayedOwnedGames = mUserDbHelper.getUserMostPlayedOwnedGames(mDb, mUserId, NUMBER_OF_MOST_PLAYED);
-        List<GameTongueAdapter.GameTongue> mostPlayedGameTongues = createMostPlayedGameTongues(mostPlayedOwnedGames);
+        List<GameTongueAdapter.GameTongue> mostPlayedGameTongues = GameTongueHelper.createMostPlayedGameTongues(mostPlayedOwnedGames, mCurrency);
 
-        displayGameTongues(mCvMostPlayed, mLvMostPlayed, mostPlayedGameTongues);
+        GameTongueHelper.displayGameTongues(getContext(), mCvMostPlayed, mLvMostPlayed, mostPlayedGameTongues, this, true);
     }
 
     /**
@@ -160,7 +159,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
 
         List<OwnedGame> favoritesOwnedGames = mUserDbHelper.getFavoritesOwnedGamesByUserID(mDb, mUserId);
         List<GameTongueAdapter.GameTongue> favoritesGameTongues = convertOwnedGameListToGameTongueList(favoritesOwnedGames, mCurrency, mProfitableThreshold);
-        displayGameTongues(mCvFavorites, mLvFavorites, favoritesGameTongues);
+        GameTongueHelper.displayGameTongues(getContext(), mCvFavorites, mLvFavorites, favoritesGameTongues, this, true);
 
     }
 
@@ -181,97 +180,12 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
             ownedGamesMostProfitable.add(ownedGamesWithPrice.get(i));
         }
 
-        List<GameTongueAdapter.GameTongue> mostProfitableGameTongues = createMostProfitableGameTongues(ownedGamesMostProfitable);
-        displayGameTongues(mCvMostProfitable, mLvMostProfitable, mostProfitableGameTongues);
+        List<GameTongueAdapter.GameTongue> mostProfitableGameTongues = GameTongueHelper.createMostProfitableGameTongues(ownedGamesMostProfitable, mCurrency);
+        GameTongueHelper.displayGameTongues(getContext(), mCvMostProfitable, mLvMostProfitable, mostProfitableGameTongues, this, true);
 
     }
 
-    /**
-     * Convert the list of OwnedGames in parameter into a a list of GameTongue objects respecting the format of
-     * Most profitable card items.
-     *
-     * @param mostProfitableOwnedGames list of the most played OwnedGames
-     * @return the list converted into a list of GameTongue
-     */
-    private List<GameTongueAdapter.GameTongue> createMostProfitableGameTongues(List<OwnedGame> mostProfitableOwnedGames) {
 
-        int rank = 0;
-        List<GameTongueAdapter.GameTongue> gameTongues = new ArrayList<>();
-
-        for (OwnedGame ownedGame : mostProfitableOwnedGames) {
-            rank++;
-            GameTongueAdapter.GameTongue currentGameTongue = new GameTongueAdapter.GameTongue(
-                    ownedGame.getGame().getGameID(),
-                    ownedGame.getGame().getGameName(),
-                    UnitsConverterHelper.displayMinutesInHours(ownedGame.getTimePlayedForever()),
-                    UnitsConverterHelper.createPricePerHour(ownedGame.getPricePerHour(), mCurrency),
-                    100,
-                    ownedGame.getGame().getGameIcon().toString()
-            );
-            currentGameTongue.setGameRank(rank);
-            gameTongues.add(currentGameTongue);
-        }
-        return gameTongues;
-    }
-
-    /**
-     * Convert the list of OwnedGames in parameter into a a list of GameTongue objects respecting the format of
-     * Most played card items.
-     *
-     * @param mostPlayedOwnedGames list of the most played OwnedGames
-     * @return the list converted into a list of GameTongue
-     */
-    private List<GameTongueAdapter.GameTongue> createMostPlayedGameTongues(List<OwnedGame> mostPlayedOwnedGames) {
-
-        int rank = 0;
-        List<GameTongueAdapter.GameTongue> gameTongues = new ArrayList<>();
-        String pricePerHour;
-
-        for (OwnedGame ownedGame : mostPlayedOwnedGames) {
-            rank++;
-            if (ownedGame.getPricePerHour() != -1.0) {
-                pricePerHour = UnitsConverterHelper.createPricePerHour(ownedGame.getPricePerHour(), mCurrency);
-            } else {
-                pricePerHour = "";
-            }
-            GameTongueAdapter.GameTongue currentGameTongue = new GameTongueAdapter.GameTongue(
-                    ownedGame.getGame().getGameID(),
-                    ownedGame.getGame().getGameName(),
-                    pricePerHour,
-                    UnitsConverterHelper.displayMinutesInHours(ownedGame.getTimePlayedForever()),
-                    100,
-                    ownedGame.getGame().getGameIcon().toString()
-            );
-            currentGameTongue.setGameRank(rank);
-            gameTongues.add(currentGameTongue);
-        }
-        return gameTongues;
-    }
-
-    /**
-     * Display the list of GameTongues in the ListView in parameter.
-     * If there is no GameTongue in the list, the cardView visibility is set to GONE.
-     *
-     * @param cardViewDisplayed CardView that contains the ListView to fulfill.
-     * @param listViewToFulfill ListView in which we want to display the gameTongues.
-     * @param gameTongues       elements to display in the ListView.
-     */
-    private void displayGameTongues(CardView cardViewDisplayed, ListView listViewToFulfill, List<GameTongueAdapter.GameTongue> gameTongues) {
-
-        // We check if there is games in the list to show/hide the card
-        if (gameTongues.size() == 0) {
-            cardViewDisplayed.setVisibility(View.GONE);
-        } else {
-            cardViewDisplayed.setVisibility(View.VISIBLE);
-
-            // We create a new Adapter, set it to the ListView and set the ListViewHeight using the helper
-            GameTongueAdapter gameTongueAdapter = new GameTongueAdapter(getContext(), gameTongues);
-            listViewToFulfill.setAdapter(gameTongueAdapter);
-            UiUtilities.setListViewHeightBasedOnItems(listViewToFulfill);
-
-            listViewToFulfill.setOnItemClickListener(this);
-        }
-    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

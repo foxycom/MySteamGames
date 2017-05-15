@@ -83,5 +83,4 @@ public class UiUtilities {
             Log.e("ERROR ILLEGAL ALG", "Unable to change value of shift mode");
         }
     }
-
 }

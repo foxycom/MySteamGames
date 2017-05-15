@@ -19,9 +19,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <!-- Theme for the Splashscreen -->
+    <!-- Theme for the Splash screen -->
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@drawable/splashscreen</item>
+        <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 
     <style name="MaterialButton" parent="Theme.AppCompat.Light">
@@ -151,8 +151,8 @@
     </style>
 
     <style name="HomeListView">
-        <item name="android:layout_width">@dimen/card_listview_width</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">@dimen/card_list_view_width</item>
+        <item name="android:layout_height">0dp</item>
         <item name="android:layout_marginTop">@dimen/home_page_list_view_margin_top</item>
         <item name="android:divider">@android:color/transparent</item>
         <item name="android:dividerHeight">@dimen/home_page_list_view_divider_height</item>
@@ -175,4 +175,17 @@
         <item name="android:layout_margin">@dimen/rv_games_sub_text_margin</item>
     </style>
 
+    <style name="GoalsLinearLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/goals_linear_layout_height</item>
+        <item name="android:layout_weight">0</item>
+    </style>
+
+    <style name="GoalsCardViewConstraintLayout" parent="CardViewConstraintLayout">
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="GoalsMaterialCards" parent="MaterialCards">
+        <item name="android:layout_height">match_parent</item>
+    </style>
 </resources>

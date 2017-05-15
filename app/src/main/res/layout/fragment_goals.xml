@@ -1,16 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_goals_page"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/goals_action"
-        android:textSize="48sp"
-        android:gravity="center"
-        android:textAlignment="gravity" />
+    <LinearLayout
+        android:id="@+id/goals_in_progress_linear_layout"
+        style="@style/GoalsLinearLayout"
+        android:layout_weight="1"
+        tools:ignore="InefficientWeight">
 
-</FrameLayout>
+        <android.support.v7.widget.CardView
+            android:id="@+id/goals_in_progress_card"
+            style="@style/GoalsMaterialCards">
+
+            <android.support.constraint.ConstraintLayout style="@style/GoalsCardViewConstraintLayout">
+
+                <ImageView
+                    android:id="@+id/goals_in_progress_card_icon"
+                    style="@style/MaterialCardIcon"
+                    android:background="@drawable/ic_dumbbell"
+                    android:contentDescription="@string/goals_in_progress_card_icon_content_description"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/goals_in_progress_card_title"
+                    style="@style/MaterialCardTitle"
+                    android:text="@string/goals_in_progress_card_title"
+                    app:layout_constraintBottom_toBottomOf="@+id/goals_in_progress_card_icon"
+                    app:layout_constraintLeft_toRightOf="@+id/goals_in_progress_card_icon"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/goals_in_progress_card_icon" />
+
+                <ListView
+                    android:id="@+id/goals_in_progress_card_list_view"
+                    style="@style/HomeListView"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/goals_in_progress_card_icon"
+                    tools:listitem="@layout/row_game_tongue" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/goals_not_started_linear_layout"
+        style="@style/GoalsLinearLayout">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/goals_not_started_card"
+            style="@style/GoalsMaterialCards">
+
+            <android.support.constraint.ConstraintLayout style="@style/GoalsCardViewConstraintLayout">
+
+                <ImageView
+                    android:id="@+id/goals_not_started_card_icon"
+                    style="@style/MaterialCardIcon"
+                    android:background="@drawable/ic_weight"
+                    android:contentDescription="@string/goals_not_started_card_icon_content_description"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/goals_not_started_card_title"
+                    style="@style/MaterialCardTitle"
+                    android:text="@string/goals_not_started_card_title"
+                    app:layout_constraintBottom_toBottomOf="@+id/goals_not_started_card_icon"
+                    app:layout_constraintLeft_toRightOf="@+id/goals_not_started_card_icon"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/goals_not_started_card_icon" />
+
+                <ListView
+                    android:id="@+id/goals_not_started_card_list_view"
+                    style="@style/HomeListView"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/goals_not_started_card_icon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:listitem="@layout/row_game_tongue" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/games_without_price_linear_layout"
+        style="@style/GoalsLinearLayout">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/games_without_price_card"
+            style="@style/GoalsMaterialCards">
+
+            <android.support.constraint.ConstraintLayout style="@style/GoalsCardViewConstraintLayout">
+
+                <ImageView
+                    android:id="@+id/games_without_price_card_icon"
+                    style="@style/MaterialCardIcon"
+                    android:background="@drawable/ic_ghost"
+                    android:contentDescription="@string/games_without_price_card_icon_content_description"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/games_without_price_card_title"
+                    style="@style/MaterialCardTitle"
+                    android:text="@string/games_without_price_card_title"
+                    app:layout_constraintBottom_toBottomOf="@+id/games_without_price_card_icon"
+                    app:layout_constraintLeft_toRightOf="@+id/games_without_price_card_icon"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/games_without_price_card_icon" />
+
+                <ListView
+                    android:id="@+id/games_without_price_card_list_view"
+                    style="@style/HomeListView"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/games_without_price_card_icon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:listitem="@layout/row_game_tongue" />
+
+            </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+</LinearLayout>

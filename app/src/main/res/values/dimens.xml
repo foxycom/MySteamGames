@@ -23,7 +23,7 @@
     <dimen name="card_primary_title_top_padding">24sp</dimen>
     <dimen name="card_primary_title_bottom_padding">16dp</dimen>
     <dimen name="card_padding_left_and_right">16dp</dimen>
-    <dimen name="card_listview_width">0dp</dimen>
+    <dimen name="card_list_view_width">0dp</dimen>
 
     <!-- Bottom navigation view Material design -->
     <dimen name="bnv_height">56dp</dimen>
@@ -56,5 +56,8 @@
     <dimen name="rv_games_title_height">@dimen/rv_games_picture_height</dimen>
     <dimen name="rv_games_title_text_size">30sp</dimen>
     <dimen name="rv_games_sub_text_margin">8dp</dimen>
+
+    <!-- Goals fragment -->
+    <dimen name="goals_linear_layout_height">80dp</dimen>
 
 </resources>

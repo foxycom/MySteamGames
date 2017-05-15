@@ -13,7 +13,7 @@ import java.util.Comparator;
  * A Goal object is a OwnedGame object with 2 more parameters.
  *
  * @author Joffrey LAGUT
- * @version 1.1 2017-05-15
+ * @version 1.1 2017-05-17
  */
 
 public class Goal extends OwnedGame {
@@ -48,12 +48,13 @@ public class Goal extends OwnedGame {
 
     public void calculateCompletionPercentage(Double profitableThreshold) {
 
+        this.nbHoursToComplete = this.getGamePrice() / profitableThreshold;
+
         if (this.getPricePerHour() > profitableThreshold) {
-            Double nbHoursToReachThreshold = this.getGamePrice() / profitableThreshold;
             Double nbHoursPlayed = Double.valueOf(this.getTimePlayedForever()) / 60;
-            this.completionPercentage = (int) ((nbHoursPlayed / nbHoursToReachThreshold) * 100);
-            this.nbHoursToComplete = nbHoursToReachThreshold;
+            this.completionPercentage = (int) ((nbHoursPlayed / this.nbHoursToComplete) * 100);
         } else {
+            Double nbHoursToReachThreshold = this.getGamePrice() / profitableThreshold;
             this.completionPercentage = 100;
         }
     }
@@ -77,6 +78,40 @@ public class Goal extends OwnedGame {
             Integer completionPercentage1 = o1.completionPercentage;
             Integer completionPercentage2 = o2.completionPercentage;
             return completionPercentage1.compareTo(completionPercentage2);
+        }
+    }
+
+    /**
+     * Class created to do the comparison between 2 AlmostAchievedOwnedGames.
+     * By default, the order is ASC.
+     */
+    public static class GoalCompletionComparatorFromOwnedGame implements Comparator<OwnedGame> {
+
+        @Override
+        public int compare(OwnedGame o1, OwnedGame o2) {
+            if (o1.getClass() != Goal.class || o2.getClass() != Goal.class) {
+                throw new IllegalArgumentException("The OwnedGames are not Goals");
+            }
+            Integer completionPercentage1 = ((Goal) o1).completionPercentage;
+            Integer completionPercentage2 = ((Goal) o2).completionPercentage;
+            return completionPercentage1.compareTo(completionPercentage2);
+        }
+    }
+
+    /**
+     * Class created to do the comparison between 2 AlmostAchievedOwnedGames.
+     * By default, the order is ASC.
+     */
+    public static class GoalNbHoursToCompleteComparatorFromOwnedGame implements Comparator<OwnedGame> {
+
+        @Override
+        public int compare(OwnedGame o1, OwnedGame o2) {
+            if (o1.getClass() != Goal.class || o2.getClass() != Goal.class) {
+                throw new IllegalArgumentException("The OwnedGames are not Goals");
+            }
+            Double nbHoursToComplete1 = ((Goal) o1).nbHoursToComplete;
+            Double nbHoursToComplete2 = ((Goal) o2).nbHoursToComplete;
+            return nbHoursToComplete1.compareTo(nbHoursToComplete2);
         }
     }
 }

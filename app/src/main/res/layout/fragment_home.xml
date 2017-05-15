@@ -93,7 +93,7 @@
             <android.support.constraint.ConstraintLayout style="@style/CardViewConstraintLayout">
 
                 <ImageView
-                    android:id="@+id/most_played_card_icon"
+                    android:id="@+id/goals_in_progress_card_icon"
                     style="@style/MaterialCardIcon"
                     android:background="@drawable/ic_access_time_colorprimary"
                     android:contentDescription="@string/home_most_played_card_icon_content_description"
@@ -102,20 +102,20 @@
 
 
                 <TextView
-                    android:id="@+id/most_played_card_title"
+                    android:id="@+id/goals_in_progress_card_title"
                     style="@style/MaterialCardTitle"
                     android:text="@string/home_card_most_played_title"
-                    app:layout_constraintBottom_toBottomOf="@+id/most_played_card_icon"
-                    app:layout_constraintLeft_toRightOf="@+id/most_played_card_icon"
+                    app:layout_constraintBottom_toBottomOf="@+id/goals_in_progress_card_icon"
+                    app:layout_constraintLeft_toRightOf="@+id/goals_in_progress_card_icon"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/most_played_card_icon" />
+                    app:layout_constraintTop_toTopOf="@+id/goals_in_progress_card_icon" />
 
                 <ListView
                     android:id="@+id/most_played_card_list_view"
                     style="@style/HomeListView"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/most_played_card_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/goals_in_progress_card_icon"
                     tools:ignore="NestedScrolling"
                     tools:layout_height="170dp"
                     tools:listitem="@layout/row_game_tongue" />

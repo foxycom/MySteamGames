@@ -101,6 +101,15 @@
     <string name="action_preferences">Edit preferences</string>
     <string name="import_db_example">Import DB example</string>
 
+
+    <!-- Goals fragment -->
+    <string name="goals_in_progress_card_icon_content_description">In progress icon</string>
+    <string name="goals_in_progress_card_title">Goals in progress</string>
+    <string name="goals_not_started_card_icon_content_description">Not started icon</string>
+    <string name="goals_not_started_card_title">Goals not started yet</string>
+    <string name="games_without_price_card_icon_content_description">No price information</string>
+    <string name="games_without_price_card_title">No price information</string>
+
     <string name="game_details_statistics_title">Statistics</string>
     <string name="activity_edit_game_title">Edit game</string>
     <string name="input_game_name">Name</string>

@@ -29,7 +29,7 @@ import static android.content.ContentValues.TAG;
  * Purpose: This class manage all the interactions with the database.
  *
  * @author Joffrey LAGUT
- * @version 1.7 2017-05-15
+ * @version 1.7 2017-05-17
  */
 
 public class UserDbHelper extends SQLiteOpenHelper {
@@ -947,6 +947,35 @@ public class UserDbHelper extends SQLiteOpenHelper {
                 + UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE + " >? AND "
                 + UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_FOREVER + " >?";
         String[] whereArgs = new String[]{String.valueOf(userId), "0", "0"};
+
+        // We have to do a query in DB to have all the rows.
+        Cursor cursorOwnedGames = selectOwnedGame(db, null, where, whereArgs,
+                null, null, null, null);
+
+        // We have to check if there is results.
+        if (cursorOwnedGames.getCount() > 0) {
+            ownedGames = createOwnedGamesFromCursor(cursorOwnedGames, db);
+        }
+        cursorOwnedGames.close();
+
+        return ownedGames;
+    }
+
+    /**
+     * Return the OwnedGames of the User with a price > 0 and timePlayedForever > 0
+     *
+     * @param db                    Database to query.
+     * @param userId                User that we want to find.
+     * @return List of OwnedGames.
+     */
+    public List<OwnedGame> getUserOwnedGamesWithoutPrice(SQLiteDatabase db, int userId) {
+        // List that we will return.
+        List<OwnedGame> ownedGames = new ArrayList<>();
+
+        // We prepare the request
+        String where = UserContract.OwnedGamesEntry.COLUMN_USER_ID + " =? AND "
+                + UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE + " =?";
+        String[] whereArgs = new String[]{String.valueOf(userId), "-1.00"};
 
         // We have to do a query in DB to have all the rows.
         Cursor cursorOwnedGames = selectOwnedGame(db, null, where, whereArgs,

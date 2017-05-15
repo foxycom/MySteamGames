@@ -7,7 +7,7 @@ import java.util.Comparator;
  * Purpose: Blueprint for a OwnedGame object.
  *
  * @author Joffrey LAGUT
- * @version 1.7 2017-05-15
+ * @version 1.7 2017-05-17
  */
 
 public class OwnedGame {
@@ -145,6 +145,19 @@ public class OwnedGame {
             Double pricePerHour1 = o1.getPricePerHour();
             Double pricePerHour2 = o2.getPricePerHour();
             return pricePerHour1.compareTo(pricePerHour2);
+        }
+    }
+
+    /**
+     * Class created to do the comparison between the price per hour of 2 games.
+     */
+    public static class OwnedGameTimePlayedComparator implements Comparator<OwnedGame> {
+
+        @Override
+        public int compare(OwnedGame o1, OwnedGame o2) {
+            Integer timePlayedForever1 = o1.getTimePlayedForever();
+            Integer timePlayedForever2 = o2.getTimePlayedForever();
+            return timePlayedForever1.compareTo(timePlayedForever2);
         }
     }
 }

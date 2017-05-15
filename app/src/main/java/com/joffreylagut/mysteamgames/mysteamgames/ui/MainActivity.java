@@ -31,7 +31,7 @@ import butterknife.ButterKnife;
  * @version 1.0 2017-05-03
  */
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, HomeFragment.OnGameSelectedListener, GamesFragment.OnGameSelectedListener {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, HomeFragment.OnGameSelectedListener, GamesFragment.OnGameSelectedListener, GoalsFragment.OnGameSelectedListener {
 
     private final Integer HOME_FRAGMENT_CODE = 0;
     private final Integer GOALS_FRAGMENT_CODE = 1;
