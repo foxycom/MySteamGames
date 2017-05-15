@@ -13,7 +13,7 @@ import java.util.Comparator;
  * A Goal object is a OwnedGame object with 2 more parameters.
  *
  * @author Joffrey LAGUT
- * @version 1.0 2017-05-12
+ * @version 1.1 2017-05-15
  */
 
 public class Goal extends OwnedGame {
@@ -50,7 +50,7 @@ public class Goal extends OwnedGame {
 
         if (this.getPricePerHour() > profitableThreshold) {
             Double nbHoursToReachThreshold = this.getGamePrice() / profitableThreshold;
-            Double nbHoursPlayed = (double) (this.getTimePlayedForever() / 60);
+            Double nbHoursPlayed = Double.valueOf(this.getTimePlayedForever()) / 60;
             this.completionPercentage = (int) ((nbHoursPlayed / nbHoursToReachThreshold) * 100);
             this.nbHoursToComplete = nbHoursToReachThreshold;
         } else {

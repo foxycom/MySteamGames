@@ -42,7 +42,7 @@ import com.joffreylagut.mysteamgames.mysteamgames.sync.RetrieveDataFromSteamInte
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.AnimatedTabHostListener;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.GameListSorter;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
-import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.UnitsConverterHelper;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -386,7 +386,7 @@ public class GameListActivity extends AppCompatActivity implements NavigationVie
         tvTotalTimePlayed.setText(String.valueOf(currentUser.getNbMinutesPlayed()));
         tvNumberOfGames.setText(String.valueOf(currentUser.getOwnedGames().size()));
 
-        tvTotalTimePlayed.setText(SteamAPICalls.convertTimePlayed(currentUser.getNbMinutesPlayed()));
+        tvTotalTimePlayed.setText(UnitsConverterHelper.displayMinutesInHours(currentUser.getNbMinutesPlayed()));
 
         if(currentUser.getAccountPicture() != null){
             String urlImageToLoad = currentUser.getAccountPicture().toString();

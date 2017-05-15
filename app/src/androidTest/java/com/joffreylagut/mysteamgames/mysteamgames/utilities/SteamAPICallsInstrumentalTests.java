@@ -40,7 +40,7 @@ public class SteamAPICallsInstrumentalTests {
     @Test
     public void convertTimePlayed_resultMinutes(){
         String finalValue = "32mn";
-        String generatedValue = SteamAPICalls.convertTimePlayed(32);
+        String generatedValue = UnitsConverterHelper.displayMinutesInHours(32);
 
         assertTrue(finalValue.equals(generatedValue));
     }
@@ -48,7 +48,7 @@ public class SteamAPICallsInstrumentalTests {
     @Test
     public void convertTimePlayed_resultHours(){
         String finalValue = "3h";
-        String generatedValue = SteamAPICalls.convertTimePlayed(195);
+        String generatedValue = UnitsConverterHelper.displayMinutesInHours(195);
 
         assertTrue(finalValue.equals(generatedValue));
     }
@@ -56,7 +56,7 @@ public class SteamAPICallsInstrumentalTests {
     @Test
     public void convertTimePlayed_resultHoursAndMinutes(){
         String finalValue = "3h15mn";
-        String generatedValue = SteamAPICalls.convertTimePlayed(195, true);
+        String generatedValue = UnitsConverterHelper.displayMinutesInHours(195, true);
 
         assertTrue(finalValue.equals(generatedValue));
     }

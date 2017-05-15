@@ -1,6 +1,7 @@
 package com.joffreylagut.mysteamgames.mysteamgames.utilities;
 
 import android.net.Uri;
+import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -10,10 +11,12 @@ import java.net.URL;
  * Purpose: Contains all the methods relatives to the Steam API.
  *
  * @author Joffrey LAGUT
- * @version 1.5 2017-04-08
+ * @version 1.6 2017-05-15
  */
 
 public class SteamAPICalls {
+
+    private static final String TAG = SteamAPICalls.class.getSimpleName();
 
     // API Key to use the steam Web API.
     static final String API_KEY = "B1F028BA4B3F02C594462737E055DB44";
@@ -38,7 +41,7 @@ public class SteamAPICalls {
         try {
             finalUrl = new URL(urlBuilt.toString());
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "getURLPlayerProfileInformation: Unable to create the URL. ", e);
         }
 
         return finalUrl;
@@ -61,41 +64,9 @@ public class SteamAPICalls {
         try {
             finalUrl = new URL(urlBuilt.toString());
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "getURLPlayerOwnedGames: Unable to create the URL. ", e);
         }
         return finalUrl;
-    }
-
-    /**
-     * Convert the minutes into hours in a formatted string (xxh). If there is less than 60 minutes,
-     * return xxmn.
-     * @param totalMinutes The amount of minutes that we want to convert into hours.
-     * @param showBoth return hours and minutes if true.
-     * @return a string containing the time played with a correct formatting.
-     */
-    public static String convertTimePlayed(int totalMinutes, boolean showBoth) {
-        int hours = totalMinutes / 60;
-        int minutes = totalMinutes % 60;
-        if (!showBoth) {
-            if (hours == 0) {
-                return String.valueOf(minutes) + "mn";
-            } else {
-                return String.valueOf(hours) + "h";
-            }
-        }else{
-            return String.valueOf(hours) + "h" + String.valueOf(minutes) + "mn";
-        }
-
-    }
-
-    /**
-     * Convert the minutes into hours in a formatted string (xxh). If there is less than 60 minutes,
-     * return xxmn.
-     * @param totalMinutes The amount of minutes that we want to convert into hours.
-     * @return a string containing the time played with a correct formatting.
-     */
-    public static String convertTimePlayed(int totalMinutes) {
-        return convertTimePlayed(totalMinutes, false);
     }
 
     /**
@@ -111,7 +82,7 @@ public class SteamAPICalls {
         try {
             finalURL = new URL(composedURL);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "getURLPlayerProfileInformation: Unable to create the URL. ", e);
         }
         return finalURL;
     }

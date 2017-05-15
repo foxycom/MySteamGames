@@ -24,7 +24,7 @@ import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.models.Game;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
-import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.UnitsConverterHelper;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -179,7 +179,7 @@ public class GameDetailsActivity extends AppCompatActivity {
                     tvSpent.setVisibility(View.VISIBLE);
                     break;
             }
-            tvTimePlayed.setText(SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever(), true));
+            tvTimePlayed.setText(UnitsConverterHelper.displayMinutesInHours(ownedGame.getTimePlayedForever(), true));
 
             favorite = ownedGame.isFavorite();
 

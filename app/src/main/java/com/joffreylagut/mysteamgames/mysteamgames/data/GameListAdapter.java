@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.models.GameListItem;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
-import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.UnitsConverterHelper;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
  * Purpose: Adapter used to specify the content of the RecyclerView items showed on the Games fragment.
  *
  * @author Joffrey LAGUT
- * @version 1.1 2017-05-09
+ * @version 1.2 2017-05-15
  */
 
 public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesListViewHolder> {
@@ -92,7 +92,7 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GamesL
             // We display the game name
             name.setText(gameItem.getGameName());
             // We display the time played
-            String stringTimePlayed = SteamAPICalls.convertTimePlayed(gameItem.getGameTimePlayed());
+            String stringTimePlayed = UnitsConverterHelper.displayMinutesInHours(gameItem.getGameTimePlayed());
             if (stringTimePlayed.compareTo("0mn") == 0) {
                 timePlayed.setText(context.getResources().getString(R.string.never_played));
             } else {

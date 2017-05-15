@@ -1,11 +1,13 @@
 package com.joffreylagut.mysteamgames.mysteamgames.models;
 
+import java.util.Comparator;
+
 /**
- * User.java
+ * OwnedGame.java
  * Purpose: Blueprint for a OwnedGame object.
  *
  * @author Joffrey LAGUT
- * @version 1.6 2017-05-12
+ * @version 1.7 2017-05-15
  */
 
 public class OwnedGame {
@@ -32,6 +34,7 @@ public class OwnedGame {
         this.gamePrice = gamePrice;
         this.favorite = favorite;
         this.gameBundle = gameBundle;
+        calculatePricePerHour();
     }
 
     public OwnedGame(int userId, Game game, int timePlayedForever, int timePlayed2Weeks, double gamePrice, boolean favorite, GameBundle gameBundle, Double pricePerHour) {
@@ -43,6 +46,7 @@ public class OwnedGame {
         this.favorite = favorite;
         this.gameBundle = gameBundle;
         this.pricePerHour = pricePerHour;
+        calculatePricePerHour();
     }
 
     public Game getGame() {
@@ -59,6 +63,7 @@ public class OwnedGame {
 
     public void setTimePlayedForever(int timePlayedForever) {
         this.timePlayedForever = timePlayedForever;
+        calculatePricePerHour();
     }
 
     public int getTimePlayed2Weeks() {
@@ -74,7 +79,9 @@ public class OwnedGame {
     }
 
     public void setGamePrice(double gamePrice) {
+
         this.gamePrice = gamePrice;
+        calculatePricePerHour();
     }
 
     public boolean isFavorite() {
@@ -107,5 +114,37 @@ public class OwnedGame {
 
     public void setPricePerHour(Double pricePerHour) {
         this.pricePerHour = pricePerHour;
+    }
+
+    /**
+     * Calculate the price per hour of the game.
+     */
+    private void calculatePricePerHour() {
+        if (timePlayedForever != 0) {
+            if (this.gamePrice > 0) {
+                Double nbHoursPlayed = (double) this.getTimePlayedForever() / 60;
+                pricePerHour = this.getGamePrice() / nbHoursPlayed;
+                return;
+            }
+            if (gamePrice == 0) {
+                pricePerHour = 0.00;
+            } else {
+                pricePerHour = -1.00;
+            }
+        }
+
+    }
+
+    /**
+     * Class created to do the comparison between the price per hour of 2 games.
+     */
+    public static class OwnedGamePricePerHourComparator implements Comparator<OwnedGame> {
+
+        @Override
+        public int compare(OwnedGame o1, OwnedGame o2) {
+            Double pricePerHour1 = o1.getPricePerHour();
+            Double pricePerHour2 = o2.getPricePerHour();
+            return pricePerHour1.compareTo(pricePerHour2);
+        }
     }
 }

@@ -15,10 +15,9 @@ import android.widget.TextView;
 import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.models.Goal;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
-import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.UnitsConverterHelper;
 import com.squareup.picasso.Picasso;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,7 @@ import java.util.List;
  * Purpose: Adapter used to specify the content of the ListView showed on the Home fragment.
  *
  * @author Joffrey LAGUT
- * @version 1.1 2017-05-12
+ * @version 1.2 2017-05-15
  */
 
 public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue> {
@@ -138,6 +137,7 @@ public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue
         }
     }
 
+    // TODO Refactor that method & create Unit tests
     /**
      * Convert the list of OwnedGames in parameter into a a list of GameTongue objects.
      *
@@ -176,14 +176,14 @@ public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue
                     } else {
                         // Type 2
                         nbHoursToReachThreshold = ownedGame.getGamePrice() / profitableThreshold;
-                        gameCaption = nbHoursPlayed.intValue() + " / " + nbHoursToReachThreshold.intValue() + "h";
+                        gameCaption = UnitsConverterHelper.createProgressionInHours(nbHoursPlayed, nbHoursToReachThreshold);
                         gameProgression = "0%";
                         progressionPercentage = 0;
                     }
                 } else {
                     if (ownedGame.getGamePrice() <= 0) {
                         // Type 3
-                        gameCaption = SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever());
+                        gameCaption = UnitsConverterHelper.displayMinutesInHours(ownedGame.getTimePlayedForever());
                     } else {
                         if (ownedGame.getPricePerHour() > profitableThreshold) {
                             // Type 4
@@ -191,27 +191,22 @@ public class GameTongueAdapter extends ArrayAdapter<GameTongueAdapter.GameTongue
                             // If it's the case, we already have all the information to display and don"t have to do extra calculation.
                             if (ownedGame.getClass() == Goal.class) {
                                 progressionPercentage = ((Goal) ownedGame).getCompletionPercentage();
-                                gameCaption = nbHoursPlayed.intValue() + " / " + ((Double) ((Goal) ownedGame).getNbHoursToComplete()).intValue() + "h";
+                                nbHoursToReachThreshold = ((Goal) ownedGame).getNbHoursToComplete();
+                                gameCaption = UnitsConverterHelper.createProgressionInHours(nbHoursPlayed, nbHoursToReachThreshold);
                             } else {
                                 nbHoursToReachThreshold = ownedGame.getGamePrice() / profitableThreshold;
-                                gameCaption = nbHoursPlayed.intValue() + " / " + nbHoursToReachThreshold.intValue() + "h";
+                                gameCaption = UnitsConverterHelper.createProgressionInHours(nbHoursPlayed, nbHoursToReachThreshold);
                                 Double completion = (nbHoursPlayed / nbHoursToReachThreshold) * 100;
                                 progressionPercentage = completion.intValue();
                             }
                             gameProgression = String.valueOf(progressionPercentage) + "%";
-
-
                         } else {
                             // Type 5
-                            gameCaption = SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever());
-
-                            DecimalFormat df = new DecimalFormat("#.##");
-                            gameProgression = df.format(ownedGame.getPricePerHour()) + currency + "/h";
-
+                            gameCaption = UnitsConverterHelper.displayMinutesInHours(ownedGame.getTimePlayedForever());
+                            gameProgression = UnitsConverterHelper.createPricePerHour(ownedGame.getPricePerHour(), currency);
                         }
                     }
                 }
-
                 GameTongue currentGameTongue = new GameTongue(
                         ownedGame.getGame().getGameID(),
                         ownedGame.getGame().getGameName(),

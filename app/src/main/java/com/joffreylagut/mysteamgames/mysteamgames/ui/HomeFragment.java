@@ -17,12 +17,11 @@ import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.models.Goal;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
-import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.UiUtilities;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.UnitsConverterHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -35,7 +34,7 @@ import static com.joffreylagut.mysteamgames.mysteamgames.data.GameTongueAdapter.
  * Purpose: Inflate and manage fragment_home layout.
  *
  * @author Joffrey LAGUT
- * @version 1.1 2017-05-12
+ * @version 1.2 2017-05-15
  */
 
 public class HomeFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemClickListener {
@@ -170,8 +169,8 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
      */
     private void fetchMostProfitable() {
 
-        List<OwnedGame> ownedGamesWithPrice = mUserDbHelper.getUserOwnedGamesWithPrice(mDb, mUserId);
-        Collections.sort(ownedGamesWithPrice, new OwnedGamePricePerHourComparatorDesc());
+        List<OwnedGame> ownedGamesWithPrice = mUserDbHelper.getUserOwnedGamesWithPriceAlreadyPlayed(mDb, mUserId);
+        Collections.sort(ownedGamesWithPrice, new OwnedGame.OwnedGamePricePerHourComparator());
 
         List<OwnedGame> ownedGamesMostProfitable = new ArrayList<>();
         int nbIterationMax = NUMBER_OF_MOST_PROFITABLE;
@@ -204,8 +203,8 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
             GameTongueAdapter.GameTongue currentGameTongue = new GameTongueAdapter.GameTongue(
                     ownedGame.getGame().getGameID(),
                     ownedGame.getGame().getGameName(),
-                    SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever()),
-                    ownedGame.getPricePerHour() + mCurrency + "/h",
+                    UnitsConverterHelper.displayMinutesInHours(ownedGame.getTimePlayedForever()),
+                    UnitsConverterHelper.createPricePerHour(ownedGame.getPricePerHour(), mCurrency),
                     100,
                     ownedGame.getGame().getGameIcon().toString()
             );
@@ -231,7 +230,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
         for (OwnedGame ownedGame : mostPlayedOwnedGames) {
             rank++;
             if (ownedGame.getPricePerHour() != -1.0) {
-                pricePerHour = String.valueOf(ownedGame.getPricePerHour()) + mCurrency + "/h";
+                pricePerHour = UnitsConverterHelper.createPricePerHour(ownedGame.getPricePerHour(), mCurrency);
             } else {
                 pricePerHour = "";
             }
@@ -239,7 +238,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
                     ownedGame.getGame().getGameID(),
                     ownedGame.getGame().getGameName(),
                     pricePerHour,
-                    SteamAPICalls.convertTimePlayed(ownedGame.getTimePlayedForever()),
+                    UnitsConverterHelper.displayMinutesInHours(ownedGame.getTimePlayedForever()),
                     100,
                     ownedGame.getGame().getGameIcon().toString()
             );
@@ -280,18 +279,5 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
         GameTongueAdapter.GameTongue gameTongueClicked = (GameTongueAdapter.GameTongue) parent.getItemAtPosition(position);
 
         mCallback.OnGameSelected(gameTongueClicked.getGameId());
-    }
-
-    /**
-     * Class created to do the comparison.
-     */
-    private static class OwnedGamePricePerHourComparatorDesc implements Comparator<OwnedGame> {
-
-        @Override
-        public int compare(OwnedGame o1, OwnedGame o2) {
-            Double pricePerHour1 = o1.getPricePerHour();
-            Double pricePerHour2 = o2.getPricePerHour();
-            return pricePerHour1.compareTo(pricePerHour2);
-        }
     }
 }

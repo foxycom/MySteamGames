@@ -29,7 +29,7 @@ import static android.content.ContentValues.TAG;
  * Purpose: This class manage all the interactions with the database.
  *
  * @author Joffrey LAGUT
- * @version 1.6 2017-05-12
+ * @version 1.7 2017-05-15
  */
 
 public class UserDbHelper extends SQLiteOpenHelper {
@@ -932,6 +932,36 @@ public class UserDbHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Return the OwnedGames of the User with a price > 0 and timePlayedForever > 0
+     *
+     * @param db                    Database to query.
+     * @param userId                User that we want to find.
+     * @return List of OwnedGames.
+     */
+    public List<OwnedGame> getUserOwnedGamesWithPriceAlreadyPlayed(SQLiteDatabase db, int userId) {
+        // List that we will return.
+        List<OwnedGame> ownedGames = new ArrayList<>();
+
+        // We prepare the request
+        String where = UserContract.OwnedGamesEntry.COLUMN_USER_ID + " =? AND "
+                + UserContract.OwnedGamesEntry.COLUMN_GAME_PRICE + " >? AND "
+                + UserContract.OwnedGamesEntry.COLUMN_TIME_PLAYED_FOREVER + " >?";
+        String[] whereArgs = new String[]{String.valueOf(userId), "0", "0"};
+
+        // We have to do a query in DB to have all the rows.
+        Cursor cursorOwnedGames = selectOwnedGame(db, null, where, whereArgs,
+                null, null, null, null);
+
+        // We have to check if there is results.
+        if (cursorOwnedGames.getCount() > 0) {
+            ownedGames = createOwnedGamesFromCursor(cursorOwnedGames, db);
+        }
+        cursorOwnedGames.close();
+
+        return ownedGames;
+    }
+
+    /**
      * Function returning all of the OwnedGames of the user.
      *
      * @param db     Database to query.
@@ -1238,19 +1268,6 @@ public class UserDbHelper extends SQLiteOpenHelper {
                         favorite,
                         gameBundle
                         );
-
-                // We calculate the price per hour only if there is a price and if the user have played the game
-                if (currentOwnedGame.getGamePrice() > 0) {
-                    double nbHoursPlayed = currentOwnedGame.getTimePlayedForever() / 60;
-                    Double pricePerHour = currentOwnedGame.getGamePrice() / nbHoursPlayed;
-                    DecimalFormat df = new DecimalFormat("#.##");
-                    if (!pricePerHour.isInfinite()) {
-                        pricePerHour = Double.parseDouble(df.format(pricePerHour));
-                        currentOwnedGame.setPricePerHour(pricePerHour);
-                    } else {
-                        currentOwnedGame.setPricePerHour(Double.POSITIVE_INFINITY);
-                    }
-                }
 
                 // We add the OwnedGame in the list
                 OwnedGames.add(currentOwnedGame);
