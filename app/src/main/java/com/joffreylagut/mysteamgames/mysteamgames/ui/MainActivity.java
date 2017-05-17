@@ -28,10 +28,10 @@ import butterknife.ButterKnife;
  * Purpose: Main activity of the application. Allow the user to access to the main functionality.
  *
  * @author Joffrey LAGUT
- * @version 1.0 2017-05-03
+ * @version 1.1 2017-05-17
  */
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, HomeFragment.OnGameSelectedListener, GamesFragment.OnGameSelectedListener, GoalsFragment.OnGameSelectedListener {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, HomeFragment.OnGameSelectedListener, GamesFragment.OnGameSelectedListener, GoalsFragment.OnGameSelectedListener, FinishedFragment.OnGameSelectedListener {
 
     private final Integer HOME_FRAGMENT_CODE = 0;
     private final Integer GOALS_FRAGMENT_CODE = 1;

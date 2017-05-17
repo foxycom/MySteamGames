@@ -10,10 +10,11 @@
 
     <!-- Material cards -->
     <dimen name="card_horizontal_margins">8dp</dimen>
-    <dimen name="card_top_margin">8dp</dimen>
+    <dimen name="card_vertical_margins">8dp</dimen>
     <dimen name="card_content_margin">16dp</dimen>
     <dimen name="card_corner_radius">2dp</dimen>
     <dimen name="card_icon_dimensions">40dp</dimen>
+    <dimen name="card_bottom_margin_for_shadow">1dp</dimen>
 
     <dimen name="card_title_layout_width">0dp</dimen>
     <dimen name="card_title_padding_left_start">16dp</dimen>

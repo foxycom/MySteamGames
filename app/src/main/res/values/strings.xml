@@ -110,6 +110,10 @@
     <string name="games_without_price_card_icon_content_description">No price information</string>
     <string name="games_without_price_card_title">No price information</string>
 
+    <!-- Goals finished fragment -->
+    <string name="finished_card_icon_content_description">Goals finished icon</string>
+    <string name="finished_card_title">Goals finished</string>
+
     <string name="game_details_statistics_title">Statistics</string>
     <string name="activity_edit_game_title">Edit game</string>
     <string name="input_game_name">Name</string>

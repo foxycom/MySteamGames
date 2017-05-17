@@ -38,7 +38,7 @@ import butterknife.OnClick;
  * Purpose: Inflate and manage fragment_goals layout.
  *
  * @author Joffrey LAGUT
- * @version 1.0 2017-05-17
+ * @version 1.1 2017-05-17
  */
 
 public class GoalsFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -251,7 +251,7 @@ public class GoalsFragment extends Fragment implements AdapterView.OnItemClickLi
 
         // We fetch the OwnedGames in DB
         List<OwnedGame> goalsToDisplay = mUserDbHelper.getUserOwnedGamesWithPrice(mDb, mUserId);
-        goalsToDisplay = extractAndSortGoals(goalsToDisplay, false);
+        goalsToDisplay = extractAndSortGoals(goalsToDisplay, false, mProfitableThreshold);
 
         // We convert this list in a GameTongue list
         List<GameTongueAdapter.GameTongue> gameTongueList = GameTongueAdapter.convertOwnedGameListToGameTongueList(goalsToDisplay, mCurrency, mProfitableThreshold);
@@ -268,7 +268,7 @@ public class GoalsFragment extends Fragment implements AdapterView.OnItemClickLi
 
         // We fetch the OwnedGames in DB
         List<OwnedGame> goalsToDisplay = mUserDbHelper.getUserOwnedGamesWithPriceAlreadyPlayed(mDb, mUserId);
-        goalsToDisplay = extractAndSortGoals(goalsToDisplay, true);
+        goalsToDisplay = extractAndSortGoals(goalsToDisplay, true, mProfitableThreshold);
 
         // We convert this list in a GameTongue list
         List<GameTongueAdapter.GameTongue> gameTongueList = GameTongueAdapter.convertOwnedGameListToGameTongueList(goalsToDisplay, mCurrency, mProfitableThreshold);
@@ -285,17 +285,17 @@ public class GoalsFragment extends Fragment implements AdapterView.OnItemClickLi
      * @param ownedGames List that we want to extract the goals.
      * @return a list of goals.
      */
-    private List<OwnedGame> extractAndSortGoals(List<OwnedGame> ownedGames, boolean alreadyPlayed) {
+    static List<OwnedGame> extractAndSortGoals(List<OwnedGame> ownedGames, boolean alreadyPlayed, Double profitableThreshold) {
 
         List<OwnedGame> goalsList = new ArrayList<>();
         for (OwnedGame currentOwnedGame : ownedGames) {
             if (alreadyPlayed) {
-                if (currentOwnedGame.getTimePlayedForever() > 0 && currentOwnedGame.getPricePerHour() > mProfitableThreshold) {
-                    goalsList.add(new Goal(mProfitableThreshold, currentOwnedGame));
+                if (currentOwnedGame.getTimePlayedForever() > 0 && currentOwnedGame.getPricePerHour() > profitableThreshold) {
+                    goalsList.add(new Goal(profitableThreshold, currentOwnedGame));
                 }
             } else {
                 if (currentOwnedGame.getTimePlayedForever() == 0 && currentOwnedGame.getGamePrice() > 0) {
-                    goalsList.add(new Goal(mProfitableThreshold, currentOwnedGame));
+                    goalsList.add(new Goal(profitableThreshold, currentOwnedGame));
                 }
             }
         }

@@ -17,7 +17,7 @@ import java.util.List;
  * Purpose: Contains helpers to create the GameTongue lists from OwnedGame lists.
  *
  * @author Joffrey LAGUT
- * @version 1.0 2017-05-17
+ * @version 1.1 2017-05-17
  */
 
 public class GameTongueHelper {
@@ -98,10 +98,12 @@ public class GameTongueHelper {
     public static void displayGameTongues(Context context, CardView cardViewDisplayed, ListView listViewToFulfill, List<GameTongueAdapter.GameTongue> gameTongues, AdapterView.OnItemClickListener listener, boolean resizeHeight) {
 
         // We check if there is games in the list to show/hide the card
-        if (gameTongues.size() == 0) {
+        if (cardViewDisplayed != null && gameTongues.size() == 0) {
             cardViewDisplayed.setVisibility(View.GONE);
         } else {
-            cardViewDisplayed.setVisibility(View.VISIBLE);
+            if (cardViewDisplayed != null) {
+                cardViewDisplayed.setVisibility(View.VISIBLE);
+            }
 
             // We create a new Adapter, set it to the ListView and set the ListViewHeight using the helper
             GameTongueAdapter gameTongueAdapter = new GameTongueAdapter(context, gameTongues);
