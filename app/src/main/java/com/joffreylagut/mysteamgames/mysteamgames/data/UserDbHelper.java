@@ -1547,7 +1547,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
         // We prepare the request
         String tables = UserContract.BundleEntry.TABLE_NAME + "," + UserContract.OwnedGamesEntry.TABLE_NAME;
         String select[] = {
-                UserContract.BundleEntry._ID,
+                "DISTINCT " + UserContract.BundleEntry._ID,
                 UserContract.BundleEntry.COLUMN_BUNDLE_NAME,
                 UserContract.BundleEntry.COLUMN_BUNDLE_PRICE,
         };

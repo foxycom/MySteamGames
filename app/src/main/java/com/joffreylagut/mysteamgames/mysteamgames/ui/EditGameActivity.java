@@ -130,7 +130,7 @@ public class EditGameActivity extends AppCompatActivity {
     }
 
     /**
-     * This methode change the height of a view to 0 dp to hide the view on the screen.
+     * This method changes the height of a view to 0 dp to hide the view on the screen.
      *
      * @param viewToHide View that we want to hide.
      */
@@ -140,7 +140,7 @@ public class EditGameActivity extends AppCompatActivity {
     }
 
     /**
-     * This methode change the height of a view to WARP_CONTENT to display the view on the screen.
+     * This method changes the height of a view to WARP_CONTENT to display the view on the screen.
      *
      * @param viewToShow View that we want to show.
      */
