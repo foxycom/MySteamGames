@@ -2,12 +2,15 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
     <style name="AppTheme.NoTitleActionBar" parent="AppTheme">
@@ -39,11 +42,7 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="MaterialCards">
+    <style name="MaterialCard">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">@dimen/card_horizontal_margins</item>
@@ -53,11 +52,11 @@
         <item name="cardCornerRadius">@dimen/card_corner_radius</item>
     </style>
 
-    <style name="GoalsMaterialCards" parent="MaterialCards">
+    <style name="GoalsMaterialCard" parent="MaterialCard">
         <item name="android:layout_height">match_parent</item>
     </style>
 
-    <style name="GoalsFinishedMaterialCards" parent="MaterialCards">
+    <style name="GoalsFinishedMaterialCard" parent="MaterialCard">
         <item name="android:layout_height">match_parent</item>
     </style>
 
@@ -152,7 +151,7 @@
         <item name="android:layout_margin">@dimen/home_game_rectangle_progression_percent_margins
         </item>
         <item name="android:scaleType">fitXY</item>
-        <item name="android:contentDescription">@string/home_game_icon_content_description</item>
+        <item name="android:contentDescription">@string/game_icon_content_description</item>
     </style>
 
     <style name="HomeGameRank">
@@ -191,6 +190,28 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/goals_linear_layout_height</item>
         <item name="android:layout_weight">0</item>
+    </style>
+
+
+    <!-- Account fragment -->
+    <style name="ExpandedToolbarUserName">
+        <item name="android:textSize">@dimen/account_expanded_toolbar_text_size</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="GlobalStatsTextView">
+        <item name="android:layout_width">@dimen/account_global_stats_text_view_width</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawablePadding">
+            @dimen/account_global_stats_text_view_drawable_padding
+        </item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:paddingTop">@dimen/account_global_stats_text_view_vertical_padding
+        </item>
+        <item name="android:paddingBottom">@dimen/account_global_stats_text_view_vertical_padding
+        </item>
     </style>
 
 </resources>

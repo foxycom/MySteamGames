@@ -408,8 +408,10 @@ public class UserDbHelper extends SQLiteOpenHelper {
                 }
                 if(withGames){
                     currentUser.setNbMinutesPlayed(0);
+                    currentUser.setTotalMoneySpent(0.00);
                     currentUser.setOwnedGames(getOwnedGamesByUserID(db, currentUser.getUserID()));
                     for (OwnedGame currentGame : currentUser.getOwnedGames()) {
+                        currentUser.setTotalMoneySpent(currentUser.getTotalMoneySpent() + currentGame.getGamePrice());
                         currentUser.setNbMinutesPlayed(currentUser.getNbMinutesPlayed() +
                                 currentGame.getTimePlayedForever());
                     }

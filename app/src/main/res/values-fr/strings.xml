@@ -10,7 +10,6 @@
     <string name="bundle_name">Nom du pack</string>
     <string name="controller_icon_description">Icône de manette</string>
     <string name="default_account_name">Nom du compte</string>
-    <string name="default_bundle"></string>
     <string name="disclaimer">Note : Cette application peut seulement accéder à vos informations publiques.</string>
     <string name="edit">Modifier</string>
     <string name="error_bundle_name">Choisir un pack</string>
@@ -31,7 +30,7 @@
     <string name="menu_sort_price_per_hour">Prix par heure</string>
     <string name="menu_sort_time_played">Temps de jeu</string>
     <string name="menu_sort_total_price">Prix total</string>
-    <string name="money_icon_description">Icône de la monnaie</string>
+    <string name="money_icon_content_description">Icône de la monnaie</string>
     <string name="money_spent">dépensé</string>
     <string name="nav_btn_logout">Se déconnecter</string>
     <string name="nav_btn_settings">Paramètres</string>
@@ -44,8 +43,8 @@
     <string name="rb_alone">seul</string>
     <string name="rb_bundle">dans un pack</string>
     <string name="save">Enregistrer</string>
-    <string name="snackbar_action_refresh">Raffraichir</string>
-    <string name="snackbar_game_saved">Jeu enregistré</string>
+    <string name="snack_bar_action_refresh">Raffraichir</string>
+    <string name="snack_bar_game_saved">Jeu enregistré</string>
     <string name="spent_to_buy">dépensés pour l\'acheter</string>
     <string name="spinner_choose_bundle_item">Choisir un pack</string>
     <string name="spinner_new_bundle_item">+ Nouveau pack</string>

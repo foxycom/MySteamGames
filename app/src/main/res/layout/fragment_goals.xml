@@ -14,7 +14,7 @@
 
         <android.support.v7.widget.CardView
             android:id="@+id/goals_in_progress_card"
-            style="@style/GoalsMaterialCards">
+            style="@style/GoalsMaterialCard">
 
             <android.support.constraint.ConstraintLayout style="@style/GoalsCardViewConstraintLayout">
 
@@ -56,7 +56,7 @@
 
         <android.support.v7.widget.CardView
             android:id="@+id/goals_not_started_card"
-            style="@style/GoalsMaterialCards">
+            style="@style/GoalsMaterialCard">
 
             <android.support.constraint.ConstraintLayout style="@style/GoalsCardViewConstraintLayout">
 
@@ -98,7 +98,7 @@
 
         <android.support.v7.widget.CardView
             android:id="@+id/games_without_price_card"
-            style="@style/GoalsMaterialCards">
+            style="@style/GoalsMaterialCard">
 
             <android.support.constraint.ConstraintLayout style="@style/GoalsCardViewConstraintLayout">
 

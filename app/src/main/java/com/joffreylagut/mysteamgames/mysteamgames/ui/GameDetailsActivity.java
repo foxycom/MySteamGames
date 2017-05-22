@@ -224,7 +224,7 @@ public class GameDetailsActivity extends AppCompatActivity {
                         (CoordinatorLayout) findViewById(R.id.activity_game_details_coordinator);
 
                 Snackbar snackbar = Snackbar.make(coordinatorLayout,
-                        R.string.snackbar_game_saved, Snackbar.LENGTH_LONG);
+                        R.string.snack_bar_game_saved, Snackbar.LENGTH_LONG);
                 snackbar.show();
             }
         }

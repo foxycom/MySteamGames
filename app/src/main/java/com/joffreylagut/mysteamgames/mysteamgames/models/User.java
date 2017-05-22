@@ -20,6 +20,13 @@ public class User {
     private URL accountPicture;
     private List<OwnedGame> ownedGames;
     private int nbMinutesPlayed;
+    private double totalMoneySpent;
+
+    public double getAveragePricePerHour() {
+        return averagePricePerHour;
+    }
+
+    private double averagePricePerHour;
 
     public User() {
         ownedGames = new ArrayList<>();
@@ -69,7 +76,23 @@ public class User {
         return nbMinutesPlayed;
     }
 
-    public void setNbMinutesPlayed(int nbMinutesPlayed) { this.nbMinutesPlayed = nbMinutesPlayed; }
+    public void setNbMinutesPlayed(int nbMinutesPlayed) {
+        this.nbMinutesPlayed = nbMinutesPlayed;
+        calculatePricePerHour();
+    }
+
+    public double getTotalMoneySpent() {
+        return totalMoneySpent;
+    }
+
+    public void setTotalMoneySpent(double totalMoneySpent) {
+        this.totalMoneySpent = totalMoneySpent;
+        calculatePricePerHour();
+    }
+
+    private void calculatePricePerHour() {
+        this.averagePricePerHour = this.totalMoneySpent / (this.nbMinutesPlayed / 60);
+    }
 
     /**
      * This function is returning the user recently played games.

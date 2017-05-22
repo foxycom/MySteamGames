@@ -7,6 +7,6 @@
     <color name="colorTextAccent">#FFFFFF</color>
 
     <color name="colorPrimaryTransparent">#403F51B5</color>
-
-    <color name="black_semi_transparent">#B2000000</color>
+    <color name="whiteTransparent">#CDFFFFFF</color>
+    <color name="blackTransparent">#B2000000</color>
 </resources>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/fragment_account">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/GlobalStatsTextView"
+                android:id="@+id/account_nb_games"
+                android:text="@string/total_number_of_games_sample"
+                android:drawableLeft="@drawable/ic_videogame_asset_color_primary"
+                android:drawableStart="@drawable/ic_videogame_asset_color_primary"
+                android:contentDescription="@string/game_icon_content_description" />
+
+            <TextView
+                style="@style/GlobalStatsTextView"
+                android:id="@+id/account_nb_hours_played"
+                android:text="@string/total_number_of_hours_played"
+                android:drawableLeft="@drawable/ic_access_time_colorprimary"
+                android:drawableStart="@drawable/ic_access_time_colorprimary"
+                android:contentDescription="@string/time_icon_content_description" />
+
+            <TextView
+                style="@style/GlobalStatsTextView"
+                android:id="@+id/account_money_spent"
+                android:text="@string/total_amount_money_spent"
+                android:drawableLeft="@drawable/ic_attach_money_colorprimary"
+                android:drawableStart="@drawable/ic_attach_money_colorprimary"
+                android:contentDescription="@string/money_icon_content_description" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_title1" />
+
+        <TextView
+            android:id="@+id/account_average_price_per_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/account_score_vertical_margins"
+            android:layout_marginTop="@dimen/account_score_vertical_margins"
+            android:background="@drawable/score_frame"
+            android:padding="@dimen/account_score_padding"
+            android:text="@string/profile_score_sample"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/account_score_text_size" />
+
+        <TextView
+            android:id="@+id/account_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/profile_goal_reached"
+            android:textColor="@android:color/black"
+            android:paddingBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:text="@string/share_title" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/share_text" />
+
+        <Button
+            android:id="@+id/action_share"
+            android:theme="@style/MaterialButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/share"
+            android:layout_gravity="center_horizontal"
+            android:drawablePadding="@dimen/material_button_drawable_padding"
+            android:drawableLeft="@drawable/ic_menu_share"
+            android:drawableStart="@drawable/ic_menu_share" />
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

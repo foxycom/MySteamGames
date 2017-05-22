@@ -572,7 +572,7 @@ public class GameListActivity extends AppCompatActivity implements NavigationVie
             } else {
                 Snackbar snackbar = Snackbar.make(coordinatorLayout,
                         R.string.new_steam_data_loaded, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.snackbar_action_refresh, new View.OnClickListener() {
+                        .setAction(R.string.snack_bar_action_refresh, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 refreshUserProfileInformationFromDb(true);

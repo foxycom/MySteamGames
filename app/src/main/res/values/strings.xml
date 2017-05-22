@@ -5,6 +5,11 @@
 
     <string name="app_name">Game time price v2</string>
 
+    <!-- Common -->
+    <string name="game_icon_content_description">Game icon</string>
+    <string name="time_icon_content_description">Time icon</string>
+    <string name="money_icon_content_description">Money icon</string>
+
     <!-- Notification -->
     <string name="new_game_notification_title">New game in your library</string>
     <string name="new_game_notification_body">There is a new game in your Steam library.\nDon\'t forget to add its price!</string>
@@ -18,7 +23,7 @@
     <!-- MainActivity -->
     <string name="activity_main_title">My library</string>
     <string name="new_steam_data_loaded">New Steam data loaded!</string>
-    <string name="snackbar_action_refresh">Refresh</string>
+    <string name="snack_bar_action_refresh">Refresh</string>
     <string name="menu_sort">Sort</string>
     <string name="menu_ascendant">Ascendant</string>
     <string name="menu_descendant">Descendant</string>
@@ -27,7 +32,7 @@
     <string name="menu_sort_total_price">Total price</string>
     <string name="menu_sort_price_per_hour">Price per hour</string>
     <string name="never_played">Never played yet</string>
-    <string name="tab_recent_title">Recents</string>
+    <string name="tab_recent_title">Recent</string>
     <string name="tab_favorite_title">Favorites</string>
     <string name="tab_all_title">All</string>
 
@@ -48,11 +53,10 @@
 
     <!-- Game details activity -->
     <string name="edit">Edit</string>
-    <string name="snackbar_game_saved">Game saved</string>
+    <string name="snack_bar_game_saved">Game saved</string>
     <string name="game_image_blurred_description">Game image blurred</string>
     <string name="game_image_description">Game image</string>
     <string name="controller_icon_description">Controller icon</string>
-    <string name="money_icon_description">Money icon</string>
     <string name="time_icon_description">Clock icon</string>
     <string name="of_gaming">of gaming</string>
     <string name="bundle_introduction">This game is included in the bundle</string>
@@ -88,7 +92,6 @@
     <string name="bronze_trophy_content_description">Bronze trophy</string>
 
     <string name="home_rectangle_content_description">Rectangle around the game</string>
-    <string name="home_game_icon_content_description">Game icon</string>
 
     <!-- Games fragment -->
     <string name="reverse_order">Reverse order</string>
@@ -96,11 +99,6 @@
     <string name="order_time_played">Order by time played</string>
     <string name="order_price_per_hour">Order by price per hour</string>
     <string name="game_picture_content_description">Game picture</string>
-
-    <!-- Account Fragment -->
-    <string name="action_preferences">Edit preferences</string>
-    <string name="import_db_example">Import DB example</string>
-
 
     <!-- Goals fragment -->
     <string name="goals_in_progress_card_icon_content_description">In progress icon</string>
@@ -113,6 +111,28 @@
     <!-- Goals finished fragment -->
     <string name="finished_card_icon_content_description">Goals finished icon</string>
     <string name="finished_card_title">Goals finished</string>
+
+    <!-- Account fragment -->
+    <string name="user_name_sample">User name</string>
+    <string name="total_number_of_games_sample">254 games</string>
+    <string name="action_settings">Settings</string>
+    <string name="total_number_of_hours_played">2598h played</string>
+    <string name="total_amount_money_spent">1365€ spent</string>
+    <string name="profile_title1">Your average price per hour played:</string>
+    <string name="profile_score_sample">0.75€/h</string>
+    <string name="profile_goal_reached">Congratulation, you have reached your goal!\nYou are now able to evaluate if a game worth it at the current price before buying it.</string>
+    <string name="profile_goal_25_percent_reached">You have almost reached your goal!\nYour should stop buying new games for some time and have fun with the games that you already owned.</string>
+    <string name="profile_goal_not_reached">You haven\'t reached your goal yet.\nYour should stop buying new games and have fun with the games that you already owned.</string>
+    <string name="account_user_background_content_description">Game library picture</string>
+    <string name="account_user_picture_content_description">User picture</string>
+    <string name="action_preferences">Edit preferences</string>
+    <string name="share_title">You like the app?</string>
+    <string name="share_text">Share it with your friend and give it a review on the Google play.</string>
+    <string name="share">Share</string>
+    <string name="share_message">I have found an app that track the cost of my gaming time. You should try it.</string>
+    <string name="share_link">https://goo.gl/3dtCl8</string>
+    <string name="share_using">Share using</string>
+
 
     <string name="game_details_statistics_title">Statistics</string>
     <string name="activity_edit_game_title">Edit game</string>
