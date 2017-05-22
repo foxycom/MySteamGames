@@ -38,6 +38,11 @@
         <item name="colorControlActivated">@color/colorAccent</item>
     </style>
 
+    <style name="MaterialSubHeading">
+        <item name="android:textSize">@dimen/material_sub_heading_text_size</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
     <style name="TextLabel" parent="TextAppearance.Design.Hint">
         <item name="android:textSize">12sp</item>
     </style>

@@ -76,5 +76,6 @@
 
     <!-- Others -->
     <dimen name="material_button_drawable_padding">2dp</dimen>
+    <dimen name="material_sub_heading_text_size">16sp</dimen>
 
 </resources>

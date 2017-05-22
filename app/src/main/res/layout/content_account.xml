@@ -46,6 +46,7 @@
         </LinearLayout>
 
         <TextView
+            style="@style/MaterialSubHeading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/profile_title1" />
@@ -72,10 +73,9 @@
             android:paddingBottom="16dp" />
 
         <TextView
+            style="@style/MaterialSubHeading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
             android:text="@string/share_title" />
 
         <TextView

@@ -127,9 +127,9 @@
     <string name="account_user_picture_content_description">User picture</string>
     <string name="action_preferences">Edit preferences</string>
     <string name="share_title">You like the app?</string>
-    <string name="share_text">Share it with your friend and give it a review on the Google play.</string>
+    <string name="share_text">Share it with your friends and give it a review on the Google play.</string>
     <string name="share">Share</string>
-    <string name="share_message">I have found an app that track the cost of my gaming time. You should try it.</string>
+    <string name="share_message">I have found an app that tracks the cost of my gaming time. You should try it.</string>
     <string name="share_link">https://goo.gl/3dtCl8</string>
     <string name="share_using">Share using</string>
 
