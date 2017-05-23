@@ -9,6 +9,7 @@
     <string name="game_icon_content_description">Game icon</string>
     <string name="time_icon_content_description">Time icon</string>
     <string name="money_icon_content_description">Money icon</string>
+    <string name="currency">Currency</string>
 
     <!-- Notification -->
     <string name="new_game_notification_title">New game in your library</string>
@@ -152,8 +153,14 @@
         <item>h</item>
         <item>mn</item>
     </string-array>
-    <string name="activity_settings_title">Settings</string>
-    <string name="currency">Currency</string>
+
+
+    <!-- Settings fragment -->
+    <string name="settings_profitable_limit_summary">Games with a price per hour bellow that value will be considered finished.</string>
+    <string name="settings_profitable_limit_title">Profitable limit</string>
+    <string name="settings_activity_title">Settings</string>
+    <string name="settings_currency_summary">Currency displayed in the app.</string>
+
 
     <!-- Example data -->
     <string name="game_title_example_1">Borderlands 2</string>

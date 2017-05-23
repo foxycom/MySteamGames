@@ -44,8 +44,7 @@
             android:parentActivityName=".ui.GameDetailsActivity" />
         <activity
             android:name=".ui.SettingsActivity"
-            android:parentActivityName=".ui.GameListActivity"
-            android:theme="@style/AppTheme" />
+            android:parentActivityName=".ui.GameListActivity" />
         <!-- Declaring Service in Manifest -->
         <service
             android:name=".sync.RetrieveDataFromSteamIntentService"

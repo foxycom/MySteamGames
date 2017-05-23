@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import com.facebook.stetho.Stetho;
 import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.data.MainPagerAdapter;
+import com.joffreylagut.mysteamgames.mysteamgames.sync.ReminderUtilities;
 import com.joffreylagut.mysteamgames.mysteamgames.sync.RetrieveDataFromSteamIntentService;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.UiUtilities;
@@ -28,7 +29,7 @@ import butterknife.ButterKnife;
  * Purpose: Main activity of the application. Allow the user to access to the main functionality.
  *
  * @author Joffrey LAGUT
- * @version 1.1 2017-05-17
+ * @version 1.1 2017-05-23
  */
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, HomeFragment.OnGameSelectedListener, GamesFragment.OnGameSelectedListener, GoalsFragment.OnGameSelectedListener, FinishedFragment.OnGameSelectedListener {
@@ -54,9 +55,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         Stetho.initializeWithDefaults(this);
 
-        // We start the service that retrieve steam information
+        // Start the service that retrieve steam information
         Intent dataRetrieverService = new Intent(this, RetrieveDataFromSteamIntentService.class);
         startService(dataRetrieverService);
+
+        ReminderUtilities.schedulesRetrieveDataFromSteam(this);
 
         // We disable the shift mode of the bottom navigation view
         UiUtilities.removeBottomNavigationShiftMode(mBottomNavigationView);

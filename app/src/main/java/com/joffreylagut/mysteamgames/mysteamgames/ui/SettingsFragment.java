@@ -2,15 +2,19 @@ package com.joffreylagut.mysteamgames.mysteamgames.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 
 import com.joffreylagut.mysteamgames.mysteamgames.R;
+import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
 
 /**
- * Created by Joffrey on 28/02/2017.
+ * SettingsFragment.java
+ * Purpose: Display the settings.
+ *
+ * @author Joffrey LAGUT
+ * @version 1.0 2017-05-23
  */
 
 public class SettingsFragment extends PreferenceFragmentCompat implements
@@ -20,33 +24,46 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     public void onCreatePreferences(Bundle bundle, String s) {
         addPreferencesFromResource(R.xml.preferences);
 
-        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
         PreferenceScreen prefScreen = getPreferenceScreen();
         int count = prefScreen.getPreferenceCount();
 
         // Go through all of the preferences, and set up their preference summary.
         for (int i = 0; i < count; i++) {
-            Preference p = prefScreen.getPreference(i);
-            // You don't need to set up preference summaries for checkbox preferences because
-            // they are already set up in xml using summaryOff and summary On
-            if (!(p instanceof CheckBoxPreference)) {
-                String value = sharedPreferences.getString(p.getKey(), "");
-                p.setSummary(value);
+            Preference preference = prefScreen.getPreference(i);
+            updateSummary(preference);
+        }
+
+    }
+
+    /**
+     * Update the summary of a preference to put value + \n + summary
+     *
+     * @param preference that we want to update.
+     */
+    private void updateSummary(Preference preference) {
+
+        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
+        String extraValue = sharedPreferences.getString(SharedPreferencesHelper.CURRENCY, "$") + "/h";
+        if (null != preference) {
+            String summary = (String) preference.getSummary();
+            String summarySplit[] = summary.split("\n");
+            String value = sharedPreferences.getString(preference.getKey(), "");
+            if (preference.getKey().equals(SharedPreferencesHelper.PROFITABLE_LIMIT)) {
+                value += extraValue;
+            }
+            if (summarySplit.length == 1) {
+                preference.setSummary(value + "\n" + summarySplit[0]);
+            } else {
+                preference.setSummary(value + "\n" + summarySplit[1]);
             }
         }
+
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        // Figure out which preference was changed
         Preference preference = findPreference(key);
-        if (null != preference) {
-            // Updates the summary for the preference
-            if (!(preference instanceof CheckBoxPreference)) {
-                String value = sharedPreferences.getString(preference.getKey(), "");
-                preference.setSummary(value);
-            }
-        }
+        updateSummary(preference);
     }
 
     /**
@@ -76,4 +93,5 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
+
 }

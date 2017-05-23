@@ -2,12 +2,18 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <EditTextPreference
         android:defaultValue="1"
-        android:key="profitableLimit" />
+        android:key="profitableLimit"
+        android:summary="@string/settings_profitable_limit_summary"
+        android:title="@string/settings_profitable_limit_title"
+        android:inputType="numberDecimal"
+        android:dialogMessage="@string/settings_profitable_limit_summary"
+        android:dialogTitle="@string/settings_profitable_limit_title"
+        android:dialogLayout="@layout/dialog_profitable_limit" />
     <ListPreference
         android:defaultValue="€"
         android:entries="@array/list_currency"
         android:entryValues="@array/list_currency"
         android:key="lp_currency"
-        android:summary="Select the currency to display in the app."
+        android:summary="@string/settings_currency_summary"
         android:title="@string/currency" />
 </PreferenceScreen>

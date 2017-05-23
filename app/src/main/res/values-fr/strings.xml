@@ -4,7 +4,7 @@
     <string name="activity_edit_game_title">Modifier le jeu</string>
     <string name="activity_login_title">Connexion</string>
     <string name="activity_main_title">Ma bibliothèque</string>
-    <string name="activity_settings_title">Paramètres</string>
+    <string name="settings_activity_title">Paramètres</string>
     <string name="alert_new_bundle_title">Nom du nouveau pack</string>
     <string name="bundle_introduction">Ce jeu est inclu dans le pack</string>
     <string name="bundle_name">Nom du pack</string>
