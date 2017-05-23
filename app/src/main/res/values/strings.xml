@@ -114,13 +114,13 @@
     <string name="finished_card_title">Goals finished</string>
 
     <!-- Account fragment -->
-    <string name="user_name_sample">User name</string>
-    <string name="total_number_of_games_sample">254 games</string>
+    <string name="user_name_sample" translatable="false">User name</string>
+    <string name="total_number_of_games_sample" translatable="false">254 games</string>
     <string name="action_settings">Settings</string>
-    <string name="total_number_of_hours_played">2598h played</string>
-    <string name="total_amount_money_spent">1365€ spent</string>
+    <string name="total_number_of_hours_played" translatable="false">2598h played</string>
+    <string name="total_amount_money_spent" translatable="false">1365€ spent</string>
     <string name="profile_title1">Your average price per hour played:</string>
-    <string name="profile_score_sample">0.75€/h</string>
+    <string name="profile_score_sample" translatable="false">0.75€/h</string>
     <string name="profile_goal_reached">Congratulation, you have reached your goal!\nYou are now able to evaluate if a game worth it at the current price before buying it.</string>
     <string name="profile_goal_25_percent_reached">You have almost reached your goal!\nYour should stop buying new games for some time and have fun with the games that you already owned.</string>
     <string name="profile_goal_not_reached">You haven\'t reached your goal yet.\nYour should stop buying new games and have fun with the games that you already owned.</string>
@@ -131,7 +131,7 @@
     <string name="share_text">Share it with your friends and give it a review on the Google play.</string>
     <string name="share">Share</string>
     <string name="share_message">I have found an app that tracks the cost of my gaming time. You should try it.</string>
-    <string name="share_link">https://goo.gl/3dtCl8</string>
+    <string name="share_link" translatable="false">https://goo.gl/3dtCl8</string>
     <string name="share_using">Share using</string>
 
 
@@ -163,24 +163,24 @@
 
 
     <!-- Example data -->
-    <string name="game_title_example_1">Borderlands 2</string>
-    <string name="game_goals_progression_hours_1">120 / 135h</string>
-    <string name="game_goals_progression_percent_1">89%</string>
-    <string name="game_hours_played_1">120h</string>
-    <string name="game_price_per_hour_1">0.35€/h</string>
-    <string name="game_position_1">#1</string>
+    <string name="game_title_example_1" translatable="false">Borderlands 2</string>
+    <string name="game_goals_progression_hours_1" translatable="false">120 / 135h</string>
+    <string name="game_goals_progression_percent_1" translatable="false">89%</string>
+    <string name="game_hours_played_1" translatable="false">120h</string>
+    <string name="game_price_per_hour_1" translatable="false">0.35€/h</string>
+    <string name="game_position_1" translatable="false">#1</string>
 
-    <string name="game_title_example_2">Dungeon Defenders</string>
-    <string name="game_goals_progression_hours_2">12 / 48h</string>
-    <string name="game_goals_progression_percent_2">25%</string>
-    <string name="game_hours_played_2">33h</string>
-    <string name="game_price_per_hour_2">0.71€/h</string>
-    <string name="game_position_2">#2</string>
+    <string name="game_title_example_2" translatable="false">Dungeon Defenders</string>
+    <string name="game_goals_progression_hours_2" translatable="false">12 / 48h</string>
+    <string name="game_goals_progression_percent_2" translatable="false">25%</string>
+    <string name="game_hours_played_2" translatable="false">33h</string>
+    <string name="game_price_per_hour_2" translatable="false">0.71€/h</string>
+    <string name="game_position_2" translatable="false">#2</string>
 
-    <string name="game_title_example_3">Dawn of War</string>
-    <string name="game_goals_progression_hours_3">25 / 43h</string>
-    <string name="game_goals_progression_percent_3">58%</string>
-    <string name="game_hours_played_3">24h</string>
-    <string name="game_price_per_hour_3">0.19€/h</string>
-    <string name="game_position_3">#3</string>
+    <string name="game_title_example_3" translatable="false">Dawn of War</string>
+    <string name="game_goals_progression_hours_3" translatable="false">25 / 43h</string>
+    <string name="game_goals_progression_percent_3" translatable="false">58%</string>
+    <string name="game_hours_played_3" translatable="false">24h</string>
+    <string name="game_price_per_hour_3" translatable="false">0.19€/h</string>
+    <string name="game_position_3" translatable="false">#3</string>
 </resources>
