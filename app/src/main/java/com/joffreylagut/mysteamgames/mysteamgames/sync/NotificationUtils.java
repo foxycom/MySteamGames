@@ -13,7 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.joffreylagut.mysteamgames.mysteamgames.R;
-import com.joffreylagut.mysteamgames.mysteamgames.ui.GameListActivity;
+import com.joffreylagut.mysteamgames.mysteamgames.ui.MainActivity;
 
 /**
  * Created by Joffrey on 13/03/2017.
@@ -68,7 +68,7 @@ public class NotificationUtils {
     }
 
     private static PendingIntent contentIntent(Context context) {
-        Intent startActivityIntent = new Intent(context, GameListActivity.class);
+        Intent startActivityIntent = new Intent(context, MainActivity.class);
         return PendingIntent.getActivity(
                 context,
                 NEW_GAME_NOTIFICATION_PENDING_INTENT_ID,

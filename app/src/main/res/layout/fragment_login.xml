@@ -26,6 +26,7 @@
         android:layout_gravity="center"
         android:paddingBottom="20dp"
         android:paddingTop="10dp"
+        android:textAlignment="center"
         android:text="@string/login_message" />
 
     <Button

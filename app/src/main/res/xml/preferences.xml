@@ -10,7 +10,7 @@
         android:dialogTitle="@string/settings_profitable_limit_title"
         android:dialogLayout="@layout/dialog_profitable_limit" />
     <ListPreference
-        android:defaultValue="€"
+        android:defaultValue="$"
         android:entries="@array/list_currency"
         android:entryValues="@array/list_currency"
         android:key="lp_currency"

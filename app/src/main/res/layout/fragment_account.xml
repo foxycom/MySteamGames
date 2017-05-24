@@ -19,7 +19,7 @@
             app:expandedTitleGravity="bottom|center_horizontal"
             app:expandedTitleTextAppearance="@style/ExpandedToolbarUserName"
             app:expandedTitleMarginBottom="@dimen/account_expanded_title_margin_bottom"
-            app:layout_scrollFlags="exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
                 android:layout_width="match_parent"

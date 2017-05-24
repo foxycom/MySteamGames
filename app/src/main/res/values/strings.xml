@@ -1,15 +1,12 @@
 <resources>
 
+    <string name="app_name">Game time price</string>
+
     <!-- Login fragment -->
     <string name="login_wait_message">We are loading your Steam library.\nPlease wait…</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="app_name">Game time price</string>
-
     <!-- Common -->
-    <string name="game_icon_content_description">Game icon</string>
+    <string name="game_icon_content_description">Icon representing a game</string>
     <string name="time_icon_content_description">Time icon</string>
     <string name="money_icon_content_description">Money icon</string>
     <string name="currency">Currency</string>
@@ -22,32 +19,15 @@
     <string name="activity_login_title">Login</string>
     <string name="welcome">Welcome aboard!</string>
     <string name="login_message">Login to your Steam account to see your library.</string>
-    <string name="disclaimer">Note: This app can only access to your public information.</string>
+    <string name="disclaimer">Note: this app can only access to your public information.</string>
 
     <!-- MainActivity -->
-    <string name="activity_main_title">My library</string>
-    <string name="new_steam_data_loaded">New Steam data loaded!</string>
-    <string name="snack_bar_action_refresh">Refresh</string>
-    <string name="menu_sort">Sort</string>
-    <string name="menu_ascendant">Ascendant</string>
-    <string name="menu_descendant">Descendant</string>
-    <string name="menu_sort_alphabetical" translatable="false">A-Z</string>
-    <string name="menu_sort_time_played">Time played</string>
-    <string name="menu_sort_total_price">Total price</string>
-    <string name="menu_sort_price_per_hour">Price per hour</string>
     <string name="never_played">Never played yet</string>
-    <string name="tab_recent_title">Recent</string>
-    <string name="tab_favorite_title">Favorites</string>
-    <string name="tab_all_title">All</string>
 
     <!-- Drawer -->
-    <string name="default_account_name">Account name</string>
-    <string name="default_money_spent" translatable="false">1000$</string>
-    <string name="default_number_of_games" translatable="false">123</string>
     <string name="default_time_played" translatable="false">5298h</string>
     <string name="default_price_per_hour" translatable="false">0.18$/h</string>
     <string name="nav_btn_logout">Logout</string>
-    <string name="nav_btn_settings">Settings</string>
 
     <!-- Default units -->
     <string name="games">games</string>
@@ -125,7 +105,6 @@
     <string name="finished_no_content">No goals achieved.\n Did you set the price of your games?</string>
 
     <!-- Account fragment -->
-    <string name="user_name_sample" translatable="false">User name</string>
     <string name="total_number_of_games_sample" translatable="false">254 games</string>
     <string name="action_settings">Settings</string>
     <string name="total_number_of_hours_played" translatable="false">2598h played</string>
@@ -137,7 +116,6 @@
     <string name="profile_goal_not_reached">You haven\'t reached your goal yet.\nYour should stop buying new games and have fun with the games that you already owned.</string>
     <string name="account_user_background_content_description">Game library picture</string>
     <string name="account_user_picture_content_description">User picture</string>
-    <string name="action_preferences">Edit preferences</string>
     <string name="share_title">You like the app?</string>
     <string name="share_text">Share it with your friends and give it a review on the Google play.</string>
     <string name="share">Share</string>
@@ -173,26 +151,20 @@
     <string name="settings_activity_title">Settings</string>
     <string name="settings_currency_summary">Currency displayed in the app.</string>
 
-
     <!-- Example data -->
     <string name="game_title_example_1" translatable="false">Borderlands 2</string>
     <string name="game_goals_progression_hours_1" translatable="false">120 / 135h</string>
     <string name="game_goals_progression_percent_1" translatable="false">89%</string>
     <string name="game_hours_played_1" translatable="false">120h</string>
     <string name="game_price_per_hour_1" translatable="false">0.35€/h</string>
-    <string name="game_position_1" translatable="false">#1</string>
 
     <string name="game_title_example_2" translatable="false">Dungeon Defenders</string>
     <string name="game_goals_progression_hours_2" translatable="false">12 / 48h</string>
     <string name="game_goals_progression_percent_2" translatable="false">25%</string>
     <string name="game_hours_played_2" translatable="false">33h</string>
     <string name="game_price_per_hour_2" translatable="false">0.71€/h</string>
-    <string name="game_position_2" translatable="false">#2</string>
 
     <string name="game_title_example_3" translatable="false">Dawn of War</string>
     <string name="game_goals_progression_hours_3" translatable="false">25 / 43h</string>
     <string name="game_goals_progression_percent_3" translatable="false">58%</string>
-    <string name="game_hours_played_3" translatable="false">24h</string>
-    <string name="game_price_per_hour_3" translatable="false">0.19€/h</string>
-    <string name="game_position_3" translatable="false">#3</string>
 </resources>

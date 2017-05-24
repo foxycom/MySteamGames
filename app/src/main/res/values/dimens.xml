@@ -2,8 +2,6 @@
     <!-- Default screen margins -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="nav_header_vertical_spacing">16dp</dimen>
-    <dimen name="nav_header_height">165dp</dimen>
     <dimen name="padding_between_input">8dp</dimen>
 
     <!-- Material cards -->
@@ -25,13 +23,8 @@
 
     <!-- Bottom navigation view Material design -->
     <dimen name="bnv_height">56dp</dimen>
-    <dimen name="bnv_icon_size">24dp</dimen>
-    <dimen name="bnv_padding_top_active">6dp</dimen>
-    <dimen name="bnv_padding_top_inactive">8dp</dimen>
-    <dimen name="bnv_padding_bottom">10dp</dimen>
 
     <!-- Home game rectangle display -->
-    <dimen name="home_game_rectangle_width">0dp</dimen>
     <dimen name="home_game_rectangle_drawable_size">0dp</dimen>
     <dimen name="home_game_rectangle_drawable_margins">0dp</dimen>
     <dimen name="home_game_title_width">0dp</dimen>

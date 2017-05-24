@@ -29,22 +29,14 @@
             android:name=".ui.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.GameListActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:name=".ui.EditGameActivity"
+            android:parentActivityName=".ui.MainActivity" />
         <activity
             android:name=".ui.GameDetailsActivity"
-            android:parentActivityName=".ui.GameListActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoTitleActionBar" />
-        <activity
-            android:name=".ui.EditGameActivity"
-            android:parentActivityName=".ui.GameDetailsActivity" />
+            android:parentActivityName=".ui.MainActivity" />
         <activity
             android:name=".ui.SettingsActivity"
-            android:parentActivityName=".ui.GameListActivity" />
+            android:parentActivityName=".ui.MainActivity" />
         <!-- Declaring Service in Manifest -->
         <service
             android:name=".sync.RetrieveDataFromSteamIntentService"
