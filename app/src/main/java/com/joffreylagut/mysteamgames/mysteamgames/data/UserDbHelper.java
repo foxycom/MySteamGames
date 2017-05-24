@@ -638,7 +638,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
                 UserContract.GameEntry.COLUMN_GAME_LOGO, game.getGameLogo().toString());
         if (game.getGameIcon() != null) cvGame.put(
                 UserContract.GameEntry.COLUMN_GAME_ICON, game.getGameIcon().toString());
-        if (game.getMarketplace() != null) cvGame.put(
+        if (!game.getMarketplace().equals("")) cvGame.put(
                 UserContract.GameEntry.COLUMN_MARKETPLACE, game.getMarketplace());
 
         return db.update(UserContract.GameEntry.TABLE_NAME, cvGame,

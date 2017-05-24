@@ -139,7 +139,7 @@
     <string name="alert_new_bundle_title">Name of the new bundle</string>
     <string name="spinner_new_bundle_item">+ New bundle</string>
     <string name="spinner_choose_bundle_item">Choose a bundle</string>
-    <string-array name="time_unit">
+    <string-array name="time_unit" translatable="false">
         <item>h</item>
         <item>mn</item>
     </string-array>
