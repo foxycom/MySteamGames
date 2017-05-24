@@ -68,8 +68,8 @@
     <string name="game_icon_content_description">Icône de jeu</string>
     <string name="game_picture_content_description">Image du jeu</string>
     <string name="games_action">Jeux</string>
-    <string name="games_without_price_card_icon_content_description">Jeux sans prix</string>
-    <string name="games_without_price_card_title">Jeux sans prix</string>
+    <string name="goals_games_without_price_card_icon_content_description">Jeux sans prix</string>
+    <string name="goals_games_without_price_card_title">Jeux sans prix</string>
     <string name="goals_action">Objectifs</string>
     <string name="goals_in_progress_card_icon_content_description">Objectifs en cours de progression</string>
     <string name="goals_in_progress_card_title">Objectifs en cours de progression</string>
@@ -103,4 +103,5 @@
     <string name="share_using">Partager sur</string>
     <string name="silver_trophy_content_description">Trophé d\'argent</string>
     <string name="time_icon_content_description">Icône de temps</string>
+    <string name="account_no_information">Nous n\'avons pas d\'informations sur le prix de vos jeux.\\nAjouter leur prix pour voir vos statistiques.</string>
 </resources>

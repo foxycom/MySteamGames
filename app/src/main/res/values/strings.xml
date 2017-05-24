@@ -1,9 +1,12 @@
 <resources>
 
+    <!-- Login fragment -->
+    <string name="login_wait_message">We are loading your Steam library.\nPlease wait…</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="app_name">Game time price v2</string>
+    <string name="app_name">Game time price</string>
 
     <!-- Common -->
     <string name="game_icon_content_description">Game icon</string>
@@ -79,15 +82,19 @@
     <!-- Home Fragment-->
     <string name="home_card_goals_title">Goals almost achieved</string>
     <string name="home_goals_card_icon_content_description">Goals</string>
+    <string name="home_no_goals">You have no goals yet.\nSet the price of your games to display your goals almost finished here.</string>
 
     <string name="home_card_favorite_goals_title">Favorites</string>
     <string name="home_favorite_goals_card_icon_content_description">Goals</string>
+    <string name="home_no_favorite">You have no favorites.\nWhen watching the details of a game, click on the start to have them displayed here and track them easily.</string>
 
     <string name="home_card_most_played_title">Most played</string>
     <string name="home_most_played_card_icon_content_description">Most played</string>
+    <string name="home_no_most_played">No time played information.\nWe could still download Steam information.</string>
 
     <string name="home_card_most_profitable_title">Most profitable</string>
     <string name="home_most_profitable_card_icon_content_description">Most profitable</string>
+    <string name="home_no_most_profitable">No game to display.\nSet the price of your games to display the most profitable here.</string>
     <string name="gold_trophy_content_description">Gold trophy</string>
     <string name="silver_trophy_content_description">Silver trophy</string>
     <string name="bronze_trophy_content_description">Bronze trophy</string>
@@ -106,12 +113,16 @@
     <string name="goals_in_progress_card_title">Goals in progress</string>
     <string name="goals_not_started_card_icon_content_description">Not started icon</string>
     <string name="goals_not_started_card_title">Goals not started yet</string>
-    <string name="games_without_price_card_icon_content_description">No price information</string>
-    <string name="games_without_price_card_title">No price information</string>
+    <string name="goals_games_without_price_card_icon_content_description">No price information</string>
+    <string name="goals_games_without_price_card_title">No price information</string>
+    <string name="goals_no_goals_in_progress">No games to show.\nSet the price of your games or start a new game from the goals not started list.</string>
+    <string name="goals_no_goals_not_started">No games to show.\nSet the price of your games to see the ones that are not started here.</string>
+    <string name="goals_no_game_without_price">Congratulation, you have set the price of all your games.</string>
 
     <!-- Goals finished fragment -->
     <string name="finished_card_icon_content_description">Goals finished icon</string>
     <string name="finished_card_title">Goals finished</string>
+    <string name="finished_no_content">No goals achieved.\n Did you set the price of your games?</string>
 
     <!-- Account fragment -->
     <string name="user_name_sample" translatable="false">User name</string>
@@ -133,6 +144,7 @@
     <string name="share_message">I have found an app that tracks the cost of my gaming time. You should try it.</string>
     <string name="share_link" translatable="false">https://goo.gl/3dtCl8</string>
     <string name="share_using">Share using</string>
+    <string name="account_no_information">We don\'t have the information about the price of your games.\nAdd the price of your games to see your stats.</string>
 
 
     <string name="game_details_statistics_title">Statistics</string>

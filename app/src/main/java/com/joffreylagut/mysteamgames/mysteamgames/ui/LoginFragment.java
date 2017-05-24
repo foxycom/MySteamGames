@@ -10,13 +10,14 @@ import android.view.ViewGroup;
 import com.joffreylagut.mysteamgames.mysteamgames.R;
 
 /**
- * Created by Joffrey on 02/03/2017.
+ * LoginFragment.java
+ * Purpose: Inflate the fragment_login layout.
+ *
+ * @author Joffrey LAGUT
+ * @version 1.0 2017-05-25
  */
 
 public class LoginFragment extends Fragment {
-
-    public LoginFragment() {
-    }
 
     @Nullable
     @Override
@@ -24,8 +25,5 @@ public class LoginFragment extends Fragment {
         //return super.onCreateView(inflater, container, savedInstanceState);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false);
-    }
-
-    public interface OnFragmentInteractionListener {
     }
 }

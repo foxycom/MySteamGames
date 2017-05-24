@@ -35,7 +35,7 @@ import butterknife.OnClick;
  * Purpose: Inflate and manage fragment_account layout.
  *
  * @author Joffrey LAGUT
- * @version 1.0 2017-05-03
+ * @version 1.1 2017-05-24
  */
 
 public class AccountFragment extends Fragment {
@@ -52,6 +52,8 @@ public class AccountFragment extends Fragment {
     TextView mTvAveragePricePerHour;
     @BindView(R.id.account_message)
     TextView mTvMessage;
+    @BindView(R.id.account_no_game_price_message)
+    TextView mtvNoGamePriceMessage;
     @BindView(R.id.toolbar)
     Toolbar mTbUserName;
     @BindView(R.id.action_share)
@@ -157,7 +159,17 @@ public class AccountFragment extends Fragment {
         mTvNbGames.setText(nbGamesPlayed);
         String nbHoursPlayed = UnitsConverterHelper.displayMinutesInHours(mUser.getNbMinutesPlayed()) + " " + getResources().getString(R.string.played);
         mTvNbHoursPlayed.setText(nbHoursPlayed);
-        String moneySpent = UnitsConverterHelper.formatDouble(mUser.getTotalMoneySpent()) + mCurrency + " " + getResources().getString(R.string.money_spent);
+        String moneySpent;
+        if (mUser.getTotalMoneySpent() == 0) {
+            mTvMessage.setVisibility(View.GONE);
+            mtvNoGamePriceMessage.setVisibility(View.VISIBLE);
+            moneySpent = "0";
+        } else {
+            mTvMessage.setVisibility(View.VISIBLE);
+            mtvNoGamePriceMessage.setVisibility(View.GONE);
+            moneySpent = String.valueOf(UnitsConverterHelper.formatDouble(mUser.getTotalMoneySpent()));
+        }
+        moneySpent += mCurrency + " " + getResources().getString(R.string.money_spent);
         mTvMoneySpent.setText(moneySpent);
         String pricePerHour = UnitsConverterHelper.createPricePerHour(mUser.getAveragePricePerHour(), mCurrency);
         mTvAveragePricePerHour.setText(pricePerHour);

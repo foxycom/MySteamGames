@@ -73,6 +73,7 @@
     <dimen name="account_global_stats_text_view_width">0dp</dimen>
     <dimen name="account_global_stats_text_view_drawable_padding">2dp</dimen>
     <dimen name="account_global_stats_text_view_vertical_padding">8dp</dimen>
+    <dimen name="account_no_content_text_view_margins">20dp</dimen>
 
     <!-- Others -->
     <dimen name="material_button_drawable_padding">2dp</dimen>

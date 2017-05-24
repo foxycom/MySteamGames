@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.data.GameTongueAdapter;
@@ -33,7 +34,7 @@ import static com.joffreylagut.mysteamgames.mysteamgames.data.GameTongueAdapter.
  * Purpose: Inflate and manage fragment_home layout.
  *
  * @author Joffrey LAGUT
- * @version 1.2 2017-05-15
+ * @version 1.3 2017-05-24
  */
 
 public class HomeFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemClickListener {
@@ -53,12 +54,20 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
 
     @BindView(R.id.favorite_goals_card_list_view)
     ListView mLvFavorites;
+    @BindView(R.id.favorite_goals_card_no_content_message)
+    TextView mTvNoFavorites;
     @BindView(R.id.goals_card_list_view)
     ListView mLvGoals;
+    @BindView(R.id.goals_card_no_content_message)
+    TextView mTvNoGoals;
     @BindView(R.id.most_played_card_list_view)
     ListView mLvMostPlayed;
+    @BindView(R.id.most_played_card_no_content_message)
+    TextView mTvNoMostPlayed;
     @BindView(R.id.most_profitable_card_list_view)
     ListView mLvMostProfitable;
+    @BindView(R.id.most_profitable_card_no_content_message)
+    TextView mTvNoProfitable;
 
     private OnGameSelectedListener mCallback;
     private UserDbHelper mUserDbHelper;
@@ -89,13 +98,20 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
         View viewRoot = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, viewRoot);
 
+        setGlobalVars();
+
+        return viewRoot;
+    }
+
+    /**
+     * Set the global vars of the Fragment.
+     */
+    private void setGlobalVars() {
         mUserDbHelper = UserDbHelper.getInstance(getContext());
         mDb = mUserDbHelper.getWritableDatabase();
         mUserId = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(SharedPreferencesHelper.USER_ID, 0);
         mCurrency = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(SharedPreferencesHelper.CURRENCY, "$");
         mProfitableThreshold = Double.parseDouble(PreferenceManager.getDefaultSharedPreferences(getContext()).getString(SharedPreferencesHelper.PROFITABLE_LIMIT, "1"));
-
-        return viewRoot;
     }
 
     @Override
@@ -137,7 +153,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
         }
 
         List<GameTongueAdapter.GameTongue> almostAchievedGameTongues = convertOwnedGameListToGameTongueList(ownedGamesAlmostAchieved, mCurrency, mProfitableThreshold);
-        GameTongueHelper.displayGameTongues(getContext(), mCvGoals, mLvGoals, almostAchievedGameTongues, this, true);
+        GameTongueHelper.displayGameTongues(getContext(), mTvNoGoals, mLvGoals, almostAchievedGameTongues, this, true);
 
     }
 
@@ -149,7 +165,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
         List<OwnedGame> mostPlayedOwnedGames = mUserDbHelper.getUserMostPlayedOwnedGames(mDb, mUserId, NUMBER_OF_MOST_PLAYED);
         List<GameTongueAdapter.GameTongue> mostPlayedGameTongues = GameTongueHelper.createMostPlayedGameTongues(mostPlayedOwnedGames, mCurrency);
 
-        GameTongueHelper.displayGameTongues(getContext(), mCvMostPlayed, mLvMostPlayed, mostPlayedGameTongues, this, true);
+        GameTongueHelper.displayGameTongues(getContext(), mTvNoMostPlayed, mLvMostPlayed, mostPlayedGameTongues, this, true);
     }
 
     /**
@@ -159,7 +175,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
 
         List<OwnedGame> favoritesOwnedGames = mUserDbHelper.getFavoritesOwnedGamesByUserID(mDb, mUserId);
         List<GameTongueAdapter.GameTongue> favoritesGameTongues = convertOwnedGameListToGameTongueList(favoritesOwnedGames, mCurrency, mProfitableThreshold);
-        GameTongueHelper.displayGameTongues(getContext(), mCvFavorites, mLvFavorites, favoritesGameTongues, this, true);
+        GameTongueHelper.displayGameTongues(getContext(), mTvNoFavorites, mLvFavorites, favoritesGameTongues, this, true);
 
     }
 
@@ -181,7 +197,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Ada
         }
 
         List<GameTongueAdapter.GameTongue> mostProfitableGameTongues = GameTongueHelper.createMostProfitableGameTongues(ownedGamesMostProfitable, mCurrency);
-        GameTongueHelper.displayGameTongues(getContext(), mCvMostProfitable, mLvMostProfitable, mostProfitableGameTongues, this, true);
+        GameTongueHelper.displayGameTongues(getContext(), mTvNoProfitable, mLvMostProfitable, mostProfitableGameTongues, this, true);
 
     }
 

@@ -13,7 +13,6 @@ import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.models.Game;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
 import com.joffreylagut.mysteamgames.mysteamgames.models.User;
-import com.joffreylagut.mysteamgames.mysteamgames.ui.GameListActivity;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls;
 
@@ -34,7 +33,7 @@ import static com.joffreylagut.mysteamgames.mysteamgames.utilities.SteamAPICalls
  * Purpose: Handle all the instrumental tests for RetrieveDataFromSteamIntentService.java
  *
  * @author Joffrey LAGUT
- * @version 1.1 2017-04-07
+ * @version 1.2 2017-04-24
  */
 
 public class RetrieveDataFromSteamIntentService extends IntentService {
@@ -93,7 +92,7 @@ public class RetrieveDataFromSteamIntentService extends IntentService {
 
         Intent broadcastIntent = new Intent();
         broadcastIntent.putExtra("newGameDetected", false);
-        broadcastIntent.setAction(GameListActivity.SteamDataReceiver.PROCESS_RESPONSE);
+        broadcastIntent.setAction(SteamDataReceiver.PROCESS_RESPONSE);
         broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
         sendBroadcast(broadcastIntent);
     }

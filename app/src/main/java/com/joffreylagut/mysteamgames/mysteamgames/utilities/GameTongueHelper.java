@@ -1,10 +1,10 @@
 package com.joffreylagut.mysteamgames.mysteamgames.utilities;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.joffreylagut.mysteamgames.mysteamgames.data.GameTongueAdapter;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
@@ -17,7 +17,7 @@ import java.util.List;
  * Purpose: Contains helpers to create the GameTongue lists from OwnedGame lists.
  *
  * @author Joffrey LAGUT
- * @version 1.1 2017-05-17
+ * @version 1.2 2017-05-24
  */
 
 public class GameTongueHelper {
@@ -88,21 +88,23 @@ public class GameTongueHelper {
      * Display the list of GameTongues in the ListView in parameter.
      * If there is no GameTongue in the list, the cardView visibility is set to GONE.
      *
-     * @param context           Environment variables.
-     * @param cardViewDisplayed CardView that contains the ListView to fulfill.
-     * @param listViewToFulfill ListView in which we want to display the gameTongues.
-     * @param listener          Listener to apply on each View of the ListView
-     * @param resizeHeight      True if we want to resize the height of the ListView depending on the number of elements.
-     * @param gameTongues       elements to display in the ListView.
+     * @param context               Environment variables.
+     * @param tvMessageIfNoContent  TextView displaying a message when there is no content.
+     * @param listViewToFulfill     ListView in which we want to display the gameTongues.
+     * @param listener              Listener to apply on each View of the ListView
+     * @param resizeHeight          True if we want to resize the height of the ListView depending on the number of elements.
+     * @param gameTongues           elements to display in the ListView.
      */
-    public static void displayGameTongues(Context context, CardView cardViewDisplayed, ListView listViewToFulfill, List<GameTongueAdapter.GameTongue> gameTongues, AdapterView.OnItemClickListener listener, boolean resizeHeight) {
+    public static void displayGameTongues(Context context, TextView tvMessageIfNoContent, ListView listViewToFulfill, List<GameTongueAdapter.GameTongue> gameTongues, AdapterView.OnItemClickListener listener, boolean resizeHeight) {
 
         // We check if there is games in the list to show/hide the card
-        if (cardViewDisplayed != null && gameTongues.size() == 0) {
-            cardViewDisplayed.setVisibility(View.GONE);
+        if (listViewToFulfill != null && gameTongues.size() == 0) {
+            listViewToFulfill.setVisibility(View.GONE);
+            tvMessageIfNoContent.setVisibility(View.VISIBLE);
         } else {
-            if (cardViewDisplayed != null) {
-                cardViewDisplayed.setVisibility(View.VISIBLE);
+            if (listViewToFulfill != null) {
+                listViewToFulfill.setVisibility(View.VISIBLE);
+                tvMessageIfNoContent.setVisibility(View.GONE);
             }
 
             // We create a new Adapter, set it to the ListView and set the ListViewHeight using the helper

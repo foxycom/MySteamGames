@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.data.GameTongueAdapter;
@@ -31,13 +32,15 @@ import butterknife.ButterKnife;
  * Purpose: Inflate and manage fragment_finished layout.
  *
  * @author Joffrey LAGUT
- * @version 1.1 2017-05-17
+ * @version 1.1 2017-05-24
  */
 
 public class FinishedFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     @BindView(R.id.finished_card_list_view)
     ListView mGoalsFinished;
+    @BindView(R.id.finished_card_no_content_message)
+    TextView mTvNoGoalsFinished;
 
     private OnGameSelectedListener mCallback;
     private UserDbHelper mUserDbHelper;
@@ -92,7 +95,7 @@ public class FinishedFragment extends Fragment implements AdapterView.OnItemClic
 
         List<GameTongueAdapter.GameTongue> gameTongues = GameTongueAdapter.convertOwnedGameListToGameTongueList(goalsFinished, mCurrency, mProfitableThreshold);
 
-        GameTongueHelper.displayGameTongues(getContext(), null, mGoalsFinished, gameTongues, this, false);
+        GameTongueHelper.displayGameTongues(getContext(), mTvNoGoalsFinished, mGoalsFinished, gameTongues, this, false);
     }
 
     /**

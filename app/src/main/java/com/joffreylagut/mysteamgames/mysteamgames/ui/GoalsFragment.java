@@ -38,7 +38,7 @@ import butterknife.OnClick;
  * Purpose: Inflate and manage fragment_goals layout.
  *
  * @author Joffrey LAGUT
- * @version 1.1 2017-05-17
+ * @version 1.2 2017-05-24
  */
 
 public class GoalsFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -68,16 +68,22 @@ public class GoalsFragment extends Fragment implements AdapterView.OnItemClickLi
     ImageView mIvInProgressIcon;
     @BindView(R.id.goals_in_progress_card_title)
     TextView mTvInProgressTitle;
+    @BindView(R.id.goals_in_progress_card_no_content_message)
+    TextView mTvNoGoalsInProgress;
 
     @BindView(R.id.goals_not_started_card_icon)
     ImageView mIvNotStartedIcon;
     @BindView(R.id.goals_not_started_card_title)
     TextView mTvNotStartedTitle;
+    @BindView(R.id.goals_not_started_card_no_content_message)
+    TextView mTvNoGoalsNotStarted;
 
     @BindView(R.id.games_without_price_card_icon)
     ImageView mIvGameWithoutPriceIcon;
     @BindView(R.id.games_without_price_card_title)
     TextView mTvGameWithoutPriceTitle;
+    @BindView(R.id.games_without_price_card_no_content_message)
+    TextView mTvNoGameWithoutPrice;
 
     private OnGameSelectedListener mCallback;
     private UserDbHelper mUserDbHelper;
@@ -110,12 +116,7 @@ public class GoalsFragment extends Fragment implements AdapterView.OnItemClickLi
         View viewRoot = inflater.inflate(R.layout.fragment_goals, container, false);
         ButterKnife.bind(this, viewRoot);
 
-        mUserDbHelper = UserDbHelper.getInstance(getContext());
-        mDb = mUserDbHelper.getWritableDatabase();
-        mUserId = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(SharedPreferencesHelper.USER_ID, 0);
-        mCurrency = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(SharedPreferencesHelper.CURRENCY, "$");
-        mProfitableThreshold = Double.parseDouble(PreferenceManager.getDefaultSharedPreferences(getContext()).getString(SharedPreferencesHelper.PROFITABLE_LIMIT, "1"));
-
+        setGlobalVars();
         setAllListeners();
 
         // By default, the goals in progress are opened
@@ -125,12 +126,48 @@ public class GoalsFragment extends Fragment implements AdapterView.OnItemClickLi
         return viewRoot;
     }
 
+    /**
+     * Set the global vars of the fragment.
+     */
+    private void setGlobalVars() {
+        mUserDbHelper = UserDbHelper.getInstance(getContext());
+        mDb = mUserDbHelper.getWritableDatabase();
+        mUserId = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(SharedPreferencesHelper.USER_ID, 0);
+        mCurrency = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(SharedPreferencesHelper.CURRENCY, "$");
+        mProfitableThreshold = Double.parseDouble(PreferenceManager.getDefaultSharedPreferences(getContext()).getString(SharedPreferencesHelper.PROFITABLE_LIMIT, "1"));
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         fetchGoalsInProgress();
         fetchGoalsNotStartedYet();
         fetchGameWithoutPrice();
+        expandCardWithInformation();
+    }
+
+    /**
+     * Check each card to see if there is content.
+     * Display the one that have content, or the no price card if none of them have content.
+     */
+    private void expandCardWithInformation() {
+        LinearLayout linearLayoutToExpand;
+
+        setAllListeners();
+
+        if (mLvGoalsInProgress.getVisibility() != View.GONE) {
+            linearLayoutToExpand = mLlInProgress;
+            disableCardGoalsInProgressListeners();
+        } else if (mLvGoalsNotStarted.getVisibility() != View.GONE) {
+            linearLayoutToExpand = mLlNotStarted;
+            disableCardGoalsNotStartedListeners();
+        } else {
+            linearLayoutToExpand = mLlGamesWithoutPrice;
+            disableCardGamesWithoutPriceListeners();
+        }
+
+        launchAnimation(linearLayoutToExpand);
+
     }
 
     @OnClick({R.id.goals_in_progress_card_icon, R.id.goals_in_progress_card_title, R.id.goals_not_started_card_icon, R.id.goals_not_started_card_title, R.id.games_without_price_card_icon, R.id.games_without_price_card_title})
@@ -240,7 +277,7 @@ public class GoalsFragment extends Fragment implements AdapterView.OnItemClickLi
         List<GameTongueAdapter.GameTongue> gameTongueList = GameTongueAdapter.convertOwnedGameListToGameTongueList(goalsToDisplay, mCurrency, mProfitableThreshold);
 
         // And display them in the ListView
-        GameTongueHelper.displayGameTongues(getContext(), mCvGamesWithoutPrice, mLvGamesWithoutPrice, gameTongueList, this, false);
+        GameTongueHelper.displayGameTongues(getContext(), mTvNoGameWithoutPrice, mLvGamesWithoutPrice, gameTongueList, this, false);
 
     }
 
@@ -257,7 +294,7 @@ public class GoalsFragment extends Fragment implements AdapterView.OnItemClickLi
         List<GameTongueAdapter.GameTongue> gameTongueList = GameTongueAdapter.convertOwnedGameListToGameTongueList(goalsToDisplay, mCurrency, mProfitableThreshold);
 
         // And display them in the ListView
-        GameTongueHelper.displayGameTongues(getContext(), mCvNotStarted, mLvGoalsNotStarted, gameTongueList, this, false);
+        GameTongueHelper.displayGameTongues(getContext(), mTvNoGoalsNotStarted, mLvGoalsNotStarted, gameTongueList, this, false);
 
     }
 
@@ -274,7 +311,7 @@ public class GoalsFragment extends Fragment implements AdapterView.OnItemClickLi
         List<GameTongueAdapter.GameTongue> gameTongueList = GameTongueAdapter.convertOwnedGameListToGameTongueList(goalsToDisplay, mCurrency, mProfitableThreshold);
 
         // And display them in the ListView
-        GameTongueHelper.displayGameTongues(getContext(), mCvInProgress, mLvGoalsInProgress, gameTongueList, this, false);
+        GameTongueHelper.displayGameTongues(getContext(), mTvNoGoalsInProgress, mLvGoalsInProgress, gameTongueList, this, false);
 
     }
 

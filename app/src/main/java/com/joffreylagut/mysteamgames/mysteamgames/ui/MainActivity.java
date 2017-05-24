@@ -29,10 +29,12 @@ import butterknife.ButterKnife;
  * Purpose: Main activity of the application. Allow the user to access to the main functionality.
  *
  * @author Joffrey LAGUT
- * @version 1.1 2017-05-23
+ * @version 1.2 2017-05-24
  */
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, HomeFragment.OnGameSelectedListener, GamesFragment.OnGameSelectedListener, GoalsFragment.OnGameSelectedListener, FinishedFragment.OnGameSelectedListener {
+
+    public final static String ARG_FIRST_LAUNCH = "firstLaunch";
 
     private final Integer HOME_FRAGMENT_CODE = 0;
     private final Integer GOALS_FRAGMENT_CODE = 1;
@@ -55,9 +57,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         Stetho.initializeWithDefaults(this);
 
-        // Start the service that retrieve steam information
-        Intent dataRetrieverService = new Intent(this, RetrieveDataFromSteamIntentService.class);
-        startService(dataRetrieverService);
+        Intent openingIntent = getIntent();
+        boolean firstLaunch = openingIntent.getBooleanExtra(ARG_FIRST_LAUNCH, false);
+        if (firstLaunch) {
+            // Start the service that retrieve steam information
+            Intent dataRetrieverService = new Intent(this, RetrieveDataFromSteamIntentService.class);
+            startService(dataRetrieverService);
+        }
 
         ReminderUtilities.schedulesRetrieveDataFromSteam(this);
 

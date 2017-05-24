@@ -29,7 +29,7 @@ import static android.content.ContentValues.TAG;
  * Purpose: This class manage all the interactions with the database.
  *
  * @author Joffrey LAGUT
- * @version 1.7 2017-05-17
+ * @version 1.8 2017-05-24
  */
 
 public class UserDbHelper extends SQLiteOpenHelper {
@@ -411,7 +411,9 @@ public class UserDbHelper extends SQLiteOpenHelper {
                     currentUser.setTotalMoneySpent(0.00);
                     currentUser.setOwnedGames(getOwnedGamesByUserID(db, currentUser.getUserID()));
                     for (OwnedGame currentGame : currentUser.getOwnedGames()) {
-                        currentUser.setTotalMoneySpent(currentUser.getTotalMoneySpent() + currentGame.getGamePrice());
+                        if (currentGame.getGamePrice() >= 0) {
+                            currentUser.setTotalMoneySpent(currentUser.getTotalMoneySpent() + currentGame.getGamePrice());
+                        }
                         currentUser.setNbMinutesPlayed(currentUser.getNbMinutesPlayed() +
                                 currentGame.getTimePlayedForever());
                     }

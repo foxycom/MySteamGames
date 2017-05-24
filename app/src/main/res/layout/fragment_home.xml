@@ -43,7 +43,17 @@
                     app:layout_constraintTop_toBottomOf="@+id/favorite_goals_card_icon"
                     tools:ignore="NestedScrolling"
                     tools:layout_height="170dp"
-                    tools:listitem="@layout/row_game_tongue" />
+                    tools:listitem="@layout/row_game_tongue"
+                    tools:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/favorite_goals_card_no_content_message"
+                    style="@style/HomeNoContentTextView"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/favorite_goals_card_icon"
+                    android:text="@string/home_no_favorite"
+                    tools:visibility="visible" />
             </android.support.constraint.ConstraintLayout>
 
         </android.support.v7.widget.CardView>
@@ -82,6 +92,14 @@
                     tools:layout_height="170dp"
                     tools:listitem="@layout/row_game_tongue" />
 
+                <TextView
+                    android:id="@+id/goals_card_no_content_message"
+                    style="@style/HomeNoContentTextView"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/goals_card_icon"
+                    android:text="@string/home_no_goals" />
+
             </android.support.constraint.ConstraintLayout>
 
         </android.support.v7.widget.CardView>
@@ -93,7 +111,7 @@
             <android.support.constraint.ConstraintLayout style="@style/CardViewConstraintLayout">
 
                 <ImageView
-                    android:id="@+id/goals_in_progress_card_icon"
+                    android:id="@+id/most_played_card_icon"
                     style="@style/MaterialCardIcon"
                     android:background="@drawable/ic_access_time_colorprimary"
                     android:contentDescription="@string/home_most_played_card_icon_content_description"
@@ -102,23 +120,32 @@
 
 
                 <TextView
-                    android:id="@+id/goals_in_progress_card_title"
+                    android:id="@+id/most_played_card_title"
                     style="@style/MaterialCardTitle"
                     android:text="@string/home_card_most_played_title"
-                    app:layout_constraintBottom_toBottomOf="@+id/goals_in_progress_card_icon"
-                    app:layout_constraintLeft_toRightOf="@+id/goals_in_progress_card_icon"
+                    app:layout_constraintBottom_toBottomOf="@+id/most_played_card_icon"
+                    app:layout_constraintLeft_toRightOf="@+id/most_played_card_icon"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/goals_in_progress_card_icon" />
+                    app:layout_constraintTop_toTopOf="@+id/most_played_card_icon" />
 
                 <ListView
                     android:id="@+id/most_played_card_list_view"
                     style="@style/HomeListView"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/goals_in_progress_card_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/most_played_card_icon"
                     tools:ignore="NestedScrolling"
                     tools:layout_height="170dp"
                     tools:listitem="@layout/row_game_tongue" />
+
+                <TextView
+                    android:id="@+id/most_played_card_no_content_message"
+                    style="@style/HomeNoContentTextView"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/most_played_card_icon"
+                    android:text="@string/home_no_most_played"
+                    tools:visibility="visible" />
 
 
             </android.support.constraint.ConstraintLayout>
@@ -157,7 +184,17 @@
                     app:layout_constraintTop_toBottomOf="@+id/most_profitable_card_icon"
                     tools:ignore="NestedScrolling"
                     tools:layout_height="170dp"
-                    tools:listitem="@layout/row_game_tongue" />
+                    tools:listitem="@layout/row_game_tongue"
+                    tools:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/most_profitable_card_no_content_message"
+                    style="@style/HomeNoContentTextView"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/most_profitable_card_icon"
+                    android:text="@string/home_no_most_profitable"
+                    tools:visibility="visible" />
 
 
             </android.support.constraint.ConstraintLayout>

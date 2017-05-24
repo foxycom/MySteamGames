@@ -41,6 +41,14 @@
                 app:layout_constraintVertical_bias="0.0"
                 tools:listitem="@layout/row_game_tongue" />
 
+            <TextView
+                android:id="@+id/finished_card_no_content_message"
+                style="@style/HomeNoContentTextView"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/finished_card_icon"
+                android:text="@string/finished_no_content" />
+
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
