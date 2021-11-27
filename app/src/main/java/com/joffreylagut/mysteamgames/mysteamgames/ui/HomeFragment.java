@@ -3,8 +3,8 @@ package com.joffreylagut.mysteamgames.mysteamgames.ui;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.CardView;
+import androidx.preference.PreferenceManager;
+import androidx.cardview.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
 import com.joffreylagut.mysteamgames.mysteamgames.R;
 import com.joffreylagut.mysteamgames.mysteamgames.data.GameTongueAdapter;
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;
@@ -37,7 +38,7 @@ import static com.joffreylagut.mysteamgames.mysteamgames.data.GameTongueAdapter.
  * @version 1.3 2017-05-24
  */
 
-public class HomeFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemClickListener {
+public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private static final int NUMBER_OF_GOALS_ALMOST_ACHIEVED = 3;
     private static final int NUMBER_OF_MOST_PROFITABLE = NUMBER_OF_GOALS_ALMOST_ACHIEVED;

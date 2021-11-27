@@ -6,11 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/goals_in_progress_card"
         style="@style/GoalsFinishedMaterialCard">
 
-        <android.support.constraint.ConstraintLayout style="@style/GoalsCardViewConstraintLayout">
+        <androidx.constraintlayout.widget.ConstraintLayout style="@style/GoalsCardViewConstraintLayout">
 
             <ImageView
                 android:id="@+id/finished_card_icon"
@@ -49,8 +49,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/finished_card_icon"
                 android:text="@string/finished_no_content" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

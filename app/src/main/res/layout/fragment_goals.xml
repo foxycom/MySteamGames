@@ -12,11 +12,11 @@
         android:layout_weight="1"
         tools:ignore="InefficientWeight">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/goals_in_progress_card"
             style="@style/GoalsMaterialCard">
 
-            <android.support.constraint.ConstraintLayout style="@style/GoalsCardViewConstraintLayout">
+            <androidx.constraintlayout.widget.ConstraintLayout style="@style/GoalsCardViewConstraintLayout">
 
                 <ImageView
                     android:id="@+id/goals_in_progress_card_icon"
@@ -53,20 +53,20 @@
                     app:layout_constraintTop_toBottomOf="@+id/goals_in_progress_card_icon"
                     android:text="@string/goals_no_goals_in_progress" />
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/goals_not_started_linear_layout"
         style="@style/GoalsLinearLayout">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/goals_not_started_card"
             style="@style/GoalsMaterialCard">
 
-            <android.support.constraint.ConstraintLayout style="@style/GoalsCardViewConstraintLayout">
+            <androidx.constraintlayout.widget.ConstraintLayout style="@style/GoalsCardViewConstraintLayout">
 
                 <ImageView
                     android:id="@+id/goals_not_started_card_icon"
@@ -103,20 +103,20 @@
                     app:layout_constraintTop_toBottomOf="@+id/goals_not_started_card_icon"
                     android:text="@string/goals_no_goals_not_started" />
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/games_without_price_linear_layout"
         style="@style/GoalsLinearLayout">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/games_without_price_card"
             style="@style/GoalsMaterialCard">
 
-            <android.support.constraint.ConstraintLayout style="@style/GoalsCardViewConstraintLayout">
+            <androidx.constraintlayout.widget.ConstraintLayout style="@style/GoalsCardViewConstraintLayout">
 
                 <ImageView
                     android:id="@+id/games_without_price_card_icon"
@@ -153,7 +153,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/games_without_price_card_icon"
                     android:text="@string/goals_no_game_without_price" />
 
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 </LinearLayout>

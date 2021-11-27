@@ -1,8 +1,8 @@
 package com.joffreylagut.mysteamgames.mysteamgames.utilities;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 
+import androidx.test.InstrumentationRegistry;
 import com.joffreylagut.mysteamgames.mysteamgames.data.GameTongueAdapter;
 
 import org.junit.Test;

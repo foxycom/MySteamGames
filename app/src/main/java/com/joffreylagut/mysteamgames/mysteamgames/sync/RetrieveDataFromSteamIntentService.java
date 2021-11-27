@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.Nullable;
-import android.support.v7.preference.PreferenceManager;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 import android.util.Log;
 
 import com.joffreylagut.mysteamgames.mysteamgames.data.UserDbHelper;

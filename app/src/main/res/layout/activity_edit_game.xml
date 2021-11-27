@@ -12,7 +12,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.joffreylagut.mysteamgames.mysteamgames.ui.EditGameActivity">
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:hintTextAppearance="@style/TextLabel">
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/input_game_name"
             android:paddingBottom="16dp" />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
         android:orientation="horizontal"
         android:paddingTop="@dimen/padding_between_input">
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="125dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom">
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/input_game_time"
                 android:inputType="numberDecimal" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <RelativeLayout
             android:layout_width="100dp"
@@ -59,7 +59,7 @@
                 android:layout_marginBottom="8dp"
                 android:background="@android:color/darker_gray" />
 
-            <android.support.v7.widget.AppCompatSpinner
+            <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/sp_time_unit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
             android:theme="@style/MaterialRadioButton" />
     </RadioGroup>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ti_layout_game_price"
         android:layout_width="125dp"
         android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/input_game_price"
             android:inputType="numberDecimal" />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
         android:id="@+id/layout_bundle_name"
@@ -139,7 +139,7 @@
             android:text="@string/bundle_name"
             android:textSize="12sp" />
 
-        <android.support.v7.widget.AppCompatSpinner
+        <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/sp_bundle_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -160,7 +160,7 @@
             android:textColor="@android:color/holo_red_dark" />
     </LinearLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ti_layout_bundle_price"
         android:layout_width="125dp"
         android:layout_height="wrap_content"
@@ -173,7 +173,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/input_bundle_price"
             android:inputType="numberDecimal" />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/btn_save_game_edit"

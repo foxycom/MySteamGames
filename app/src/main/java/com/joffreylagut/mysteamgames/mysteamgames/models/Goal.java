@@ -1,7 +1,7 @@
 package com.joffreylagut.mysteamgames.mysteamgames.models;
 
 import android.content.Context;
-import android.support.v7.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 
 import com.joffreylagut.mysteamgames.mysteamgames.utilities.SharedPreferencesHelper;
 
