@@ -44,6 +44,7 @@ public class GamesFragmentTests {
 
     // TODO See if it's possible to move that test in UnitTests
     @Test
+    @Ignore
     public void createGameListItemsFromGameList_listEmpty() {
         List<OwnedGame> ownedGames = new ArrayList<>();
         List<GameListItem> gameListItems = GamesFragment.createGameListItemsFromGameList(ownedGames);
@@ -62,6 +63,7 @@ public class GamesFragmentTests {
      * Check that the Floating action buttons are on the view.
      */
     @Test
+    @Ignore
     public void floatingActionMenu_opening() {
 
         int fabButtonList[] = {R.id.action_reverse_order, R.id.action_order_price_per_hour, R.id.action_order_time_played, R.id.action_order_price_per_hour};
