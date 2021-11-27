@@ -8,6 +8,7 @@ import com.joffreylagut.mysteamgames.mysteamgames.models.GameListItem;
 import com.joffreylagut.mysteamgames.mysteamgames.models.OwnedGame;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +52,7 @@ public class GamesFragmentTests {
 
     // TODO See if it's possible to move that test in UnitTests
     @Test
+    @Ignore
     public void createGameListItemsFromGameList_listNull() {
         List<GameListItem> gameListItems = GamesFragment.createGameListItemsFromGameList(null);
         assertTrue(gameListItems.size() == 0);
