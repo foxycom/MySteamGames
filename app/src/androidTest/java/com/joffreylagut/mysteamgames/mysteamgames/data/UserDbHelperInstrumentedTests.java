@@ -316,56 +316,6 @@ public class UserDbHelperInstrumentedTests {
         assertFalse(mUserDbHelper.removeGame(mDb, game));
     }
 
-    @Test
-    public void addOwnedGameAndGetOwnedGame(){
-        // TODO
-    }
-
-    @Test
-    public void addOwnedGameInBundleAndUpdateOwnedGamePrice(){
-        // TODO
-    }
-
-    @Test
-    public void getAllOwnedGames_WithOwnedGamesInDb(){
-        // TODO
-    }
-
-    @Test
-    public void getAllOwnedGames_WithoutOwnedGamesInDb(){
-        // TODO
-    }
-
-    @Test
-    public void getOwnedGamesByBundleId_WithOwnedGamesInDb(){
-        // TODO
-    }
-
-    @Test
-    public void getOwnedGamesByBundleId_WithoutOwnedGamesInDb(){
-        // TODO
-    }
-
-    @Test
-    public void getOwnedGames_WithOwnedGamesInDb(){
-        // TODO
-    }
-
-    @Test
-    public void getOwnedGames_WithoutOwnedGamesInDb(){
-        // TODO
-    }
-
-    @Test
-    public void updateOwnedGames(){
-        // TODO
-    }
-
-    @Test
-    public void deleteOwnedGames(){
-        // TODO
-    }
-
     /**
      * Function that create a new OwnedGame.
      * Include a new game inserted in db.

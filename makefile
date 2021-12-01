@@ -2,7 +2,7 @@
 GW=./gradlew
 ABC=../../scripts/abc.sh
 ABC_CFG=../../scripts/.abc-config
-JAVA_OPTS=" -Dabc.instrument.fields.operations -Dabc.taint.android.intents -Dabc.instrument.include=com.joffreylagut.mysteamgames.mysteamgames"
+JAVA_OPTS=" -Dabc.instrument.fields.operations -Dabc.taint.android.intents -Dabc.instrument.include=com.joffreylagut.mysteamgames"
 
 ADB := $(shell $(ABC) show-config  ANDROID_ADB_EXE | sed -e "s|ANDROID_ADB_EXE=||")
 # Create a list of expected test executions from tests.txt Those corresponds to the traces
