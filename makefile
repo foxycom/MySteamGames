@@ -2,7 +2,7 @@
 GW=./gradlew
 ABC=../../scripts/abc.sh
 ABC_CFG=../../scripts/.abc-config
-JAVA_OPTS=" -Dabc.instrument.fields.operations -Dabc.taint.android.intents -Dabc.instrument.include=com.joffreylagut.mysteamgames"
+JAVA_OPTS=" -Dabc.instrument.fields.operations -Dabc.taint.android.intents -Dabc.instrument.include=com.joffreylagut.mysteamgames.mysteamgames"
 
 ADB := $(shell $(ABC) show-config  ANDROID_ADB_EXE | sed -e "s|ANDROID_ADB_EXE=||")
 # Create a list of expected test executions from tests.txt Those corresponds to the traces
@@ -48,20 +48,6 @@ clean-all :
 	$(RM) -rv espresso-test-coverage-for-*
 	$(RM) -rv jacoco-espresso-coverage
 
-clean-text :
-# Clean up all the logs
-	$(RM) -v *.log
-# Clean up tracing
-	$(RM) -v *.testlog
-	$(RM) -rv traces
-# Clean up carved tests
-	$(RM) -rv app/src/carvedTest
-	$(RM) -rv .carved-all
-# Clean up Coverage
-	$(RM) -rv espresso-tests-coverage unit-tests-coverage carved-test-coverage
-	$(RM) -rv espresso-test-coverage-for-*
-	$(RM) -rv jacoco-espresso-coverage
-
 # Build the various apks
 app-original.apk : 
 	export ABC_CONFIG=$(ABC_CFG) && \
@@ -91,7 +77,7 @@ stop-emulator:
 trace-all : $(ESPRESSO_TESTS)
 # Run the emulator
 	@echo "Tracing: $(shell echo $? | tr " " "\n")"
-	#export ABC_CONFIG=$(ABC_CFG) && $(ABC) stop-all-emulators
+	export ABC_CONFIG=$(ABC_CFG) && $(ABC) stop-all-emulators
 	@echo "Done"
 
 # Try to trace all tests
@@ -185,7 +171,7 @@ $(ESPRESSO_TESTS_COVERAGE):
 # Phony  target
 coverage-for-each-espresso-test :  $(ESPRESSO_TESTS_COVERAGE)
 	@echo "Processing: $(shell echo $? | tr " " "\n")"
-	#export ABC_CONFIG=$(ABC_CFG) && $(ABC) stop-all-emulators
+	export ABC_CONFIG=$(ABC_CFG) && $(ABC) stop-all-emulators
 	mkdir -p jacoco-espresso-coverage
 	find espresso-test-coverage-* -type f -name "*.ec" -exec cp '{}' jacoco-espresso-coverage/ ';'
 	@echo "Done"
