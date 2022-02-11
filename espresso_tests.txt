@@ -1,0 +1,1 @@
+com.joffreylagut.mysteamgames.mysteamgames.ui.HomeFragmentTests displayFavorites_noFavorites
