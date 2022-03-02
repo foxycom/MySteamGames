@@ -6,6 +6,7 @@ import androidx.test.InstrumentationRegistry;
 import com.joffreylagut.mysteamgames.mysteamgames.data.GameTongueAdapter;
 
 import org.junit.Test;
+import org.junit.Ignore;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import static junit.framework.Assert.assertTrue;
  * @version 1.0 2017-05-09
  */
 
+@Ignore
 public class SampleGeneratorTests {
 
     /**

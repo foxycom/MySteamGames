@@ -3,6 +3,7 @@ package com.joffreylagut.mysteamgames.mysteamgames.utilities;
 
 import androidx.test.runner.AndroidJUnit4;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 import java.net.MalformedURLException;
@@ -18,6 +19,7 @@ import static junit.framework.Assert.assertTrue;
  * @version 1.0 2017-04-08
  */
 
+@Ignore
 @RunWith(AndroidJUnit4.class)
 public class SteamAPICallsInstrumentalTests {
 

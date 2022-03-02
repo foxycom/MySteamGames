@@ -38,6 +38,7 @@ import static junit.framework.Assert.assertTrue;
  * @version 1.0 2017-04-06
  */
 
+@Ignore
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class UserDbHelperInstrumentedTests {
